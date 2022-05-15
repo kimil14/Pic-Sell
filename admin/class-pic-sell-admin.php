@@ -45,6 +45,8 @@ class Pic_Sell_Admin
 		$this->version = $version;
 		$this->menu_slug = "picsell";
 
+		add_action('admin_init', array($this, 'pic_updater'));
+
 		add_action('admin_init', array($this, 'pic_register_settings'));
 		add_action('admin_init', array($this, 'add_htaccess'));
 		add_action('admin_init', array($this, 'add_post_meta_box'));
@@ -70,6 +72,30 @@ class Pic_Sell_Admin
 		
 	}
 
+	public function pic_updater(){
+
+	include_once PIC_SELL_PATH_INC.'class-pic-sell-updater.php';
+
+	define( 'WP_GITHUB_FORCE_UPDATE', true );
+
+		if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
+			$config = array(
+				'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
+				'proper_folder_name' => 'plugin-name', // this is the name of the folder your plugin lives in
+				'api_url' => 'https://api.github.com/kimil14/Pic-Sell', // the GitHub API url of your GitHub repo
+				'raw_url' => 'https://raw.github.com/kimil14/Pic-Sell/main', // the GitHub raw url of your GitHub repo
+				'github_url' => 'https://github.com/kimil14/Pic-Sell', // the GitHub url of your GitHub repo
+				'zip_url' => 'https://github.com/kimil14/Pic-Sell/releases', // the zip url of the GitHub repo
+				'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
+				'requires' => '4.0', // which version of WordPress does your plugin require?
+				'tested' => '5.9', // which version of WordPress is your plugin tested up to?
+				'readme' => 'README.md', // which file to use as the readme for the version number
+				'access_token' => '', // Access private repositories by authorizing under Plugins > GitHub Updates when this example plugin is installed
+			);
+			new WP_GitHub_Updater($config);
+		}
+	}
+
 	public function function_to_perform($arg1)
 	{
 		foreach($arg1["mail"] as $name_template => $template){
@@ -78,14 +104,15 @@ class Pic_Sell_Admin
 		return $arg1;
 	}
 		
-	function ps_edit_column($columns){
+	function ps_edit_column($columns)
+	{
 		$columns['pack_default'] = "Default";
 		$columns['title'] = "Title pack";
 		return $columns;
 	}
 	
-	function ps_change_row_title($column, $post_id ) {
-
+	function ps_change_row_title($column, $post_id ) 
+	{
 		switch ( $column ) {
 			case 'pack_default' :
 				$default = get_post_meta($post_id, '_pack_offer_default', true);

@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @link              https://portfolio.cestre.fr
+ * @link              https://github.com/kimil14/Pic-Sell
  * @since             1.0.0
  * @package           Pic_Sell
  *
  * @wordpress-plugin
  * Plugin Name:       Pic Sell
- * Plugin URI:        https://shop.cestre.fr/pic-sell
+ * Plugin URI:        https://github.com/kimil14/Pic-Sell
  * Description:       Selling pictures easily.
  * Version:           1.0.0
  * Author:            Benjamin CESTRE
@@ -23,11 +23,6 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-/**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
 define( 'PIC_SELL_VERSION', '1.0.0' );
 define( 'PIC_SELL_PATH', plugin_dir_path( __FILE__ ));
 define( 'PIC_SELL_URL', plugin_dir_url( __FILE__ ));
