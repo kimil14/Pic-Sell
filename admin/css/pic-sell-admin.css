@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,600;1,100;1,200;1,300&display=swap');
+
+#wpbody-content form .bloc {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 12px;
+    padding: 12px 12px 0 0;
+    align-content: center;
+    border-bottom: #f7af2d solid 2px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+#wpbody-content form .bloc label {
+    background: #f7af2d;
+    width: 110px;
+    color: white;
+    padding: 24px 6px;
+    margin: 0 6px 0 0;
+    text-align: center;
+    border-radius: 5px 5px 0 0;
+    font-size: 1.2em;
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+
+#wpbody-content form  .content > div{
+    display: none;
+}
+#wpbody-content form  .content > div.nav-pic-active{
+    display: block;
+}
+#wpbody-content form .bloc h3 {
+    width: 100%;
+}
+#wpbody-content form .bloc input {
+    margin: 0 12px;    
+    justify-self: center;
+    align-self: center;    
+}
+#wpbody-content form .bloc p {
+    justify-self: center;
+    align-self: center;  
+    font-family: 'Montserrat', sans-serif;  
+}
+#wpbody-content form .bloc p.desc {
+    font-weight: bold; 
+}
+
+#wpbody-content form .bloc .wp-editor-wrap{ 
+    margin: 12px;
+    flex: 1;
+}
+
+
+
+div.show-image {
+    position: relative;
+    display: inline-block;
+}
+
+div.show-image .header-image-preview-remove{
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 6px;
+    color: white;
+    background: #0000008c;
+    border-radius: 6px;
+    cursor: pointer;
+    display: none;
+}
+div.show-image .header-image-preview-edit{
+    position: absolute;
+    top: 12px;
+    right: 46px;
+    padding: 6px;
+    color: white;
+    background: #0000008c;
+    border-radius: 6px;
+    cursor: pointer;
+    display: none;
+}
+

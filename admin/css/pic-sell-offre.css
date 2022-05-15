@@ -1,0 +1,116 @@
+.clear {
+    clear: both;
+}
+
+#dynamic_form {
+    
+}
+
+#dynamic_form .ps_add_tr {
+    margin-left: calc(100% - 6px);
+    transform: translateX(-100%);
+    margin-top: 6px;
+}
+
+#dynamic_form input[type="text"] {
+    width: 100%;
+    border: none;
+    background-color: rgb(201, 206, 248);
+}
+#dynamic_form textarea {
+    width: 100%;
+    border: none;
+    background-color: rgb(201, 206, 248);
+}
+
+#dynamic_form select {
+    width: 100%;
+    border: none;
+    background-color: rgb(201, 206, 248);
+}
+
+#dynamic_form input[type="number"] {
+    width: 100%;
+    border: none;
+    background-color: rgb(248, 201, 201);
+}
+
+#dynamic_form textarea {
+    width: 100%;
+}
+
+#dynamic_form label {
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+    background-color: #59a8e7;
+    padding: 6px;
+    margin: 6px;
+}
+
+#dynamic_form table#field_wrap {
+    
+    padding: 6px;
+    border-radius: 5px;
+    width: 100%;
+    display: none;
+}
+
+#dynamic_form table#field_wrap td {
+    border: 1px solid #999;
+    margin: 6px;
+    padding: 6px;
+}
+
+#dynamic_form table#field_wrap td.ps_classement {
+    border-left: solid 10px #b7b7b7 !important;
+    cursor: move;
+}
+#dynamic_form table#field_wrap td.ps_classement span.ps_classement_span {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#dynamic_form table#field_wrap tr:nth-child(even) {
+    background-color: #eee;
+}
+
+#dynamic_form table#field_wrap td img.ps_display_image {
+    max-height: 150px;
+}
+
+#dynamic_form table#field_wrap .ps-upload-progress{
+    display: none;
+    background: #a7a7a7;
+}
+#dynamic_form table#field_wrap .ps-upload-progress .uploading{
+    width: 0%;
+    padding: 0 6px;
+    margin-left: -6px;
+    height: 25px;
+    line-height: 24px;
+    overflow: visible;
+    background-color: rgb(34, 124, 34);
+    color: #fff;
+    display: none;
+}
+#dynamic_form table#field_wrap .ps-upload-progress .finished{
+    width: 100%;
+    padding: 0 6px;
+    margin-left: -6px;
+    height: 25px;
+    line-height: 24px;
+    background-color: rgb(25, 109, 25);
+    color: #fff;
+    display: none;
+}
+
+#dynamic_form #wrap-emails-clients input[type='text'] {
+    width: 250px;
+    margin: 6px 0;
+}
+
+#dynamic_form #wrap-emails-clients {
+    display: flex;
+    flex-direction: column;
+}
