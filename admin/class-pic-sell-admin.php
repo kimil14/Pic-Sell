@@ -80,8 +80,8 @@ class Pic_Sell_Admin
 
 		if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
 			$config = array(
-				'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
-				'proper_folder_name' => 'plugin-name', // this is the name of the folder your plugin lives in
+				'slug' => $this->menu_slug, // this is the slug of your plugin
+				'proper_folder_name' => 'pic-sell', // this is the name of the folder your plugin lives in
 				'api_url' => 'https://api.github.com/kimil14/Pic-Sell', // the GitHub API url of your GitHub repo
 				'raw_url' => 'https://raw.github.com/kimil14/Pic-Sell/main', // the GitHub raw url of your GitHub repo
 				'github_url' => 'https://github.com/kimil14/Pic-Sell', // the GitHub url of your GitHub repo
