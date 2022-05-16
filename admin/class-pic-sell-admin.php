@@ -45,7 +45,6 @@ class Pic_Sell_Admin
 		$this->version = $version;
 		$this->menu_slug = "picsell";
 
-		add_action('init', array($this, 'pic_updater'));
 
 		add_action('admin_init', array($this, 'pic_register_settings'));
 		add_action('admin_init', array($this, 'add_htaccess'));
