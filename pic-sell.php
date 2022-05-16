@@ -52,9 +52,9 @@ register_activation_hook( __FILE__, 'activate_pic_sell' );
 register_deactivation_hook( __FILE__, 'deactivate_pic_sell' );
 
 
-add_action('init', 'pic_updater');
+add_action('init', 'auto_update');
 
-function pic_updater(){
+function auto_update(){
 
 
 	// Autoload
