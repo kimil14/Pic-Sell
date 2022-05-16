@@ -74,26 +74,18 @@ class Pic_Sell_Admin
 
 	public function pic_updater(){
 
-	include_once PIC_SELL_PATH_INC.'class-pic-sell-updater.php';
 
-	define( 'WP_GITHUB_FORCE_UPDATE', true );
+		// Autoload
+		require_once( PIC_SELL_PATH_INC . '/vendor/autoload.php' );
 
-		if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
-			$config = array(
-				'slug' => 'pic-sell', // this is the slug of your plugin
-				'proper_folder_name' => 'pic-sell', // this is the name of the folder your plugin lives in
-				'api_url' => 'https://api.github.com/kimil14/Pic-Sell', // the GitHub API url of your GitHub repo
-				'raw_url' => 'https://raw.github.com/kimil14/Pic-Sell/main', // the GitHub raw url of your GitHub repo
-				'github_url' => 'https://github.com/kimil14/Pic-Sell', // the GitHub url of your GitHub repo
-				'zip_url' => 'https://github.com/kimil14/Pic-Sell/releases', // the zip url of the GitHub repo
-				'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
-				'requires' => '4.0', // which version of WordPress does your plugin require?
-				'tested' => '5.9', // which version of WordPress is your plugin tested up to?
-				'readme' => 'README.md', // which file to use as the readme for the version number
-				'access_token' => '', // Access private repositories by authorizing under Plugins > GitHub Updates when this example plugin is installed
-			);
-			new WP_GitHub_Updater($config);
-		}
+
+		$plugin_slug = plugin_basename( __FILE__ ); // e.g. `hello/hello.php`.
+		$gh_user = 'kimil14';                      // The user name of GitHub.
+		$gh_repo = 'Pic-Sell';       // The repository name of your plugin.
+
+		// Activate automatic update.
+		new Miya\WP\GH_Auto_Updater( $plugin_slug, $gh_user, $gh_repo );
+
 	}
 
 	public function function_to_perform($arg1)
