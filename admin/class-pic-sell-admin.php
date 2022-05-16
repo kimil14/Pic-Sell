@@ -79,7 +79,7 @@ class Pic_Sell_Admin
 		require_once( PIC_SELL_PATH_INC . '/vendor/autoload.php' );
 
 
-		$plugin_slug = plugin_basename( __FILE__ ); // e.g. `hello/hello.php`.
+		$plugin_slug =  "pic-sell/pic-sell.php"; // e.g. `hello/hello.php`.
 		$gh_user = 'kimil14';                      // The user name of GitHub.
 		$gh_repo = 'Pic-Sell';       // The repository name of your plugin.
 
