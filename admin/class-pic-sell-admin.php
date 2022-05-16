@@ -71,23 +71,6 @@ class Pic_Sell_Admin
 		add_action( 'manage_offre_posts_custom_column', array($this, 'ps_change_row_title'), 10, 2);
 		
 	}
-	
-
-	public function pic_updater(){
-
-
-		// Autoload
-		require_once( PIC_SELL_PATH_INC . '/vendor/autoload.php' );
-
-
-		$plugin_slug =  "pic-sell/pic-sell.php"; // e.g. `hello/hello.php`.
-		$gh_user = 'kimil14';                      // The user name of GitHub.
-		$gh_repo = 'pic-sell';       // The repository name of your plugin.
-
-		// Activate automatic update.
-		new Miya\WP\GH_Auto_Updater( $plugin_slug, $gh_user, $gh_repo );
-
-	}
 
 	public function function_to_perform($arg1)
 	{
