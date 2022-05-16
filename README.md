@@ -1,3 +1,6 @@
+# Pic Sell v.1.2.0
+ - Correction version
+
 # Pic Sell v.1.0.1
  - Correction updater github
 
