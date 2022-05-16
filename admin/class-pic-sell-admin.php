@@ -81,7 +81,7 @@ class Pic_Sell_Admin
 
 		$plugin_slug =  "pic-sell/pic-sell.php"; // e.g. `hello/hello.php`.
 		$gh_user = 'kimil14';                      // The user name of GitHub.
-		$gh_repo = 'Pic-Sell';       // The repository name of your plugin.
+		$gh_repo = 'pic-sell';       // The repository name of your plugin.
 
 		// Activate automatic update.
 		new Miya\WP\GH_Auto_Updater( $plugin_slug, $gh_user, $gh_repo );
