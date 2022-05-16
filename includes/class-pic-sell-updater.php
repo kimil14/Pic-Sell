@@ -48,7 +48,7 @@ class WP_GitHub_Updater {
 	 * @var $missing_config any config that is missing from the initialization of this instance
 	 * @access public
 	 */
-	var $missing_config;
+	public $missing_config;
 
 	/**
 	 * @var $github_data temporiraly store the data fetched from GitHub, allows us to only load the data once per class instance
@@ -317,7 +317,7 @@ class WP_GitHub_Updater {
 	 */
 	public function get_date() {
 		$_date = $this->get_github_data();
-		return ( !empty( $_date->updated_at ) ) ? date( 'Y-m-d', strtotime( $_date->updated_at ) ) : false;
+		return ( !empty( $_date["updated_at"] ) ) ? date( 'Y-m-d', strtotime( $_date["updated_at"] ) ) : false;
 	}
 
 
@@ -329,7 +329,7 @@ class WP_GitHub_Updater {
 	 */
 	public function get_description() {
 		$_description = $this->get_github_data();
-		return ( !empty( $_description->description ) ) ? $_description->description : false;
+		return ( !empty( $_description["description"] ) ) ? $_description["description"] : false;
 	}
 
 
