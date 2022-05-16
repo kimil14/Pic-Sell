@@ -1,11 +1,7 @@
 <?php
 
 /**
- * @link              https://github.com/kimil14/pic-sell
- * @since             2.0.0
- * @package           Pic_Sell
- *
- * @wordpress-plugin
+ * 
  * Plugin Name:       Pic Sell
  * Plugin URI:        https://github.com/kimil14/pic-sell
  * Description:       Selling pictures easily.
@@ -16,6 +12,8 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       pic_sell_plugin
  * Domain Path:       /languages
+ * 
+ * @package           Pic_Sell
  */
 
 // If this file is called directly, abort.
