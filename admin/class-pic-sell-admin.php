@@ -71,6 +71,7 @@ class Pic_Sell_Admin
 		add_action( 'manage_offre_posts_custom_column', array($this, 'ps_change_row_title'), 10, 2);
 		
 	}
+	
 
 	public function pic_updater(){
 
