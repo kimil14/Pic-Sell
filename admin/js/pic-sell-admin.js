@@ -92,7 +92,12 @@ jQuery(document).ready(function($){
 		});
 	}
 
-	tabConfig(true);
+	$config = ($("body").hasClass("toplevel_page_picsell") || $("body").hasClass("pic-sell_page_picsell_settings-pic") || $("body").hasClass("pic-sell_page_picsell_page_commandes"))?true:false;
+	if($config){
+		console.log("tabConfig");
+		tabConfig(true);
+	}
+	
 
 	$(".toplevel_page_picsell, .pic-sell_page_picsell_settings-pic, .pic-sell_page_picsell_page_commandes").on("click", ".nav-tab", function(e){
 		e.preventDefault();

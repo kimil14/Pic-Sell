@@ -1378,6 +1378,9 @@ class Pic_Sell_Admin
 
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/pic-sell-admin.css', array(), $this->version, 'all');
 
+		global $wp_scripts; 
+		wp_enqueue_style("jquery-ui-css", "http://ajax.googleapis.com/ajax/libs/jqueryui/{$wp_scripts->registered['jquery-ui-core']->ver}/themes/ui-lightness/jquery-ui.min.css");
+
 		/**CUSTOM TYPE espaceprive only */
 		if (isset($post) && 'espaceprive' == $post->post_type) {
 			wp_enqueue_style($this->plugin_name . "-espaceprive", plugin_dir_url(__FILE__) . 'css/pic-sell-espaceprive.css', array(), $this->version, 'all');
@@ -1400,7 +1403,10 @@ class Pic_Sell_Admin
 
 		wp_enqueue_media();
 
-		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/pic-sell-admin.js', array('jquery'), $this->version, false);
+		wp_enqueue_script('jquery-ui-core');
+		wp_enqueue_script('jquery-ui-dialog');
+
+		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/pic-sell-admin.js', array('jquery','jquery-ui-dialog'), $this->version, false);
 
 
 		/**CUSTOM TYPE espaceprive only */
