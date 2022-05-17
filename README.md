@@ -17,7 +17,7 @@ FR: Téléchargez l'extension sur le dépot officiel de WordPress, le télévers
 EN: Download the extension from the official WordPress repository, upload it to your WP installation and activate it like all other extensions.   
 ### Screenshots
 
-![App Screenshot](https://i.ibb.co/4WkHstC/2022-05-17-15-26-51-Window.png)
+![Alt text](https://i.ibb.co/4WkHstC/2022-05-17-15-26-51-Window.png "Optional title")
 
 ![App Screenshot](https://i.ibb.co/0Y8f2rw/2022-05-17-15-28-49-Window.png)
 
