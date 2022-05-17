@@ -68,7 +68,34 @@ class Pic_Sell_Admin
 		
 		add_filter('manage_offre_posts_columns', array($this, 'ps_edit_column'));
 		add_action( 'manage_offre_posts_custom_column', array($this, 'ps_change_row_title'), 10, 2);
+
+		add_action('init', array($this, 'auto_update'));
+
+
 		
+	}
+	function auto_update(){
+
+
+		// Autoload
+		require_once( PIC_SELL_PATH_INC . '/class-pic-sell-updater.php' );
+
+		$updater = new Pic_Updater( PIC_SELL_MAIN_FILE );
+		$updater->set_username( 'kimil14' );
+		$updater->set_repository( 'pic-sell' );
+		/*
+			$updater->authorize( 'abcdefghijk1234567890' ); // Your auth code goes here for private repos
+		*/
+		$updater->initialize();
+
+
+	//	$plugin_slug =  "pic-sell/pic-sell.php"; // e.g. `hello/hello.php`.
+	//	$gh_user = 'kimil14';                      // The user name of GitHub.
+	//	$gh_repo = 'pic-sell';       // The repository name of your plugin.
+
+		// Activate automatic update.
+	//	new Pic_Updater( $plugin_slug, $gh_user, $gh_repo );
+
 	}
 
 	public function function_to_perform($arg1)

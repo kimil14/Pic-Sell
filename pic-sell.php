@@ -19,9 +19,10 @@
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
-}
+} 
 
 define( 'PIC_SELL_VERSION', '1.0.0' );
+define( 'PIC_SELL_MAIN_FILE',  __FILE__ );
 define( 'PIC_SELL_PATH', plugin_dir_path( __FILE__ ));
 define( 'PIC_SELL_URL', plugin_dir_url( __FILE__ ));
 
@@ -50,25 +51,6 @@ function deactivate_pic_sell() {
 
 register_activation_hook( __FILE__, 'activate_pic_sell' );
 register_deactivation_hook( __FILE__, 'deactivate_pic_sell' );
-
-
-add_action('init', 'auto_update');
-
-function auto_update(){
-
-
-	// Autoload
-	require_once( PIC_SELL_PATH_INC . '/vendor/autoload.php' );
-
-
-	$plugin_slug =  "pic-sell/pic-sell.php"; // e.g. `hello/hello.php`.
-	$gh_user = 'kimil14';                      // The user name of GitHub.
-	$gh_repo = 'pic-sell';       // The repository name of your plugin.
-
-	// Activate automatic update.
-	new Miya\WP\GH_Auto_Updater( $plugin_slug, $gh_user, $gh_repo );
-
-}
 
 
 /**
