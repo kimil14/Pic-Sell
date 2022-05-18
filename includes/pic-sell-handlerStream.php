@@ -6,16 +6,15 @@
 //$data['success'] = true;
 
 if (!empty($_POST)) {
-    $data = $_POST;
+    $data = stripslashes_deep($_POST);
   }
   else {
   //  $data = json_decode(stripslashes(file_get_contents("php://input")), true);
-  $data = $_GET;
+  $data["url"] = stripslashes($_GET["url"]);
   }
 
 require "class-pic-sell-stream.php";
 
-$stream = new VideoStream($data['url']);
+$stream = new PIC_VideoStream($data['url']);
 $stream->start();
-//echo json_encode($data);
 exit();

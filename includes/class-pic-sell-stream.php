@@ -5,7 +5,7 @@
  * @author Rana
  * @link http://codesamplez.com/programming/php-html5-video-streaming-tutorial
  */
-class VideoStream
+class PIC_VideoStream
 {
     private $path = "";
     private $stream = "";

@@ -58,29 +58,12 @@ if ($_GET["validate_ipn"]) {
 
     $response = wp_remote_post( $url, $args );
 
-    /*$curl_result = $curl_err = '';
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $req);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded", "Content-Length: " . strlen($req)));
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_VERBOSE, 1);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    $curl_result = @curl_exec($ch);
-    $curl_err = curl_error($ch);
-    curl_close($ch);*/
 
-    do_action('pic_paypal_express_ipn', $body, $this);
-
-
-    wp_mail(sanitize_email($admin_address_mail), "CHECK", json_encode($response['body']), "From: noreply@$domain");
+    do_action('pic_paypal_express_ipn', $body, $response);
 
     $req = str_replace("&", "\n", $req);
 
-    if (strpos($curl_result, "VERIFIED") !== false) {
+    if ('VERIFIED' == $response['body']) {
 
         $req .= "\n\nPaypal Verified OK";
 

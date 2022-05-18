@@ -4,19 +4,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-function pic_paypal_disable_manager( $available_gateways ) {
-
-  print_r($available_gateways);
-  if ( isset( $available_gateways['paypal'] ) ) {
-
-    unset( $available_gateways['paypal'] );
-
-  }
-
-  return $available_gateways;
-
-}
-add_filter('woocommerce_available_payment_gateways', 'pic_paypal_disable_manager', 999);
 
 _get_header();
 
@@ -123,8 +110,6 @@ if (!post_password_required() ) {
     $allProducts = json_encode($allProducts);
     $allProducts = str_replace("'","&pos;", $allProducts);
     
-    $script='<script src="'.PIC_SELL_URL.'public/js/script.js" type="text/javascript" charset="utf-8"></script>';
-
     //LOAD SCREEN
     $contenu = "<div class='screen-loader'>
                   <h2>Votre galerie est en<br>cours de chargement</h2>

@@ -349,11 +349,11 @@ class Pic_Sell_Admin
         $html .= '</div>';
 		$html .= get_submit_button(); 
 		$html .= '</form>';
-        echo $html;    
+        echo wp_kses_normalize_entities($html);    
 	}
 
 	public function picsell_menu_dashboard(){
-		echo "<h2>Dashboard</h2>";
+		echo wp_kses_normalize_entities("<h2>Dashboard</h2>");   
 	}
 
 	public function picsell_page_commande(){
@@ -409,7 +409,7 @@ class Pic_Sell_Admin
 		$html .= get_submit_button(); 
 		$html .= '</form>';
 
-        echo $html;    
+        echo wp_kses_normalize_entities($html);      
 	}
 
 
@@ -1172,12 +1172,12 @@ class Pic_Sell_Admin
 		}
 		else if($action = "step_2"){
 
-			$emails = $_POST["emails"];
+			$emails = stripslashes_deep($_POST["emails"]);
 			//$emails .= ", test-3qtezve9f@srv1.mail-tester.com";
-			$sent = $_POST["sent"];
+			$sent = stripslashes_deep($_POST["sent"]);
 			$date_left = $_POST["date_left"];
-			$post_id = $_POST['post_id'];
-			$post_password = $_POST['post_password'];
+			$post_id =  stripslashes_deep($_POST['post_id']);
+			$post_password =  stripslashes_deep($_POST['post_password']);
 			$post = get_post($post_id);
 
 			$urlparts = parse_url(home_url());
@@ -1193,7 +1193,7 @@ class Pic_Sell_Admin
 				'X-Mailer:PHP/'.phpversion();
 
 			require (PIC_SELL_TEMPLATE_DIR . "templateOrders.php");
-			$template = new Template_Mail();
+			$template = new PIC_Template_Mail();
 
 			$html = $template->templateGalleryReady();
 			$message = $html;

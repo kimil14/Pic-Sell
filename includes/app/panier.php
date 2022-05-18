@@ -32,7 +32,7 @@ class PIC_Panier{
 		$this->protectUserCart();
 
         if(!empty($_POST['cart'])){
-          update_post_meta( $_POST['cartId'], 'panier_client', $_POST['cart']);  
+          update_post_meta( $_POST['cartId'], 'panier_client', sanitize_text_field($_POST['cart']));  
         }
 
         $a["result"] = get_post_meta($_POST['cartId'], 'panier_client');
@@ -170,7 +170,7 @@ class PIC_Panier{
 
 
 			require (PIC_SELL_TEMPLATE_DIR . "templateOrders.php");
-			$template = new Template_Mail();
+			$template = new PIC_Template_Mail();
 
 			//ob_start();
 			$html = $template->templateOrder($order[$txn], $fdp, $txn);
@@ -237,7 +237,7 @@ class PIC_Panier{
 						$fdp=0;
 						if ( $order['user']['country'] != 'FR') $fdp=15;
 						require (PIC_SELL_TEMPLATE_DIR . "templateOrders.php");
-						$template = new Template_Mail();
+						$template = new PIC_Template_Mail();
 
 						$message = $template->templateOrder($order, $fdp);
 						// exit;
@@ -265,8 +265,8 @@ class PIC_Panier{
 			
 		}
 
-		if(!$message) $message = "Votre numéro de commande est faux...";
-		echo $message;
+		if(!$message) $message = "<p>Votre numéro de commande est faux...</p>";
+		echo  wp_kses($message, ['p' => array()]);
 	}
 
 }

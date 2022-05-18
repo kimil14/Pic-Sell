@@ -139,7 +139,7 @@ class Pic_Sell_Public
 					'X-Mailer:PHP/'.phpversion();
 	
 				require (PIC_SELL_TEMPLATE_DIR . "templateOrders.php");
-				$template = new Template_Mail();
+				$template = new PIC_Template_Mail();
 	
 				$html = $template->templateGalleryDateLeft();
 				$message = $html;		
@@ -469,9 +469,9 @@ class Pic_Sell_Public
 					$isArchive = is_post_type_archive('espaceprive')?true:false;
 
 					if(!$isArchive){
-						wp_register_script( 'picsell_logout_js', PIC_SELL_URL_INC.'logout.js', array( 'jquery' ), null, true );
 						wp_enqueue_script( 'jquery' );
-						wp_enqueue_script( 'picsell_logout_js' );
+					
+						wp_enqueue_script('picsell_logout_js', PIC_SELL_URL_INC.'logout.js', array('jquery'), $this->version, false);
 						wp_localize_script( 'picsell_logout_js', 'picsell_ajax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );					
 						
 						$vars = array(

@@ -1,6 +1,6 @@
 <?php
 
-class Template_Mail
+class PIC_Template_Mail
 {
 
     public function get_pack_offer($post_id){

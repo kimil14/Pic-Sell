@@ -10,5 +10,4 @@ foreach($_COOKIE as $cookieKey => $cookieValue) {
     }
 }
 
-var_dump($_COOKIE);
 ?>
