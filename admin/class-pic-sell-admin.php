@@ -145,7 +145,7 @@ class Pic_Sell_Admin
 		$this->pic_create_main_menu($this->menu_slug, __("Pic Sell", "pic_sell_plugin"), "manage_options",4,array($this, 'picsell_menu_dashboard'));
 		$this->pic_create_sub_menu($this->menu_slug, __("Dashboard", "pic_sell_plugin"), "manage_options",1, array($this, 'picsell_menu_dashboard'));
 		$this->pic_create_sub_menu($this->menu_slug, __("Settings", "pic_sell_plugin"), "manage_options",2, array($this, 'picsell_page_settings'), "settings-pic");
-		$this->pic_create_sub_menu($this->menu_slug, __("Commands", "pic_sell_plugin"), "manage_options",3, array($this, 'picsell_page_commande'), "page_commandes");
+		$this->pic_create_sub_menu($this->menu_slug, __("Orders", "pic_sell_plugin"), "manage_options",3, array($this, 'picsell_page_commande'), "page_commandes");
 	}
 
 	
@@ -391,12 +391,37 @@ class Pic_Sell_Admin
 			// Option's value is equal to false
 		}else{
 			$paragraphe = "<p>".__( 'Lists orders.', 'pic_sell_plugin' )."</p>";
+			
 		}
 
 
 		$html .= "<div class='nav-pic-0'>";
 		$html .= 	"<h1>".__( '<b>all orders</b>.', 'pic_sell_plugin' )."</h1>";
 		$html .= 	$paragraphe;
+		$html .=    "<table>";
+		$html .= 		"<thead>";
+		$html .= 			"<tr>";
+		$html .= 				"<th>".__( '<b>Order ID</b>', 'pic_sell_plugin' )."</th>";
+		$html .= 				"<th>".__( '<b>Order number</b>', 'pic_sell_plugin' )."</th>";
+		$html .= 				"<th>".__( '<b>Order date</b>', 'pic_sell_plugin' )."</th>";
+		$html .= 			"</tr>";
+		$html .= 		"</thead>";
+
+		$html .= 		"<tbody>";
+		
+		foreach($allOrders["orders"] as $key => $order){
+			$html .= "<tr>";
+			$html .= "<td>$key</td>";
+			foreach($order as $number_order => $card){
+				$html .= "<td>$number_order</td>";
+				$html .= "<td>$card[order_date]</td>";
+			}	
+			$html .= "</tr>";
+		}		
+
+		
+		$html .= 		"</tbody>";		
+		$html .=    "</table>";
 		$html .= "</div>";
 	
 
@@ -1357,6 +1382,10 @@ class Pic_Sell_Admin
 	public function enqueue_styles()
 	{
 		global $post;
+
+
+		wp_enqueue_style( 'pic-google-fonts', 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,600;1,100;1,200;1,300&display=swap', false );
+	
 
 
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/pic-sell-admin.css', array(), $this->version, 'all');
