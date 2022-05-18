@@ -156,7 +156,7 @@ class Pic_Sell_Public
 		
 				$date_v = $md.$ad.$dd;
 
-				$datefmt = new IntlDateFormatter('fr_FR', NULL, NULL, NULL, NULL, 'EEEE dd LLLL YYYY');
+				$datefmt = new IntlDateFormatter('fr_FR', 0, 0, NULL, NULL, 'EEEE dd LLLL YYYY');
 	
 				$message = str_replace('{{site_name}}', $site_name, $message);
 				$message = str_replace('{{dateleft}}', $dateleft, $message);
@@ -272,7 +272,7 @@ class Pic_Sell_Public
 		
 			case "/post/update/":
 		
-				$cart = new Panier();
+				$cart = new PIC_Panier();
 				$cart->updateCart();
 				break;
 		
@@ -328,7 +328,7 @@ class Pic_Sell_Public
 					}
 				}
 
-			    $cart = new Panier();
+			    $cart = new PIC_Panier();
 				$arg = $cart->paypalCheckOut($cartId, $query);
 				echo $paypal_url . $arg; //on renvoie les arguments
 			   
@@ -346,13 +346,13 @@ class Pic_Sell_Public
 			   
 				break;
 		
-				case "/post/checkPrivateGallery/":
+			case "/post/checkPrivateGallery/":
 		
 				$this->checkGalleryDate();
 					   
 				break;
 		
-				case "/post/checkOrders/":
+			case "/post/checkOrders/":
 				
 			   // $cart = new Panier();
 				$cart->getOrders($queries['commande'],$queries['getBy']);

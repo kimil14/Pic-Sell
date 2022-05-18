@@ -19,8 +19,6 @@ if ($_GET["validate_commande"]) {
 
 if ($_GET["validate_ipn"]) {
 
-    mail("benjamin@cestre.fr", "IPN", "test2");
-
     $urlparts = parse_url(home_url());
     $domain = $urlparts['host'];
 
@@ -31,10 +29,17 @@ if ($_GET["validate_ipn"]) {
 
     $req = 'cmd=_notify-validate';
 
+    //$body = [];
     foreach ($_POST as $key => $value) {
+        //$body[$key] = $value;
         $value = urlencode(stripslashes($value));
         $req .= "&$key=$value";
-    }
+    }  
+    
+    $body = array();
+    $body['cmd'] = '_notify-validate';
+    $body += stripslashes_deep($_POST);
+
     $paypal = get_option("paypal_pic");
     $paypal_sandbox = (isset($paypal["paypal"]["sandbox"]) && $paypal["paypal"]["sandbox"]) ? true : false;
     $paypal_url = $paypal_sandbox ? "https://www.sandbox.paypal.com/cgi-bin/webscr" : "https://www.paypal.com/cgi-bin/webscr";
@@ -44,7 +49,16 @@ if ($_GET["validate_ipn"]) {
 
     $url = $paypal_url;
 
-    $curl_result = $curl_err = '';
+    $args = array(
+        'body'        => $body,
+        'timeout'     => 30,
+        'method' => 'POST',
+        'httpversion' => '1.1',
+    );
+
+    $response = wp_remote_post( $url, $args );
+
+    /*$curl_result = $curl_err = '';
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -57,7 +71,12 @@ if ($_GET["validate_ipn"]) {
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     $curl_result = @curl_exec($ch);
     $curl_err = curl_error($ch);
-    curl_close($ch);
+    curl_close($ch);*/
+
+    do_action('pic_paypal_express_ipn', $body, $this);
+
+
+    wp_mail(sanitize_email($admin_address_mail), "CHECK", json_encode($response['body']), "From: noreply@$domain");
 
     $req = str_replace("&", "\n", $req);
 
@@ -70,24 +89,24 @@ if ($_GET["validate_ipn"]) {
         $req .= "\n\nData NOT verified from Paypal!";
 
         if ($admin_address_mail) {
-            wp_mail($admin_address_mail, "IPN interaction not verified", $req, "From: noreply@$domain");
+            wp_mail(sanitize_email($admin_address_mail), "IPN interaction not verified", $req, "From: noreply@$domain");
             die($req);
         }
     }
 
 
-    $payer_email = $_POST['payer_email'];
-    $custom = $_POST['custom'];
+    $payer_email = $body['payer_email'];
+    $custom = $body['custom'];
 
     // Check 1
-    $receiver_email = $_POST['receiver_email'];
+    $receiver_email = $body['receiver_email'];
     $paypal_address_mail = isset($paypal["paypal"]["adresse"]) ? $paypal["paypal"]["adresse"] : "fake@mail.com"; //ne pas mettre vide
     if ($receiver_email != $paypal_address_mail) {
         die("Address mail receiver email is invalid");
     }
 
     // Check 2 
-    if ($_POST['payment_status'] != "Completed") {
+    if ($body['payment_status'] != "Completed") {
         $infoMail = "Le paiement est en défault, merci de recommencer.";
         $infoAdmin = "Un paiement est parvenu en invalide.";
         if ($admin_address_mail) {
@@ -97,8 +116,8 @@ if ($_GET["validate_ipn"]) {
     }
 
     // Check 3
-    $txn_id = $_POST['txn_id'];
-    $custom = $_POST["custom"];
+    $txn_id = $body['txn_id'];
+    $custom = $body["custom"];
 
     $defaultOrders = array("orders" => []);
     //$defaultOrders = serialize(json_encode("[{'orders':[]}]"));
@@ -128,7 +147,7 @@ if ($_GET["validate_ipn"]) {
     }
     require(PIC_SELL_PATH_INC . "app/panier.php");
     // require("../includes/app/panier.php");
-    $cart = new Panier();
+    $cart = new PIC_Panier();
     $cart->emailOrder($txn_id, $custom);
     exit();
     
@@ -139,13 +158,11 @@ if ($_GET["validate_ipn"]) {
 
 if($_GET["commande"]){
 
-    //mail("benjamin@cestre.fr", "IPN", "test".json_encode($_GET));
-
     $txn_id = $_GET["commande"];
     get_header();
 
     require(PIC_SELL_PATH_INC . "app/panier.php");
-    $cart = new Panier();
+    $cart = new PIC_Panier();
     $cart->getOrders($txn_id, false);
 
     get_footer();

@@ -1,6 +1,6 @@
 <?php 
 
-class Panier{
+class PIC_Panier{
 
 	private function protectUserCart(){
 		$the_post = get_post($_POST['cartId']);

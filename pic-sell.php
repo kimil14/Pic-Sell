@@ -5,7 +5,7 @@
  * Plugin Name:       Pic Sell
  * Plugin URI:        https://github.com/kimil14/pic-sell
  * Description:       Selling pictures easily.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Author:            Benjamin CESTRE
  * Author URI:        https://portfolio.cestre.fr
  * License:           GPL-2.0+
@@ -21,7 +21,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 } 
 
-define( 'PIC_SELL_VERSION', '1.0.0' );
+define( 'PIC_SELL_VERSION', '1.0.3' );
 define( 'PIC_SELL_MAIN_FILE',  __FILE__ );
 define( 'PIC_SELL_PATH', plugin_dir_path( __FILE__ ));
 define( 'PIC_SELL_URL', plugin_dir_url( __FILE__ ));

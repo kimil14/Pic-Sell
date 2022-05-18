@@ -1,0 +1,26 @@
+=== Pic Sell ===
+Tags: gallery, picture, selling, photographer
+Donate link: https://www.paypal.com/donate/?hosted_button_id=LRE2EWCN62H4J
+Requires at least: 5.5.0
+Tested up to: 5.5.9
+Requires PHP: 7.0
+Stable tag: 1.2.0
+License: GPL-2.0+
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+With Pic Sell, create your private galleries with a password and offer your customers, friends, families the possibility of buying media (images, videos) according to previously configured offer packs. Specially designed for photographers or artists selling art galleries. This extension embeds the payment by Paypal easily configurable with an intuitive interface.
+
+== Installation ==
+Download the extension from the official WordPress repository, upload it to your WP installation and activate it like all other extensions.
+
+== Screenshots ==
+1. main plugin
+2. private gallery page
+
+== Changelog ==
+== 1.2.0 ==
+Fixes a security related bug.
+
+== Upgrade Notice ==
+== 1.2.0 ==
+This version fixes a security related bug.  Upgrade immediately.
