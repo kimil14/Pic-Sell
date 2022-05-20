@@ -17,10 +17,15 @@ Download the extension from the official WordPress repository, upload it to your
 1. main plugin
 2. private gallery page
 
+
 == Changelog ==
 == 1.0.3 ==
 Fixes a security related bug.
 
+== 1.0.4 ==
+This version fixes a sanitize.
+
 == Upgrade Notice ==
-== 1.0.3 ==
-This version fixes a security related bug.  Upgrade immediately.
+== 1.0.4 ==
+This version fixes a sanitize variable.  Upgrade immediately.
+
