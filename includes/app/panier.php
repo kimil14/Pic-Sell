@@ -3,9 +3,9 @@
 class PIC_Panier{
 
 	private function protectUserCart(){
-		$the_post = get_post($_POST['cartId']);
+		$the_post = get_post(intval($_POST['cartId']));
 
-		if ( $the_post->post_password != $_POST['password'] ){
+		if ( $the_post->post_password != sanitize_text_field($_POST['password']) ){
 			exit;
 		}
 		
@@ -32,61 +32,51 @@ class PIC_Panier{
 		$this->protectUserCart();
 
         if(!empty($_POST['cart'])){
-          update_post_meta( $_POST['cartId'], 'panier_client', sanitize_text_field($_POST['cart']));  
+          update_post_meta(intval($_POST['cartId']), 'panier_client', sanitize_text_field($_POST['cart']));  
         }
 
-        $a["result"] = get_post_meta($_POST['cartId'], 'panier_client');
+        $a["result"] = get_post_meta(intval($_POST['cartId']), 'panier_client');
         echo json_encode($a);	
 		
 	}
 
 	public function paypalCheckOut($cart, $query){
 
-	//	global $post;
+	$user = array();
+	$order = array();
 
-		//$cart = get_post_meta($_POST['cartId'], 'panier_client', true);
+	$base = get_bloginfo('wpurl');
+	$query['notify_url'] = $base . '/espace-prive/?validate_ipn=ipn';
+	$query['return'] = $base . '/espace-prive/?validate_commande=thankyou';
 
-			//Prepare GET data
-		 //   $query = array();
-		    $user = array();
-		    $order = array();
+	$query['cmd'] = '_cart';
+	$query['upload'] = '1';
+	$paypal = get_option("paypal_pic");
+	$paypal_address_mail = isset($paypal["paypal"]["adresse"])?$paypal["paypal"]["adresse"]:"";
+	$query['business'] = $paypal_address_mail;
+	$query['address_override'] = 0;
+	$query['currency_code'] = 'EUR';
+	$query['shipping_1'] = 0;
+	$query['address_country_code'] = "FR";
 
-			$base = get_bloginfo('wpurl');
-			$query['notify_url'] = $base . '/espace-prive/?validate_ipn=ipn';
-			//$query['notify_url'] = "https://f368-2a01-e0a-98-b760-ec40-5cda-2211-20b5.eu.ngrok.io/wpdev/espace-prive/";
-		    $query['return'] = $base . '/espace-prive/?validate_commande=thankyou';
+	$user = array();
+	$user['first_name'] = $query['first_name'];
+	$user['last_name'] = $query['last_name'];
+	$user['email'] = $query['email'];
+	$user['telephone'] = $query['telephone'];
+	$user['address1'] = $query['address1'];
+	$user['address2'] = $query['address2'];
+	$user['city'] = $query['city'];
+	$user['country'] = $query['country'];
+	$user['state'] = $query['state'];
+	$user['zip'] = $query['zip'];
+	$user['cartId'] = $query['cartId'];
 
-		    $query['cmd'] = '_cart';
-		    $query['upload'] = '1';
-			$paypal = get_option("paypal_pic");
-			$paypal_address_mail = isset($paypal["paypal"]["adresse"])?$paypal["paypal"]["adresse"]:"";
-		    $query['business'] = $paypal_address_mail;
-		    $query['address_override'] = 0;
-		    $query['currency_code'] = 'EUR';
-		    $query['shipping_1'] = 0;
-		    $query['address_country_code'] = "FR";
+	$query['custom'] = json_encode($user);
 
-		    $user = array();
-		    $user['first_name'] = $query['first_name'];
-		    $user['last_name'] = $query['last_name'];
-		    $user['email'] = $query['email'];
-		    $user['telephone'] = $query['telephone'];
-		    $user['address1'] = $query['address1'];
-		    $user['address2'] = $query['address2'];
-		    $user['city'] = $query['city'];
-		    $user['country'] = $query['country'];
-		    $user['state'] = $query['state'];
-		    $user['zip'] = $query['zip'];
-		    $user['cartId'] = $query['cartId'];
-
-			$query['custom'] = json_encode($user);
-
-		   // $_SESSION['user'] = $user;
-
-    	//Prepare query string
-    	$query_string = http_build_query($query);
-		return $query_string;
-  		 // header('Location: https://www.paypal.com/cgi-bin/webscr?' . $query_string);
+	//Prepare query string
+	$query_string = http_build_query($query);
+	return $query_string;
 		
 	}
 
@@ -144,13 +134,12 @@ class PIC_Panier{
 			'order_id' => uniqid(),
 			'order_date' => date('d/m/Y'),
 			'user' => $session,
-			'cart' => $this->object_to_array(json_decode(get_post_meta($session['cartId'], 'panier_client', true)))
+			'cart' => $this->object_to_array(json_decode(get_post_meta(intval($session['cartId']), 'panier_client', true)))
 		);
-		//mail("benjamin@cestre.fr", "IPN: check 4 ok", "USER SESSION custom: ".$session, "From: noreply@test.fr");
+		//check price
+
 		/*On vérifie que le panier n'est pas vide*/
 		if (isset($order[$txn]['cart'])){
-			
-			$orders='';
 			
 			$fdp=0;
 			if ( $session['state'] != 'France') $fdp=15;
@@ -172,21 +161,17 @@ class PIC_Panier{
 			require (PIC_SELL_TEMPLATE_DIR . "templateOrders.php");
 			$template = new PIC_Template_Mail();
 
-			//ob_start();
 			$html = $template->templateOrder($order[$txn], $fdp, $txn);
-			//require '../templates_email/oneWeekLeftEmailTemplate.php';
-			//$html = ob_get_clean();
 
 			$message = $html;
-			//$message = "email order...";
-			//require '../templates_email/templateOrders.php';
 
+			//not work with wp_mail() ?? format html ?
 			mail($order[$txn]['user']['email'], 'Commande '.$site_name, $message, $headers );
-
 
 			$config = get_option('config_pic'); 
 			$admin_address_mail = isset($config["config"]["adresse"])?$config["config"]["adresse"]:"";
 			if(!empty($admin_address_mail)){
+				//not work with wp_mail() ?? format html ?
 				mail($admin_address_mail, '[ADMIN/'.$site_name.'] Nouvelle commande! ', $message, $headers );
 			}
 
@@ -194,21 +179,12 @@ class PIC_Panier{
 			$allOrders = get_option('allcommands_pic', serialize(json_encode($defaultOrders)));
 			$allOrders = json_decode(unserialize($allOrders), true);
 
-			if($allOrders == $defaultOrders || $allOrders == false ) {
-				$allOrders["orders"][] = $order;
-				update_option('allcommands_pic', serialize(json_encode($allOrders)));
-				update_post_meta($session['cartId'], 'panier_client', '');
-			}else{				
-				$allOrders["orders"][] = $order;
-				update_option('allcommands_pic', serialize(json_encode($allOrders)));
-				update_post_meta($session['cartId'], 'panier_client', '');					
-					
-			}
-
-			//header('Location: '.get_page_link($session['cartId']).'?merci');
-
+			$allOrders["orders"][] = $order;
+			update_option('allcommands_pic', serialize(json_encode($allOrders)));
+			update_post_meta($session['cartId'], 'panier_client', '');	
+			return true;
 		}else{
-			//header('Location: '.get_home_url());
+			return false;
 		}		
 	}
 
@@ -241,7 +217,6 @@ class PIC_Panier{
 
 						$message = $template->templateOrder($order, $fdp);
 						// exit;
-						//require '../templates_email/templateOrders.php';	
 					}
 				}
 			}
@@ -266,7 +241,7 @@ class PIC_Panier{
 		}
 
 		if(!$message) $message = "<p>Votre numéro de commande est faux...</p>";
-		echo  wp_kses($message, ['p' => array()]);
+		echo $message;
 	}
 
 }

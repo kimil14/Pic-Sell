@@ -383,45 +383,50 @@ class Pic_Sell_Admin
 		$defaultOrders = array("orders"=>[]);
 		$allOrders = get_option('allcommands_pic', serialize(json_encode($defaultOrders)));
 		$allOrders = json_decode(unserialize($allOrders), true);
+		$isOrders = false;
 		if($allOrders == $defaultOrders ) {
-			// Option does not exist
 			$paragraphe = "<p>".__( 'There are no orders at the moment.', 'pic_sell_plugin' )."</p>";
 		} elseif ( $allOrders == false ) {
 			$paragraphe = "<p>".__( 'There are no orders at the moment.', 'pic_sell_plugin' )."</p>";
 			// Option's value is equal to false
 		}else{
 			$paragraphe = "<p>".__( 'Lists orders.', 'pic_sell_plugin' )."</p>";
-			
+			$isOrders = true;
 		}
 
 
 		$html .= "<div class='nav-pic-0'>";
 		$html .= 	"<h1>".__( '<b>all orders</b>.', 'pic_sell_plugin' )."</h1>";
 		$html .= 	$paragraphe;
-		$html .=    "<table>";
-		$html .= 		"<thead>";
-		$html .= 			"<tr>";
-		$html .= 				"<th>".__( '<b>Order ID</b>', 'pic_sell_plugin' )."</th>";
-		$html .= 				"<th>".__( '<b>Order number</b>', 'pic_sell_plugin' )."</th>";
-		$html .= 				"<th>".__( '<b>Order date</b>', 'pic_sell_plugin' )."</th>";
-		$html .= 			"</tr>";
-		$html .= 		"</thead>";
 
-		$html .= 		"<tbody>";
-		
-		foreach($allOrders["orders"] as $key => $order){
-			$html .= "<tr>";
-			$html .= "<td>$key</td>";
-			foreach($order as $number_order => $card){
-				$html .= "<td>$number_order</td>";
-				$html .= "<td>$card[order_date]</td>";
-			}	
-			$html .= "</tr>";
-		}		
+		if($isOrders){
+			$html .=    "<table>";
+			$html .= 		"<thead>";
+			$html .= 			"<tr>";
+			$html .= 				"<th>".__( '<b>Order ID</b>', 'pic_sell_plugin' )."</th>";
+			$html .= 				"<th>".__( '<b>Order number</b>', 'pic_sell_plugin' )."</th>";
+			$html .= 				"<th>".__( '<b>Order date</b>', 'pic_sell_plugin' )."</th>";
+			$html .= 			"</tr>";
+			$html .= 		"</thead>";
 
-		
-		$html .= 		"</tbody>";		
-		$html .=    "</table>";
+			$html .= 		"<tbody>";
+			
+			foreach($allOrders["orders"] as $key => $order){
+				$html .= "<tr>";
+				$html .= "<td>$key</td>";
+				foreach($order as $number_order => $card){
+					$html .= "<td>$number_order</td>";
+					$html .= "<td>$card[order_date]</td>";
+				}	
+				$html .= "</tr>";
+			}		
+
+			
+			$html .= 		"</tbody>";		
+			$html .=    "</table>";			
+		}
+
+
 		$html .= "</div>";
 	
 
@@ -520,8 +525,6 @@ class Pic_Sell_Admin
 				$contents =  ob_get_contents();
 				ob_end_clean();
 				$theme_image_enc_little = base64_encode($contents);
-
-				//$base64 = 'data:' . $genre_media . '/' . $type . ';base64,' . base64_encode($data);
 				$base64 = 'data:' . $genre_media . '/' . $type . ';base64,' .$theme_image_enc_little;
 			} 
 
@@ -533,8 +536,8 @@ class Pic_Sell_Admin
 			$html .= 		"<td class='ps_choice'>";
 			$html .= 			"<select class='ps_choice_image_select' name='gallery[choice][]'>";
 			$html .= 				"<option value='select'>" . __('Select media option', 'pic_sell_plugin') . "</option>";
-			$html .= 				"<option value='image' ".(("image" == $value['choice'][$i]) ? 'selected':'').">" . __('Image', 'pic_sell_plugin') . "</option>";
-			$html .= 				"<option value='video' ".(("video" == $value['choice'][$i]) ? 'selected':'').">" . __('Video', 'pic_sell_plugin') . "</option>";
+			$html .= 				"<option value='image' ".(("image" == esc_html($value['choice'][$i])) ? 'selected':'').">" . __('Image', 'pic_sell_plugin') . "</option>";
+			$html .= 				"<option value='video' ".(("video" == esc_html($value['choice'][$i])) ? 'selected':'').">" . __('Video', 'pic_sell_plugin') . "</option>";
 			$html .= 			"</select>";
 			$html .= 		"</td>";
 			$html .= 		"<td class='ps_media'>";
@@ -589,12 +592,13 @@ class Pic_Sell_Admin
 
 			echo "<table id='field_wrap'>";
 
-			echo "	<col width=5% />
+			/*echo "	<col width=5% />
 								<col width=20% />
 								<col width=20% />
 								<col width=20% />
 								<col width=20% />
-								<col width=15% />";
+								<col width=15% />";*/
+			echo "<thead>";
 
 			echo "<tr class='tr_head'>
 								<th scope='col'>" . __('Classement', 'pic_sell_plugin') . "</th>
@@ -604,12 +608,15 @@ class Pic_Sell_Admin
 								<th scope='col'>" . __('Description', 'pic_sell_plugin') . "</th>
 								<th scope='col'>" . __('Actions', 'pic_sell_plugin') . "</th>
 							</tr>";
+			echo "</thead>";
 
+			echo "<tbody>";
 			if (isset($gallery_data['media_dir'])) {
 				for ($i = 0; $i < count($gallery_data['media_dir']); $i++) {
 					echo $gallery_field($i, $gallery_data);
 				}
 			}
+			echo "</tbody>";
 
 			echo "</table>";
 
@@ -666,7 +673,7 @@ class Pic_Sell_Admin
 				echo "<div id='wrap-emails-clients'>";
 				if (isset($email_client) && !empty($email_client)) {
 					for ($i = 0; $i < count($email_client); $i++) {
-						echo '<input type="text" name="espaceprive_email_client[]" value="' . esc_attr($email_client[$i]) . '" />';
+						echo '<input type="text" name="espaceprive_email_client[]" value="' . esc_html($email_client[$i]) . '" />';
 					}
 				}
 				echo "</div>";
@@ -698,34 +705,24 @@ class Pic_Sell_Admin
 
 				echo "</div>";
 
-				echo '<input type="hidden" name="espaceprive_panier_client" value="' . esc_attr($panier_client) . '" />';
-
-				
+				echo '<input type="hidden" name="espaceprive_panier_client" value="' . pic_esc_json($panier_client) . '" />';
 
 			echo "</div>";
-
-
-
-			
+	
 			
 		};
 		new Pic_Sell_Custom_Fields("espaceprive", "section_space", __('Private space', 'pic_sell_plugin'), $callback);
 
 
-
-		//new Pic_Sell_Custom_Fields("espaceprive", "section_gallery_send", __('Send Gallery', 'pic_sell_plugin'), $callback_gallery_send);
-		//$callback_gallery_send;
-
-
-
 		/**
 		 * OFFRES
 		 */
-		$offer_price_field = function ($i, $value) {
+		$classement_base = 1; //classement de base si inexistant ou incorrect
+		$offer_price_field = function ($i, $value) use($classement_base) {
 
 			$html = "";
 
-			$bmedia = wp_upload_dir()["basedir"] . $value['media'][$i];
+			$bmedia = wp_upload_dir()["basedir"] . esc_html($value['media'][$i]);
 
 			$type = pathinfo($bmedia, PATHINFO_EXTENSION);
 
@@ -747,30 +744,43 @@ class Pic_Sell_Admin
 				foreach($category as $cat){
 					$term_id = $cat->term_id;
 					$term_name = $cat->name;
-					$val_cat = $value['cat'][$i];
+					$val_cat = esc_html($value['cat'][$i]);
 					$cats_modele .= "<option value='".$term_id."' " .(($term_id == $val_cat) ? 'selected':''). ">".$term_name."</option>";
 				}
+			}
+			$classement = intval( $value['classement'][$i] );
+			if ( ! $classement ) {
+				$classement = $classement_base;
+				$classement_base++;
+			}
+			$quantity = intval( $value['quantity'][$i]);
+			if ( ! $quantity ) {
+				$quantity = 10;
+			}
+			$price = floatval( $value['price'][$i] );
+			if ( ! $price ) {
+				$price = 10;
 			}
 
 			$html .= 	"<tr>";
 			$html .= 		"<td class='ps_classement'>";
 			$html .= 			"<span class='ps_classement_span'></span>";
-			$html .= 			"<input type='hidden' class='ps_classement_input' name='offer[classement][]' value='" . esc_html($value['classement'][$i]) . "' />";
+			$html .= 			"<input type='hidden' class='ps_classement_input' name='offer[classement][]' value='" . $classement . "' />";
 			$html .= 		"</td>";
 			$html .= 		"<td class='ps_media_title'>";
 			$html .= 			"<input type='text' class='ps_media_title' name='offer[title][]' value='" . esc_html($value['title'][$i]) . "' />";
 			$html .= 		"</td>";
 			$html .= 		"<td class='ps_quantity'>";
-			$html .= 			"<input type='number' class='ps_quantity' name='offer[quantity][]' step='1' value='" . esc_html($value['quantity'][$i]) . "' />";
+			$html .= 			"<input type='number' class='ps_quantity' name='offer[quantity][]' step='1' value='" . $quantity . "' />";
 			$html .= 		"</td>";
 			$html .= 		"<td class='ps_price'>";
-			$html .= 			"<input type='number' class='ps_price' name='offer[price][]' step='.01' value='" . esc_html($value['price'][$i]) . "' />";
+			$html .= 			"<input type='number' class='ps_price' name='offer[price][]' step='.01' value='" . $price . "' />";
 			$html .= 		"</td>";
 			$html .= 		"<td class='ps_choice'>";
 			$html .= 			"<select class='ps_choice_image_select' name='offer[choice_media][]'>";
 			$html .= 				"<option value='select'>" . __('Select media option', 'pic_sell_plugin') . "</option>";
-			$html .= 				"<option value='image' " .(("image" == $value['choice_media'][$i]) ? 'selected':''). ">" . __('Image', 'pic_sell_plugin') . "</option>";
-			$html .= 				"<option value='video' " .(("video" == $value['choice_media'][$i]) ? 'selected':''). ">" . __('Video', 'pic_sell_plugin') . "</option>";
+			$html .= 				"<option value='image' " .(("image" == esc_html($value['choice_media'][$i])) ? 'selected':''). ">" . __('Image', 'pic_sell_plugin') . "</option>";
+			$html .= 				"<option value='video' " .(("video" == esc_html($value['choice_media'][$i])) ? 'selected':''). ">" . __('Video', 'pic_sell_plugin') . "</option>";
 			$html .= 			"</select>";
 			$html .= 		"</td>";
 			$html .= 		"<td class='ps_media'>";
@@ -841,7 +851,7 @@ class Pic_Sell_Admin
 
 			if (isset($offer_price['classement'])) {
 				for ($i = 0; $i < count($offer_price['classement']); $i++) {
-					echo $offer_price_field($i, $offer_price);
+					echo ($offer_price_field($i, $offer_price));
 				}
 			}
 
@@ -849,7 +859,6 @@ class Pic_Sell_Admin
 
 			echo "<input class='button button-primary ps_add_tr' type='button' value='" . __('Add offer', 'pic_sell_plugin') . "' onclick='add_field_row_offer();' />";
 			echo "</div>";
-
 
 			$category = $this->get_cat_by_type_post("offre", "offre_category");
 			$cats_modele = "";
@@ -877,7 +886,7 @@ class Pic_Sell_Admin
 			$modele .= 				"<input type='number' class='ps_quantity' name='offer[quantity][]' step='1' value='' />";
 			$modele .= 			"</modele_td>";
 			$modele .= 			"<modele_td class='ps_price'>";
-			$modele .= 				"<input type='number' class='ps_price' name='offer[price][]' value='' />";
+			$modele .= 				"<input type='number' class='ps_price' name='offer[price][]' step='.01' value='' />";
 			$modele .= 			"</modele_td>";
 			$modele .= 			"<modele_td class='ps_choice'>";
 			$modele .= 				"<select class='ps_choice_image_select' name='offer[choice_media][]'>";
@@ -925,10 +934,11 @@ class Pic_Sell_Admin
 			echo "</div>";
 		};
 		new Pic_Sell_Custom_Fields("offre", "section_offre_default", __('Default pack', 'pic_sell_plugin'), $callback_offer_default);
+
 	}
+
 	public function save_post_meta_box_offer($post_id)
 	{
-		//print_r($_POST);
 		if (!isset($_POST['offer_meta_box_nonce'])) {
 			return;
 		}
@@ -969,16 +979,29 @@ class Pic_Sell_Admin
 		if ($_POST['offer']) {
 			// construction du tableau pour la sauvegarde des données
 			$offer_data = array();
+
 			for ($i = 0; $i < count($_POST['offer']['classement']); $i++) {
 				if ('' != $_POST['offer']['classement'][$i]) {
-					$offer_data['classement'][]  = $_POST['offer']['classement'][$i];
-					$offer_data['media'][]  = $_POST['offer']['media'][$i];
-					$offer_data['choice_media'][]  = $_POST['offer']['choice_media'][$i];
-					$offer_data['title'][]  = $_POST['offer']['title'][$i];
-					$offer_data['desc'][] = $_POST['offer']['desc'][$i];
-					$offer_data['quantity'][] = $_POST['offer']['quantity'][$i];
-					$offer_data['price'][] = $_POST['offer']['price'][$i];
-					$offer_data['cat'][] = $_POST['offer']['cat'][$i];
+
+					$classement = intval( $_POST['offer']['classement'][$i] );
+					$quantity = intval( $_POST['offer']['quantity'][$i] );
+					if ( ! $quantity ) {
+						$quantity = 1;
+					}
+
+					$price = floatval( $_POST['offer']['price'][$i] );
+					if ( ! $price ) {
+						$price = 10;
+					}
+
+					$offer_data['classement'][]  = $classement;
+					$offer_data['media'][]  = sanitize_text_field($_POST['offer']['media'][$i]);
+					$offer_data['choice_media'][]  = sanitize_text_field($_POST['offer']['choice_media'][$i]); //image ou video
+					$offer_data['title'][]  = sanitize_text_field($_POST['offer']['title'][$i]);
+					$offer_data['desc'][] = sanitize_text_field($_POST['offer']['desc'][$i]);
+					$offer_data['quantity'][] = $quantity;
+					$offer_data['price'][] = $price;
+					$offer_data['cat'][] = sanitize_text_field($_POST['offer']['cat'][$i]);
 				}
 			}
 
@@ -996,7 +1019,7 @@ class Pic_Sell_Admin
 
 	public function save_post_meta_box($post_id)
 	{
-		//print_r($_POST);
+
 		if (!isset($_POST['espaceprive_meta_box_nonce'])) {
 			return;
 		}
@@ -1027,7 +1050,7 @@ class Pic_Sell_Admin
 			$email_data = array();
 			for ($i = 0; $i < count($_POST['espaceprive_email_client']); $i++) {
 				if ('' != $_POST['espaceprive_email_client'][$i]) {
-					$email_data[]  = $_POST['espaceprive_email_client'][$i];
+					$email_data[]  = sanitize_text_field($_POST['espaceprive_email_client'][$i]);
 				}
 			}
 
@@ -1039,46 +1062,20 @@ class Pic_Sell_Admin
 		// si rien, supprimer les options
 		else {
 			delete_post_meta($post_id, '_email_client');
-		}
-
-		if ($_POST['espaceprive_panier_client']) {
-			// construction du tableau pour la sauvegarde des données
-			$panier_client  = $_POST['espaceprive_panier_client'];
-
-			if ($panier_client)
-				update_post_meta($post_id, 'panier_client', $panier_client);
-			else
-				delete_post_meta($post_id, 'panier_client');
-		}
-		// si rien, supprimer les options
-		else {
-			delete_post_meta($post_id, 'panier_client');
-		}
-
-		if ($_POST['espaceprive_produit_client']) {
-			// construction du tableau pour la sauvegarde des données
-			$produit_client  = $_POST['espaceprive_produit_client'];
-
-			if ($produit_client && $produit_client != "select")
-				update_post_meta($post_id, 'produit_client', $produit_client);
-			else
-				delete_post_meta($post_id, 'produit_client');
-		}
-		// si rien, supprimer les options
-		else {
-			delete_post_meta($post_id, 'produit_client');
-		}
+		}	
 
 		if ($_POST['gallery']) {
 			// construction du tableau pour la sauvegarde des données
 			$gallery_data = array();
 			for ($i = 0; $i < count($_POST['gallery']['media_dir']); $i++) {
 				if ('' != $_POST['gallery']['media_dir'][$i]) {
-					$gallery_data['classement'][] = $_POST['gallery']['classement'][$i];
-					$gallery_data['media_dir'][]  = $_POST['gallery']['media_dir'][$i];
-					$gallery_data['media_title'][]  = $_POST['gallery']['media_title'][$i];
-					$gallery_data['media_desc'][] = $_POST['gallery']['media_desc'][$i];
-					$gallery_data['choice'][] = $_POST['gallery']['choice'][$i];
+
+					$classement = intval( $_POST['gallery']['classement'][$i] );
+					$gallery_data['classement'][] = $classement;
+					$gallery_data['media_dir'][]  = sanitize_text_field($_POST['gallery']['media_dir'][$i]);
+					$gallery_data['media_title'][]  = sanitize_text_field($_POST['gallery']['media_title'][$i]);
+					$gallery_data['media_desc'][] = sanitize_text_field($_POST['gallery']['media_desc'][$i]);
+					$gallery_data['choice'][] = sanitize_text_field($_POST['gallery']['choice'][$i]);
 				}
 			}
 
@@ -1094,7 +1091,7 @@ class Pic_Sell_Admin
 
 		if ($_POST['espaceprive_produit_client']) {
 			// construction du tableau pour la sauvegarde des données
-			$produit_client  = $_POST['espaceprive_produit_client'];
+			$produit_client  = sanitize_text_field($_POST['espaceprive_produit_client']);
 
 			if ($produit_client && $produit_client != "select")
 				update_post_meta($post_id, 'produit_client', $produit_client);
@@ -1110,7 +1107,7 @@ class Pic_Sell_Admin
 
 		if ($_POST['espaceprive_date_left']) {
 			// construction du tableau pour la sauvegarde des données
-			$date_left  = $_POST['espaceprive_date_left'];
+			$date_left  = sanitize_text_field($_POST['espaceprive_date_left']);
 
 			if ($date_left)
 				update_post_meta($post_id, '_date_left', $date_left);
@@ -1127,16 +1124,22 @@ class Pic_Sell_Admin
 
 	}
 
+	
 	/**
 	 * AJAX
 	 */
 	public function pic_template_sent_gallery(){
 		//global $post;
 
-		$action = $_POST['act'];
+		$action = sanitize_text_field($_POST['act']);
+
+		$post_id = intval($_POST['post_id']);
+		if(!$post_id){
+			exit();
+		}
 
 		if($action == "step_1"){
-			$date_left = get_post_meta($_POST['post_id'], '_date_left', true);
+			$date_left = get_post_meta($post_id, '_date_left', true);
 			if(empty($date_left)){ $date_left = date('Y-m-d', strtotime('+1 month +1 days'));}
 			$dates_select = [];
 			//days
@@ -1151,8 +1154,8 @@ class Pic_Sell_Admin
 			}
 
 			//sended
-			$sended = get_post_meta($_POST['post_id'], '_gallery_send', true);
-			$date_sent = get_post_meta($_POST['post_id'], '_gallery_send_date', true);
+			$sended = get_post_meta($post_id, '_gallery_send', true);
+			$date_sent = get_post_meta($post_id, '_gallery_send_date', true);
 
 			if(empty($sended)){ $sended = false;}
 
@@ -1172,7 +1175,7 @@ class Pic_Sell_Admin
 						}
 					}
 			$html .= 		"</select>";
-			$html .= "date de fin: ".$date_left;
+			$html .= "<p>".__('End date: ', 'pic_sell_plugin').$date_left."</p>";
 
 			$html .= 		'<label for="espaceprive_date_sended">';
 			$html .=			__('Gallery Sent', 'pic_sell_plugin');
@@ -1191,18 +1194,16 @@ class Pic_Sell_Admin
 			$html .= 	"</div>";
 				
 			$html .= "</div>";
-
 			echo $html;
 			exit();			
 		}
 		else if($action = "step_2"){
 
-			$emails = stripslashes_deep($_POST["emails"]);
+			$emails = sanitize_text_field($_POST["emails"]);
 			//$emails .= ", test-3qtezve9f@srv1.mail-tester.com";
-			$sent = stripslashes_deep($_POST["sent"]);
-			$date_left = $_POST["date_left"];
-			$post_id =  stripslashes_deep($_POST['post_id']);
-			$post_password =  stripslashes_deep($_POST['post_password']);
+			$sent = sanitize_text_field($_POST["sent"]);
+			$date_left = sanitize_text_field($_POST["date_left"]);
+			$post_password =  sanitize_text_field($_POST['post_password']);
 			$post = get_post($post_id);
 
 			$urlparts = parse_url(home_url());
@@ -1251,11 +1252,10 @@ class Pic_Sell_Admin
 				wp_mail($admin_address_mail, '[ADMIN/'.$site_name.'] Une galerie est disponible! ', $message, $headers );
 			}
 
-			update_post_meta($_POST['post_id'], '_gallery_send', true);
+			update_post_meta($post_id, '_gallery_send', true);
 
-			update_post_meta($_POST['post_id'], '_gallery_send_date', date("d M Y"));
+			update_post_meta($post_id, '_gallery_send_date', date("d M Y"));
 
-			
 			echo "<p>".__("Email Send Succefully","pic_sell_plugin")."</p>";
 			exit();		
 
@@ -1267,8 +1267,12 @@ class Pic_Sell_Admin
 	public function fiu_upload_file_video()
 	{
 
-		$post_id = $_POST['post_id'];
-		$filename = $_POST['filename'];
+		$post_id = intval($_POST['post_id']);
+		$filename = sanitize_text_field($_POST['filename']);
+
+		if(!$post_id){
+			exit();
+		}
 
 		/* Location */
 		$basedir = wp_upload_dir();
@@ -1285,9 +1289,8 @@ class Pic_Sell_Admin
 
 		$file_data     = $this->decode_chunk($_POST['video']);
 
-		$response = "echec1";
-
 		if (false === $file_data) {
+			$response[] = "err1"; //no valid base64 POST
 			echo json_encode($response);
 			exit();
 		}
@@ -1297,8 +1300,7 @@ class Pic_Sell_Admin
 		/* Valid extensions */
 		$valid_extensions = array("mp4");
 
-		$response = "echec2";
-
+		$response[] = "err2"; //error extension
 		/* Check file extension */
 		if (in_array(strtolower($imageFileType), $valid_extensions)) {
 
@@ -1334,9 +1336,12 @@ class Pic_Sell_Admin
 		if (isset($_FILES['file']['name'])) {
 
 			/* Getting file name */
-			$filename = $_FILES['file']['name'];
-			$post_title = $_POST['post_title'];
-			$post_id = $_POST['post_id'];
+			$filename = ($_FILES['file']['name']);
+			$post_id = intval($_POST['post_id']);
+
+			if(!$post_id){
+				exit();
+			}
 
 			/* Location */
 			$basedir = wp_upload_dir();
@@ -1391,8 +1396,8 @@ class Pic_Sell_Admin
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/pic-sell-admin.css', array(), $this->version, 'all');
 
 		global $wp_scripts; 
-		//wp_enqueue_style("wp-jquery-ui-dialog");
-		wp_enqueue_style("jquery-ui-css", "https://ajax.googleapis.com/ajax/libs/jqueryui/{$wp_scripts->registered['jquery-ui-core']->ver}/themes/ui-lightness/jquery-ui.min.css");
+
+		wp_enqueue_style("wp-jquery-ui-dialog");
 
 		/**CUSTOM TYPE espaceprive only */
 		if (isset($post) && 'espaceprive' == $post->post_type) {

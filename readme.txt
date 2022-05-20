@@ -18,9 +18,9 @@ Download the extension from the official WordPress repository, upload it to your
 2. private gallery page
 
 == Changelog ==
-== 1.2.0 ==
+== 1.0.3 ==
 Fixes a security related bug.
 
 == Upgrade Notice ==
-== 1.2.0 ==
+== 1.0.3 ==
 This version fixes a security related bug.  Upgrade immediately.

@@ -1,20 +1,19 @@
 <?php
 
-//$content = trim(file_get_contents("php://input"));
-
-//$data = json_decode($content, true);
-//$data['success'] = true;
-
+$url="";
 if (!empty($_POST)) {
-    $data = stripslashes_deep($_POST);
-  }
-  else {
+    $url = $_POST["url"];
+}else {
   //  $data = json_decode(stripslashes(file_get_contents("php://input")), true);
-  $data["url"] = stripslashes($_GET["url"]);
+    $url = $_GET["url"];
+}
+
+if(is_file($url)){
+    require "class-pic-sell-stream.php";
+    $stream = new PIC_VideoStream($url);
+    $stream->start();
+    exit();
+  }else{
+    die("This file not exist.");
   }
 
-require "class-pic-sell-stream.php";
-
-$stream = new PIC_VideoStream($data['url']);
-$stream->start();
-exit();

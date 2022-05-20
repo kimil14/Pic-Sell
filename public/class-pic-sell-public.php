@@ -67,8 +67,6 @@ class Pic_Sell_Public
 			add_action('picsell_cron_task', array($this, 'scheduled_task'));
 		}
 	
-		
-	
 	}
 
 
@@ -193,7 +191,7 @@ class Pic_Sell_Public
 	} 
 
 	function post_app(){
-		$request = $_POST["act"];
+		$request = sanitize_text_field($_POST["act"]);
 		
 		require(PIC_SELL_PATH_INC . "app/panier.php");
 		
@@ -201,7 +199,7 @@ class Pic_Sell_Public
 
 			case "/img/base64/":
 				set_time_limit(0);
-				$img = $_POST["img"];
+				$img = sanitize_text_field($_POST["img"]);
 				$bmedia = $img;
 
 				$type = pathinfo($bmedia, PATHINFO_EXTENSION);
