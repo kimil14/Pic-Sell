@@ -1,4 +1,10 @@
 <?php
+
+// don't load directly
+if ( ! defined( 'ABSPATH' ) ) {
+	die( '-1' );
+}
+
 /**
  * Description of VideoStream
  *
@@ -50,7 +56,7 @@ class PIC_VideoStream
             $c_start = $this->start;
             $c_end = $this->end;
  
-            list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
+            list(, $range) = explode('=', sanitize_text_field($_SERVER['HTTP_RANGE']), 2);
             if (strpos($range, ',') !== false) {
                 header('HTTP/1.1 416 Requested Range Not Satisfiable');
                 header("Content-Range: bytes $this->start-$this->end/$this->size");
@@ -107,7 +113,7 @@ class PIC_VideoStream
                 $bytesToRead = $this->end - $i + 1;
             }
             $data = fread($this->stream, $bytesToRead);
-            echo $data;
+            echo ($data); // sanitize not work byte
             flush();
             $i += $bytesToRead;
         }

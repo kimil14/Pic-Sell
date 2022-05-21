@@ -496,7 +496,7 @@ class Pic_Sell_Admin
 
 			$html = "";
 
-			$bmedia = wp_upload_dir()["basedir"] . $value['media_dir'][$i];
+			$bmedia = wp_upload_dir()["basedir"] . esc_html($value['media_dir'][$i]);
 
 
 			$type = pathinfo($bmedia, PATHINFO_EXTENSION);
@@ -544,7 +544,7 @@ class Pic_Sell_Admin
 			if ($genre_media == "image") {
 				$html .= 		"<img src='" . $base64 . "' class='ps_display_image' style='width:auto;max-height:140px;display:block;' />";
 			} else if ($genre_media == "video") {
-				$html .= 		"<video  controls width='250' oncontextmenu='return false;' controlsList='nodownload' class='ps_display_video buffer' style='max-width:95%;display:block;'>
+				$html .= 		"<video  controls width='200' oncontextmenu='return false;' controlsList='nodownload' class='ps_display_video buffer' style='max-width:95%;display:block;'>
 										<source data-url='" . $bmedia . "' src='".PIC_SELL_URL_INC."pic-sell-handlerStream.php?url=" . $bmedia . "' type='video/mp4'>
 										Sorry, your browser doesn't support embedded videos.
 									</video>";
@@ -582,46 +582,40 @@ class Pic_Sell_Admin
 
 			$date_left = get_post_meta($post->ID, '_date_left', true);
 
-			echo "<div class='dynamic_form'>";
+			$output = "";
 
-			echo '<label for="field_wrap">';
-			_e('Gallery', 'pic_sell_plugin');
-			echo '</label> ';
+			$output .= "<div class='dynamic_form'>";
 
-			echo "<div>";
+			$output .= '<label for="field_wrap">';
+			$output .= 		__('Gallery', 'pic_sell_plugin');
+			$output .= '</label> ';
 
-			echo "<table id='field_wrap'>";
 
-			/*echo "	<col width=5% />
-								<col width=20% />
-								<col width=20% />
-								<col width=20% />
-								<col width=20% />
-								<col width=15% />";*/
-			echo "<thead>";
+			$output .= "<table id='field_wrap'>";
 
-			echo "<tr class='tr_head'>
-								<th scope='col'>" . __('Classement', 'pic_sell_plugin') . "</th>
-								<th scope='col'>" . __('Type media', 'pic_sell_plugin') . "</th>
-								<th scope='col'>" . __('Media', 'pic_sell_plugin') . "</th>
-								<th scope='col'>" . __('Title', 'pic_sell_plugin') . "</th>
-								<th scope='col'>" . __('Description', 'pic_sell_plugin') . "</th>
-								<th scope='col'>" . __('Actions', 'pic_sell_plugin') . "</th>
-							</tr>";
-			echo "</thead>";
+			$output .= 		"<thead>";
+			$output .= 			"<tr class='tr_head'>
+									<th scope='col'>" . __('Classement', 'pic_sell_plugin') . "</th>
+									<th scope='col'>" . __('Type media', 'pic_sell_plugin') . "</th>
+									<th scope='col'>" . __('Media', 'pic_sell_plugin') . "</th>
+									<th scope='col'>" . __('Title', 'pic_sell_plugin') . "</th>
+									<th scope='col'>" . __('Description', 'pic_sell_plugin') . "</th>
+									<th scope='col'>" . __('Actions', 'pic_sell_plugin') . "</th>
+								</tr>";
 
-			echo "<tbody>";
-			if (isset($gallery_data['media_dir'])) {
-				for ($i = 0; $i < count($gallery_data['media_dir']); $i++) {
-					echo $gallery_field($i, $gallery_data);
-				}
-			}
-			echo "</tbody>";
+			$output .= 		"</thead>";
 
-			echo "</table>";
+			$output .= 		"<tbody>";
+					if (isset($gallery_data['media_dir'])) {
+						for ($i = 0; $i < count($gallery_data['media_dir']); $i++) {
+							$output .= $gallery_field($i, $gallery_data);
+						}
+					}
+			$output .= 		"</tbody>";
 
-			echo "<input class='button button-primary ps_add_tr' type='button' value='" . __('Add field', 'pic_sell_plugin') . "' onclick='add_field_row();' />";
-			echo "</div>";
+			$output .= "</table>";
+
+			$output .= "<input class='button button-primary ps_add_tr' type='button' value='" . __('Add field', 'pic_sell_plugin') . "' onclick='add_field_row();' />";
 
 			/**
 			 * MODELE LIGNE TABLEAU
@@ -662,54 +656,58 @@ class Pic_Sell_Admin
 			$modele .= 			"</modele_td>";
 			$modele .= 		"</modele_tr>";
 			$modele .= 	"</div>";
-			echo $modele;
+			$output .= $modele;
 
-			echo '<input type="hidden" name="espaceprive_date_left" id="espaceprive_date_left_rec" value="'.(empty($date_left)?date('Y-m-d', strtotime('+1 month +1 days')):$date_left).'" />';
+			$output .= '<input type="hidden" name="espaceprive_date_left" id="espaceprive_date_left_rec" value="'.(empty($date_left)?date('Y-m-d', strtotime('+1 month +1 days')):$date_left).'" />';
 
-				echo '<label for="espaceprive_email_client">';
-				_e('Adress email', 'pic_sell_plugin');
-				echo '</label>';
+			$output .= '<label for="espaceprive_email_client">';
+			$output .=		__('Adress email', 'pic_sell_plugin');
+			$output .= '</label>';
 
-				echo "<div id='wrap-emails-clients'>";
-				if (isset($email_client) && !empty($email_client)) {
-					for ($i = 0; $i < count($email_client); $i++) {
-						echo '<input type="text" name="espaceprive_email_client[]" value="' . esc_html($email_client[$i]) . '" />';
-					}
+			$output .= "<div id='wrap-emails-clients'>";
+			if (isset($email_client) && !empty($email_client)) {
+				for ($i = 0; $i < count($email_client); $i++) {
+					$output .= '<input type="text" name="espaceprive_email_client[]" value="' . esc_html($email_client[$i]) . '" />';
 				}
-				echo "</div>";
-				echo "<input class='button button-primary ps_add_email' type='button' value='" . __('Add adress mail', 'pic_sell_plugin') . "' onclick='add_field_email();' />";
-				
-				echo "<div id='wrap-produit-clients'>";
+			}
+			$output .= "</div>";
 
-					echo '<label for="espaceprive_produit_client">';
-						_e('Choice pack offers', 'pic_sell_plugin');
-					echo '</label>';					
-					
-					$args = array(
-							'post_type'        => 'offre',
-							'post_status'     => 'publish'
-					);
-					$products = get_posts( $args );
-					echo "<select name='espaceprive_produit_client' id='espaceprive_produit_client'>";
-						echo "<option value='select'>" . __('Select pack offers', 'pic_sell_plugin') . "</option>";
-
-						if(isset($products) && !empty($products)){
-							foreach($products as $product){
-								$id = $product->ID;
-								$name = $product->post_title;
-								$val_cat = $produit;
-								echo "<option value='".$id."' " .(($id == $val_cat) ? 'selected':''). ">".$name."</option>";
-							}
-						}
-					echo "</select>";
-
-				echo "</div>";
-
-				echo '<input type="hidden" name="espaceprive_panier_client" value="' . pic_esc_json($panier_client) . '" />';
-
-			echo "</div>";
-	
+			$output .= "<input class='button button-primary ps_add_email' type='button' value='" . __('Add adress mail', 'pic_sell_plugin') . "' onclick='add_field_email();' />";
 			
+			$output .= "<div id='wrap-produit-clients'>";
+
+			$output .= 		'<label for="espaceprive_produit_client">';
+			$output .=			__('Choice pack offers', 'pic_sell_plugin');
+			$output .= 		'</label>';					
+				
+			$args = array(
+					'post_type'        => 'offre',
+					'post_status'     => 'publish'
+			);
+
+			$products = get_posts( $args );
+			$output .= 		"<select name='espaceprive_produit_client' id='espaceprive_produit_client'>";
+			$output .= 			"<option value='select'>" . __('Select pack offers', 'pic_sell_plugin') . "</option>";
+
+			if(isset($products) && !empty($products)){
+				foreach($products as $product){
+					$id = $product->ID;
+					$name = $product->post_title;
+					$val_cat = $produit;
+					$output .= 	"<option value='".$id."' " .(($id == $val_cat) ? 'selected':''). ">".$name."</option>";
+				}
+			}
+
+			$output .= 		"</select>";
+
+			$output .= "</div>";
+
+			$output .= 		'<input type="hidden" name="espaceprive_panier_client" value="' . pic_esc_json($panier_client) . '" />';
+
+			$output .= "</div>";	
+			
+			echo $output;	//echo wp_kses_post($output);	//echo wp_kses($output, _prefix_allowed_tags_all());	//NOT WORK  //SOLUTION?
+
 		};
 		new Pic_Sell_Custom_Fields("espaceprive", "section_space", __('Private space', 'pic_sell_plugin'), $callback);
 
@@ -817,27 +815,27 @@ class Pic_Sell_Admin
 
 			$offer_price = get_post_meta($post->ID, '_offer_data', true);
 
-			echo "<div id='dynamic_form'>";
+			$output = "<div id='dynamic_form'>";
 
-			echo '<label for="offers">';
-			_e('Offers', 'pic_sell_plugin');
-			echo '</label>';
+			$output .= '<label for="offers">';
+			$output .=		__('Offers', 'pic_sell_plugin');
+			$output .= '</label>';
 
-			echo "<div>";
+			$output .= "<div>";
 
-			echo "<table id='field_wrap'>";
+			$output .= "<table id='field_wrap'>";
 
-			echo "	<col width=3% />
-					<col width=12% />
-					<col width=10% />
-					<col width=10% />
-					<col width=10% />
-					<col width=15% />
-					<col width=20% />
-					<col width=10% />
-					<col width=10% />";
+			$output .= "	<col width=3% />
+							<col width=12% />
+							<col width=10% />
+							<col width=10% />
+							<col width=10% />
+							<col width=15% />
+							<col width=20% />
+							<col width=10% />
+							<col width=10% />";
 
-			echo "<tr class='tr_head'>
+			$output .= "<tr class='tr_head'>
 								<th scope='col'>" . __('Classement', 'pic_sell_plugin') . "</th>
 								<th scope='col'>" . __('Title', 'pic_sell_plugin') . "</th>								
 								<th scope='col'>" . __('Quantity', 'pic_sell_plugin') . "</th>
@@ -847,18 +845,18 @@ class Pic_Sell_Admin
 								<th scope='col'>" . __('Description', 'pic_sell_plugin') . "</th>
 								<th scope='col'>" . __('Catégorie', 'pic_sell_plugin') . "</th>
 								<th scope='col'>" . __('Actions', 'pic_sell_plugin') . "</th>
-							</tr>";
+						</tr>";
 
 			if (isset($offer_price['classement'])) {
 				for ($i = 0; $i < count($offer_price['classement']); $i++) {
-					echo ($offer_price_field($i, $offer_price));
+					$output .= ($offer_price_field($i, $offer_price));
 				}
 			}
 
-			echo "</table>";
+			$output .= "</table>";
 
-			echo "<input class='button button-primary ps_add_tr' type='button' value='" . __('Add offer', 'pic_sell_plugin') . "' onclick='add_field_row_offer();' />";
-			echo "</div>";
+			$output .= "<input class='button button-primary ps_add_tr' type='button' value='" . __('Add offer', 'pic_sell_plugin') . "' onclick='add_field_row_offer();' />";
+			$output .= "</div>";
 
 			$category = $this->get_cat_by_type_post("offre", "offre_category");
 			$cats_modele = "";
@@ -920,18 +918,24 @@ class Pic_Sell_Admin
 			$modele .= 			"</modele_td>";
 			$modele .= 		"</modele_tr>";
 			$modele .= 	"</div>";
-			echo $modele;
+			$output .= $modele;
 
-			echo "</div>"; //dynamic form
+			$output .= "</div>"; //dynamic form
+
+			echo $output;  //echo wp_kses($output, _prefix_allowed_tags_all());
+			
 
 		};
 		new Pic_Sell_Custom_Fields("offre", "section_offre", __('The offer', 'pic_sell_plugin'), $callback_offer);
 		
 		$callback_offer_default = function($post){
 			$pack_offer_default = get_post_meta($post->ID, '_pack_offer_default', true);
-			echo "<div id='wrap-pack-offer-default'>";
-			echo 	'Default: <input type="checkbox" name="pack_offer_default" '.($pack_offer_default?"checked":"").' />';
-			echo "</div>";
+			$output = "";
+			$output .= "<div id='wrap-pack-offer-default'>";
+			$output .= 	'Default: <input type="checkbox" name="pack_offer_default" '.($pack_offer_default?"checked":"").' />';
+			$output .= "</div>";
+
+			echo wp_kses($output, _prefix_allowed_tags_all());
 		};
 		new Pic_Sell_Custom_Fields("offre", "section_offre_default", __('Default pack', 'pic_sell_plugin'), $callback_offer_default);
 

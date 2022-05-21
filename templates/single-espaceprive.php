@@ -4,16 +4,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-
 _get_header();
 
 $the_post = get_post(get_the_ID());
 $password = trim($the_post->post_password);
-
-
-
-
-//echo get_post_meta(get_the_ID(), 'panier_client', true);
 
 ///////////////////////////////////DISPLAY SHOOTING PRODUCTS/////////////////////////////////
 
@@ -261,8 +255,8 @@ if (!post_password_required() ) {
       <form action="#" method="post"  class="form_checkout">
       
       <input type="hidden" name="cartId" value="<?php echo get_the_ID(); ?>">
-      <input type="hidden" name="password" value="<?php echo $password; ?>">
-      <input type="hidden" name="id_pack" value="<?php echo $pack_offers; ?>">
+      <input type="hidden" name="password" value="<?php echo sanitize_text_field($password) ?>">
+      <input type="hidden" name="id_pack" value="<?php echo intval(sanitize_text_field($pack_offers)); ?>">
       
       <input type="hidden" name="etat" value="France">
       <h2>Adresse de livraison</h2>
@@ -331,12 +325,8 @@ if (!post_password_required() ) {
 
 
 <?php 
-echo $contenu;
-//echo $script;
+echo wp_kses_post($contenu);
 ?>
-
-
-
 
 <!-- Panier -->
 <div class="panier">
@@ -351,13 +341,11 @@ echo $contenu;
   </div>
   <div class="panier_recap">
     <p class="montant">Montant: 120 €</p>
-    <!-- <form action="/adresse-de-livraison/" method="POST"> -->
       <input type="hidden" name="cartId" value="<?php the_ID() ?>">
-      <input type="hidden" name="password" value="<?php echo $password; ?>">
+      <input type="hidden" name="password" value="<?php echo sanitize_text_field($password); ?>">
       <button class="button commande_panier">
         <i class="card_icon fa fa-shopping-cart"></i> Commander
       </button>
-    <!-- </form> -->
   </div>
   <div class="item_presentation" data-role="drag-drop-container">
     <div class="item_presentation_photo"></div>
@@ -425,6 +413,3 @@ echo $contenu;
 if (post_password_required() ) {
   wp_footer();
 }
-
-     
-

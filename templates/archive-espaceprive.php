@@ -11,8 +11,8 @@ if ($_GET["validate_commande"]) {
     $content .= "<div class='container'>";
     $content .=     "<p>Merci pour votre achat ! Vous recevrez dans quelques minutes un mail de confirmation.</p>";
     $content .= "</div>";
-    echo $content;
-
+    echo wp_kses_post($content);
+    
     get_footer();
     exit();
 }
@@ -57,7 +57,6 @@ if ($_GET["validate_ipn"]) {
     );
 
     $response = wp_remote_post( $url, $args );
-
 
     do_action('pic_paypal_express_ipn', $body, $response);
 
@@ -141,7 +140,7 @@ if ($_GET["validate_ipn"]) {
 
 if($_GET["commande"]){
 
-    $txn_id = $_GET["commande"];
+    $txn_id = sanitize_text_field($_GET["commande"]);
     get_header();
 
     require(PIC_SELL_PATH_INC . "app/panier.php");

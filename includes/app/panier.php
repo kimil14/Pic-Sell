@@ -220,9 +220,6 @@ class PIC_Panier{
 					}
 				}
 			}
-
-			
-
 			 			 
 		/*	 if($getBy){
 			 	if ( $value['user'][$getBy[0]] == $getBy[1]){
@@ -241,7 +238,7 @@ class PIC_Panier{
 		}
 
 		if(!$message) $message = "<p>Votre numéro de commande est faux...</p>";
-		echo $message;
+		echo wp_kses($message, _prefix_allowed_tags_all());
 	}
 
 }

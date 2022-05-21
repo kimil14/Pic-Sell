@@ -7,9 +7,6 @@ jQuery(document).ready(function($){
 		console.log("logout...");
 		
 		$.post( picsell_ajax.ajaxurl, data, function( response ) {
-			//document.location.href = document.location.href;
-			//window.location.replace(document.location.href);
-			//window.open(document.location.href);
 			window.location.reload(true);
 		}, "JSON" );
 	});
