@@ -112,7 +112,8 @@ class PIC_VideoStream
             if(($i+$bytesToRead) > $this->end) {
                 $bytesToRead = $this->end - $i + 1;
             }
-            $data = fread($this->stream, $bytesToRead);
+           // $data = fread($this->stream, $bytesToRead);
+            $data = stream_get_contents($this->stream, $bytesToRead);
             echo ($data); // sanitize not work byte
             flush();
             $i += $bytesToRead;
@@ -125,6 +126,7 @@ class PIC_VideoStream
     function start()
     {
         $this->open();
+        session_write_close();
         $this->setHeader();
         $this->stream();
         $this->end();
