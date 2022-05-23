@@ -1,5 +1,7 @@
 
 # Pic Sell
+![Alt text](https://i.ibb.co/5YKtNYR/couverture.jpg)
+
 
 ## FR
 
