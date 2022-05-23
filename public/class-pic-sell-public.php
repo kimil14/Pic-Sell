@@ -469,7 +469,7 @@ class Pic_Sell_Public
 					if(!$isArchive){
 						wp_enqueue_script( 'jquery' );
 					
-						wp_enqueue_script('picsell_logout_js', PIC_SELL_URL_INC.'logout.js', array('jquery'), $this->version, false);
+						wp_enqueue_script('picsell_logout_js', plugin_dir_url(__FILE__) . 'js/logout.js', array('jquery'), $this->version, false);
 						wp_localize_script( 'picsell_logout_js', 'picsell_ajax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );					
 						
 						$vars = array(
