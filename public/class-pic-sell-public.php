@@ -328,11 +328,10 @@ class Pic_Sell_Public
 
 			    $cart = new PIC_Panier();
 				$arg = $cart->paypalCheckOut($cartId, $query);
-				echo $paypal_url . $arg; //on renvoie les arguments
+				echo sanitize_url($paypal_url . $arg); //on renvoie les arguments
 			   
 				break;
-		
-		
+
 			 case "/post/testMail/":
 		
 				if(session_id() == '') {
@@ -441,8 +440,9 @@ class Pic_Sell_Public
 	 */
 	public function enqueue_styles()
 	{
-		global $post;
-		if ('espaceprive' == $post->post_type) {
+		//global $post;
+		$post_type = get_queried_object();
+		if (isset($post_type->post_type) && 'espaceprive' == $post_type->post_type  && is_single()) {
 			wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/pic-sell-public.css', array(), $this->version, 'all');
 			wp_enqueue_style("font-awesome_css", plugin_dir_url(__FILE__) . 'css/font-awesome.min.css', array(), $this->version, 'all');
 		}
@@ -455,14 +455,12 @@ class Pic_Sell_Public
 	 */
 	public function enqueue_scripts()
 	{
-		global $post;
-
+		//global $post;
+		$post_type = get_queried_object();
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/pic-sell-public.js', array('jquery'), $this->version, false);
 
-
-
 				/**CUSTOM TYPE espaceprive only and user online */
-				if ('espaceprive' == $post->post_type && !post_password_required()) { 
+				if (isset($post_type->post_type) && 'espaceprive' == $post_type->post_type && !post_password_required() && is_single()) { 
 
 					$isArchive = is_post_type_archive('espaceprive')?true:false;
 
@@ -473,7 +471,7 @@ class Pic_Sell_Public
 						wp_localize_script( 'picsell_logout_js', 'picsell_ajax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );					
 						
 						$vars = array(
-							'post' => $post,
+							'post' => (array)$post_type,
 							'url_include' => PIC_SELL_URL_INC,
 							'ajaxurl' => admin_url( 'admin-ajax.php' ),
 							'dir_include_img' => wp_upload_dir()["basedir"],
@@ -537,6 +535,59 @@ class Pic_Sell_Public
 		register_taxonomy('offre_category', 'offre', array('hierarchical' => true, 'label' => 'Categorie', 'query_var' => true, 'rewrite' => array('slug' => 'offre-category')));
 	}
 
+	public function pic_add_cpt_video(){
+		// register post type
+		$labels = array(
+			'name' => 'Video Pic Sell',
+			'singular_name' => 'picvideo',
+			'add_new' => 'Ajouter une vidéo pic',
+			'add_new_item' => 'Ajouter un vidéo picé',
+			'edit_item' => 'Modifier un vidéo pic',
+			'new_item' => 'Nouvel vidéo pic',
+			'all_items' => 'Tous les vidéo pic',
+			'view_item' => 'Voir l\'vidéo pic',
+			'search_items' => 'Chercher les vidéo pic',
+			'not_found' =>  'Pas d\'vidéo pic',
+			'not_found_in_trash' => 'No Space private found in Trash',
+			'parent_item_colon' => '',
+			'menu_name' => 'vidéo pic',
+		);
+
+		$args = array(
+			'labels' => $labels,
+			'public' => true,
+			'has_archive' => true,
+			'publicly_queryable' => true,
+			'show_ui' => false,
+			'capability_type' => 'post',
+			'show_in_rest'    => true,
+			'hierarchical'        => false,
+			'rewrite' => array('slug' => 'pic-video'),
+			'query_var' => true,
+			'menu_icon' => 'dashicons-admin-post',
+			'supports' => array(
+				'title',
+				'editor',
+				'thumbnail',
+			)
+		);
+		$register = register_post_type('picvideo', $args);
+	
+		add_rewrite_tag( '%name_vid%','([^&]+)' );
+		add_rewrite_tag( '%dir_vid%','([^&]+)' );
+		
+		add_rewrite_rule(
+		  '^pic-video/([^/]*)/([^/]*)/?',
+		  'index.php?post_type=picvideo&name_vid=$matches[1]&dir_vid=$matches[2]',
+		  'top'
+		);
+
+		//flush_rewrite_rules(); //permet de valider la suppression de l'archive page
+
+	}
+
+
+
 	public function add_custom_type_private_space()
 	{
 		add_theme_support( 'post-thumbnails' );
@@ -561,28 +612,21 @@ class Pic_Sell_Public
 		$args = array(
 			'labels' => $labels,
 			'public' => true,
-			'has_archive' => true,
+			'has_archive' => false,
 			'show_ui' => true,
 			'capability_type' => 'post',
-			'hierarchical' => true,
+			'hierarchical' => false,
 			'rewrite' => array('slug' => 'espace-prive'),
 			'query_var' => true,
 			'menu_icon' => 'dashicons-admin-post',
 			'supports' => array(
 				'title',
 				'editor',
-				//'excerpt',
-				//'trackbacks',
-				//'custom-fields',
-				//'comments',
-				//'revisions',
 				'thumbnail',
-				//'author',
-				//'page-attributes',
-				//'post-thumbnails',
 			)
 		);
 		register_post_type('espaceprive', $args);
+		
 
 		remove_post_type_support( 'espaceprive', 'comment' );
 
@@ -598,19 +642,19 @@ class Pic_Sell_Public
 		register_taxonomy('espaceprive_category', 'espaceprive', array('hierarchical' => true, 'label' => 'Categorie', 'query_var' => true, 'rewrite' => array('slug' => 'espaceprive-category')));
 	}
 
-	public function add_template_private_space($single_template)
+	public function pic_add_template($single_template)
 	{
-		global $post;
-		$file = PIC_SELL_TEMPLATE_DIR . 'single-' . $post->post_type . '.php';
+		$post_type = get_queried_object();
+		$file = PIC_SELL_TEMPLATE_DIR . 'single-' . $post_type->post_type . '.php';
 		if (file_exists($file)) $single_template = $file;
 
 		return $single_template;
 	}
 
-	public function add_template_archive_private_space($archive_template)
+	public function pic_add_template_archive($archive_template)
 	{
-		global $post;
-		$file = PIC_SELL_TEMPLATE_DIR . 'archive-' . $post->post_type . '.php';
+		$post_type = get_queried_object();
+		$file = PIC_SELL_TEMPLATE_DIR . 'archive-' . $post_type->name . '.php';
 		if (file_exists($file)) $archive_template = $file;
 
 		return $archive_template;

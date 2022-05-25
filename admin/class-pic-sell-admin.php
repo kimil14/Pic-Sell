@@ -492,7 +492,9 @@ class Pic_Sell_Admin
 		/**
 		 * ESPACE PRIVE
 		 */
-		$gallery_field = function ($i, $value) {
+		$gallery_field = function ($i, $value)  {
+
+			global $post;
 
 			$html = "";
 
@@ -509,6 +511,7 @@ class Pic_Sell_Admin
 			if ($genre_media == "image") {
 
 				list($width_orig, $height_orig) = getimagesize($bmedia);
+				
 				$data = file_get_contents($bmedia);
 
 				/**
@@ -528,6 +531,14 @@ class Pic_Sell_Admin
 				$base64 = 'data:' . $genre_media . '/' . $type . ';base64,' .$theme_image_enc_little;
 			} 
 
+			$explode = explode("/",$value['media_dir'][$i]);
+
+			$params = ["name_vid" => $explode[count($explode)-1], "dir_vid" => $post->ID];
+
+
+
+			
+
 			$html .= 	"<tr>";
 			$html .= 		"<td class='ps_classement'>";
 			$html .= 			"<span class='ps_classement_span'></span>";
@@ -545,7 +556,7 @@ class Pic_Sell_Admin
 				$html .= 		"<img src='" . $base64 . "' class='ps_display_image' style='width:auto;max-height:140px;display:block;' />";
 			} else if ($genre_media == "video") {
 				$html .= 		"<video  controls width='200' oncontextmenu='return false;' controlsList='nodownload' class='ps_display_video buffer' style='max-width:95%;display:block;'>
-										<source data-url='" . $bmedia . "' src='".PIC_SELL_URL_INC."pic-sell-handlerStream.php?url=" . $bmedia . "' type='video/mp4'>
+										<source data-url='" . add_query_arg($params, get_post_type_archive_link( 'picvideo' )) . "' src='".add_query_arg($params, get_post_type_archive_link( 'picvideo' ))."' type='video/mp4'>
 										Sorry, your browser doesn't support embedded videos.
 									</video>";
 				$html .= "<p class='ps-upload-progress'></p>";
@@ -1049,7 +1060,7 @@ class Pic_Sell_Admin
 			}
 		}
 
-		if ($_POST['espaceprive_email_client']) {
+		if (isset($_POST['espaceprive_email_client']) && $_POST['espaceprive_email_client']) {
 			// construction du tableau pour la sauvegarde des données
 			$email_data = array();
 			for ($i = 0; $i < count($_POST['espaceprive_email_client']); $i++) {

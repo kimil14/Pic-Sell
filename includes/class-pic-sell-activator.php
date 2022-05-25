@@ -34,6 +34,9 @@ class Pic_Sell_Activator {
         if (!wp_next_scheduled('picsell_cron_task')) {
             wp_schedule_event( time(), 'daily', 'picsell_cron_task' );
         }
+
+		//flush rewrite
+		flush_rewrite_rules();
 	}
 
 }

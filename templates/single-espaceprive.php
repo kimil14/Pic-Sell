@@ -325,7 +325,7 @@ if (!post_password_required() ) {
 
 
 <?php 
-echo wp_kses_post($contenu);
+echo wp_kses($contenu, _prefix_allowed_tags_all());
 ?>
 
 <!-- Panier -->

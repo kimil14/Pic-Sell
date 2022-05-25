@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-if ($_GET["validate_commande"]) {
+if (isset($_GET["validate_commande"]) && !empty($_GET["validate_commande"])) {
     get_header();
 
     $content = "";
@@ -17,7 +17,7 @@ if ($_GET["validate_commande"]) {
     exit();
 }
 
-if ($_GET["validate_ipn"]) {
+if (isset($_GET["validate_ipn"]) && !empty($_GET["validate_ipn"])) {
 
     $urlparts = parse_url(home_url());
     $domain = $urlparts['host'];
@@ -138,7 +138,7 @@ if ($_GET["validate_ipn"]) {
     // mail("you@youremail.com", "NORMAL IPN RESULT YAY MONEY!", $req, "From: you@youremail.com");
 }
 
-if($_GET["commande"]){
+if(isset($_GET["commande"]) && !empty($_GET["commande"])){
 
     $txn_id = sanitize_text_field($_GET["commande"]);
     get_header();
