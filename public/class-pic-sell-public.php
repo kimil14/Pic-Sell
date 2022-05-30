@@ -1,25 +1,20 @@
 <?php
 
 /**
- * The public-facing functionality of the plugin.
+ * The public-facing functionality of the plugin. 
+ * 
+ * Defines the plugin name, version, and two examples hooks for how to
+ * enqueue the public-facing stylesheet and JavaScript.
+ * 
  *
  * @link       https://portfolio.cestre.fr
  * @since      1.0.0
  *
  * @package    Pic_Sell
  * @subpackage Pic_Sell/public
- */
-
-/**
- * The public-facing functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the public-facing stylesheet and JavaScript.
- *
- * @package    Pic_Sell
- * @subpackage Pic_Sell/public
  * @author     Benjamin CESTRE <benjamin@cestre.fr>
  */
+
 class Pic_Sell_Public
 {
 
@@ -190,6 +185,7 @@ class Pic_Sell_Public
 		}
 	} 
 
+	//AJAX 
 	function post_app(){
 		$request = sanitize_text_field($_POST["act"]);
 		
@@ -197,7 +193,7 @@ class Pic_Sell_Public
 		
 		switch ($request) {
 
-			case "/img/base64/":
+			/*case "/img/base64/":
 				set_time_limit(0);
 				$img = sanitize_text_field($_POST["img"]);
 				$bmedia = $img;
@@ -205,13 +201,10 @@ class Pic_Sell_Public
 				$type = pathinfo($bmedia, PATHINFO_EXTENSION);
 	
 				$finfo = new finfo(FILEINFO_MIME); // Retourne le type mime
-				/* Récupère le mime-type d'un fichier spécifique */
 				$media_info = $finfo->file($bmedia);
 				$genre_media = explode("/", $media_info)[0];
 	
 				if ($genre_media == "image") {
-
-
 					$image = imagecreatefromstring(file_get_contents($bmedia));
 
 						$exif = exif_read_data($bmedia);
@@ -263,10 +256,10 @@ class Pic_Sell_Public
 					imagejpeg($image_little);
 					$contents =  ob_get_contents();
 					ob_end_clean();-
-					$base64 = $contents;*/
+					$base64 = $contents;
 				}	
 				echo $base64;
-				break;
+				break;*/
 		
 			case "/post/update/":
 		
@@ -476,6 +469,9 @@ class Pic_Sell_Public
 							'ajaxurl' => admin_url( 'admin-ajax.php' ),
 							'dir_include_img' => wp_upload_dir()["basedir"],
 							'url_include_img' => wp_upload_dir()["baseurl"],
+							'display_images_url' => get_post_type_archive_link('picimage'),
+							'display_videos_url' => get_post_type_archive_link('picvideo')
+
 						);
 
 						wp_enqueue_script('psvars', plugin_dir_url(__FILE__) . 'js/script2.js', array('jquery'), $this->version, false);
@@ -581,11 +577,57 @@ class Pic_Sell_Public
 		  'index.php?post_type=picvideo&name_vid=$matches[1]&dir_vid=$matches[2]',
 		  'top'
 		);
-
 		//flush_rewrite_rules(); //permet de valider la suppression de l'archive page
-
 	}
 
+	public function pic_add_cpt_image(){
+		// register post type
+		$labels = array(
+			'name' => 'Image Pic Sell',
+			'singular_name' => 'picimage',
+			'add_new' => 'Ajouter une image pic',
+			'add_new_item' => 'Ajouter une image picé',
+			'edit_item' => 'Modifier une image pic',
+			'new_item' => 'Nouvelle image pic',
+			'all_items' => 'Toute les images pic',
+			'view_item' => 'Voir l\'image pic',
+			'search_items' => 'Chercher les images pic',
+			'not_found' =>  'Pas d\'image pic',
+			'not_found_in_trash' => 'No Space private found in Trash',
+			'parent_item_colon' => '',
+			'menu_name' => 'image pic',
+		);
+
+		$args = array(
+			'labels' => $labels,
+			'public' => true,
+			'has_archive' => true,
+			'publicly_queryable' => true,
+			'show_ui' => false,
+			'capability_type' => 'post',
+			'show_in_rest'    => true,
+			'hierarchical'        => false,
+			'rewrite' => array('slug' => 'pic-image'),
+			'query_var' => true,
+			'menu_icon' => 'dashicons-admin-post',
+			'supports' => array(
+				'title',
+				'editor',
+				'thumbnail',
+			)
+		);
+		$register = register_post_type('picimage', $args);
+	
+		add_rewrite_tag( '%name_img%','([^&]+)' );
+		add_rewrite_tag( '%dir_img%','([^&]+)' );
+		
+		add_rewrite_rule(
+		  '^pic-image/([^/]*)/([^/]*)/?',
+		  'index.php?post_type=picimage&name_img=$matches[1]&dir_img=$matches[2]',
+		  'top'
+		);
+		//flush_rewrite_rules(); //permet de valider la suppression de l'archive page
+	}
 
 
 	public function add_custom_type_private_space()

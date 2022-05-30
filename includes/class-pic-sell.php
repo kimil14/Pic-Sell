@@ -189,7 +189,7 @@ class Pic_Sell {
 		$this->loader->add_action('init', $plugin_public, 'add_custom_type_private_space');
 
 		$this->loader->add_action('init', $plugin_public, 'pic_add_cpt_video');	//ajoute une url pour les vidéos
-			
+		$this->loader->add_action('init', $plugin_public, 'pic_add_cpt_image');	//ajoute une url pour les images
 
 
 		$this->loader->add_filter('script_loader_tag', $plugin_public, 'add_async_attribute', 10, 2);

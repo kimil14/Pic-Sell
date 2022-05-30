@@ -35,7 +35,8 @@ jQuery(function ($) {
         galerie.forEach( function (gal) {
           if (typeof gal.id == "string") gal.id = parseInt(gal.id);
           if (gal.type == "image" || gal.type == "photo") {
-            gal.base64 =   _this.convertJpgToBase64(gal.url);
+            //gal.base64 =   _this.convertJpgToBase64(gal.url);
+            gal.base64 = _this.src_image(gal.url);
           }
         });
 
@@ -47,7 +48,8 @@ jQuery(function ($) {
           produit.titre = produit.titre.replace("&pos;", "'");
           if (typeof produit.prix == "string")
             produit.prix = parseFloat(produit.prix.replace(",", "."));
-          produit.base64 =  _this.convertJpgToBase64(produit.src);
+        //  produit.base64 =  _this.convertJpgToBase64(produit.src);
+          produit.base64 =  _this.src_image_product(produit.src, produit.product_id);
           if (typeof produit.id == "string") produit.id = parseInt(produit.id);
         });
         this.produits = produits;
@@ -121,6 +123,22 @@ jQuery(function ($) {
       }
       var url2 = "data:image/jpg;base64," + btoa(binary);
       return url2;
+    }
+    
+    src_image(url){
+      var split = url.split("/");
+      var count = split.length;
+      var name = split[count-1];
+
+      return PicSellVars.display_images_url + "?name_img="+name+"&dir_img="+PicSellVars.post.ID;
+    }
+
+    src_image_product(url, id_product){
+      var split = url.split("/");
+      var count = split.length;
+      var name = split[count-1];
+
+      return PicSellVars.display_images_url + "?name_img="+name+"&dir_img="+id_product;
     }
 
     prompt(message, type) {
@@ -204,14 +222,14 @@ jQuery(function ($) {
         if (panier.hasClass("active")) {
           panier.hide("200");
           user_interface.closePanier();
-          $(".container").width("100%");
+        //  $(".container").width("100%");
           $("#visionneuse").width("100%");
           $("#alert").width("100%");
           $("#product_modal").width("100%");
         } else {
           panier.show("200");
           user_interface.openPanier();
-          $(".container").width(window.innerWidth - 312);
+          //$(".container").width(window.innerWidth - 312);
           $("#visionneuse").width(window.innerWidth - 312);
           $("#alert").width(window.innerWidth - 312);
           $("#product_modal").width(window.innerWidth - 312);
@@ -225,12 +243,12 @@ jQuery(function ($) {
         var panier = $(".panier");
 
         if (panier.hasClass("active")) {
-          $(".container").width(window.innerWidth - 300);
+          //$(".container").width(window.innerWidth - 300);
           $("#visionneuse").width(window.innerWidth - 300);
           $("#product_modal").width(window.innerWidth - 300);
           $("#alert").width(window.innerWidth - 300);
         } else {
-          $(".container").width("100%");
+         // $(".container").width("100%");
           $("#visionneuse").width("100%");
           $("#product_modal").width("100%");
           $("#alert").width("100%");
@@ -325,7 +343,7 @@ jQuery(function ($) {
         "click",
         function (event) {
           event.preventDefault();
-          console.log(event.target);
+          //console.log(event.target);
           var condition = event.target.classList.contains("product_more_info") ? true :
            event.target.classList.contains("fa-eye") ? true : //content description product
            event.target.classList.contains("product_image") ? true : //content description product
@@ -669,7 +687,7 @@ jQuery(function ($) {
           user_interface.BodyOverflowHidden(true, "panier_commande_panier");
           panier.hide("200");
           user_interface.closePanier();
-          $(".container").width("100%");
+          //$(".container").width("100%");
           $("#visionneuse").width("100%");
           $("#alert").width("100%");
           $("#product_modal").width("100%");
@@ -748,16 +766,17 @@ jQuery(function ($) {
             elem.description +
             '"><div class="more"><i class="fa fa-eye" aria-hidden="true"></i></div></div>';
         } else {
+          var split = elem.url.split("/");
+          var count = split.length;
+          var name = split[count-1];
+    
           html +=
             '<div class="brick" draggable="true" data-id="' +
             elem.id +
             '"><video  width="100%"><source class="media-' +
             elem.id +
             '" src="' +
-            PicSellVars.url_include +
-            "pic-sell-handlerStream.php?url=" +
-            PicSellVars.dir_include_img +
-            elem.url +
+            PicSellVars.display_videos_url + "?name_vid="+name+"&dir_vid="+PicSellVars.post.ID +
             '" type="video/mp4">Sorry, your browser doesn\'t support embedded videos.</video><div class="more"><i class="fa fa-eye" aria-hidden="true"></i></div></div>';
         }
       });

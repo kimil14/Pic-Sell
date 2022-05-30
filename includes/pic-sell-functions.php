@@ -39,7 +39,7 @@ function pic_check_html($html){
  *
  * @return array
  */
-function _prefix_allowed_tags_all() {
+function _pic_allowed_tags_all() {
 	return array(
 		// Document metadata.
 		'head'  => prefix_allowed_global_attributes(),

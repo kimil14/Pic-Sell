@@ -2,9 +2,9 @@
 Tags: gallery, picture, selling, photographer
 Donate link: https://www.paypal.com/donate/?hosted_button_id=LRE2EWCN62H4J
 Requires at least: 5.5.0
-Tested up to: 5.9.3
+Tested up to: 6.0.0
 Requires PHP: 7.0
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,6 +20,9 @@ Download the extension from the official WordPress repository, upload it to your
 
 == Changelog ==
 
+== 1.0.6 ==
+Upgrade version of WordPress.
+
 == 1.0.5 ==
 Fixes sanitize Custom Type and remove Ajax outside from native wordpress functions.
 
@@ -31,5 +34,5 @@ Fixes a security related bug.
 
 
 == Upgrade Notice ==
-== 1.0.5 ==
+== 1.0.6 ==
 Correction version to reference the plugin on WordPress.  Upgrade immediately.

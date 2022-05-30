@@ -43,6 +43,7 @@ if ($count_produit > 0) {
   for ($i = 0; $i < $count_produit; $i++) {
     $cat = get_the_category_by_ID( $produit_data['cat'][$i] );
     $line=[];
+    $line['product_id'] = $pack_offers;
     $line['id'] = $produit_data['classement'][$i];
     $line['titre'] = $produit_data['title'][$i];
     $line['cat'] = $cat;
@@ -325,7 +326,7 @@ if (!post_password_required() ) {
 
 
 <?php 
-echo wp_kses($contenu, _prefix_allowed_tags_all());
+echo wp_kses($contenu, _pic_allowed_tags_all());
 ?>
 
 <!-- Panier -->
