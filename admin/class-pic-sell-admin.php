@@ -537,7 +537,7 @@ class Pic_Sell_Admin
 				</td>
 				<td class='ps_choice'>
 					<select class='ps_choice_image_select' name='gallery[choice][]'>
-						<option value='select'><?php _e('Select media option', 'pic_sell_plugin'); ?></option>
+						<option value='select'><?php _e('Select media type', 'pic_sell_plugin'); ?></option>
 						<option value='image' <?php echo (("image" == esc_html($value['choice'][$i])) ? 'selected' : ''); ?>> <?php _e('Image', 'pic_sell_plugin'); ?></option>
 						<option value='video' <?php echo (("video" == esc_html($value['choice'][$i])) ? 'selected' : ''); ?>> <?php _e('Video', 'pic_sell_plugin'); ?></option>
 					</select>
@@ -630,7 +630,7 @@ class Pic_Sell_Admin
 						</modele_td>
 						<modele_td class='ps_choice'>
 							<select class='ps_choice_image_select' name='gallery[choice][]'>
-								<option value='select'><?php _e('Select media option', 'pic_sell_plugin'); ?></option>
+								<option value='select'><?php _e('Select media type', 'pic_sell_plugin'); ?></option>
 								<option value='image'><?php _e('Image', 'pic_sell_plugin'); ?></option>
 								<option value='video'><?php _e('Video', 'pic_sell_plugin'); ?></option>
 							</select>
@@ -775,7 +775,7 @@ class Pic_Sell_Admin
 				</td>
 				<td class='ps_choice'>
 					<select class='ps_choice_image_select' name='offer[choice_media][]'>
-						<option value='select'><?php _e('Select media option', 'pic_sell_plugin'); ?></option>
+						<option value='select'><?php _e('Select media type', 'pic_sell_plugin'); ?></option>
 						<option value='image' <?php echo (("image" == esc_html($value['choice_media'][$i])) ? 'selected' : ''); ?>><?php _e('Image', 'pic_sell_plugin'); ?></option>
 						<option value='video' <?php echo (("video" == esc_html($value['choice_media'][$i])) ? 'selected' : ''); ?>><?php _e('Video', 'pic_sell_plugin'); ?></option>
 					</select>
@@ -846,14 +846,14 @@ class Pic_Sell_Admin
 						<col width=10% />
 
 						<tr class='tr_head'>
-							<th scope='col'><?php _e('Classement', 'pic_sell_plugin'); ?></th>
+							<th scope='col'><?php _e('Ranking', 'pic_sell_plugin'); ?></th>
 							<th scope='col'><?php _e('Title', 'pic_sell_plugin'); ?></th>
 							<th scope='col'><?php _e('Quantity', 'pic_sell_plugin'); ?></th>
 							<th scope='col'><?php _e('Price', 'pic_sell_plugin'); ?></th>
-							<th scope='col'><?php _e('Type offre', 'pic_sell_plugin'); ?></th>
+							<th scope='col'><?php _e('offer Type', 'pic_sell_plugin'); ?></th>
 							<th scope='col'><?php _e('Media', 'pic_sell_plugin'); ?></th>
 							<th scope='col'><?php _e('Description', 'pic_sell_plugin'); ?></th>
-							<th scope='col'><?php _e('Catégorie', 'pic_sell_plugin'); ?></th>
+							<th scope='col'><?php _e('Category', 'pic_sell_plugin'); ?></th>
 							<th scope='col'><?php _e('Actions', 'pic_sell_plugin'); ?></th>
 						</tr>
 
@@ -889,7 +889,7 @@ class Pic_Sell_Admin
 						</modele_td>
 						<modele_td class='ps_choice'>
 							<select class='ps_choice_image_select' name='offer[choice_media][]'>
-								<option value='select'><?php _e('Select media option', 'pic_sell_plugin'); ?></option>
+								<option value='select'><?php _e('Select media type', 'pic_sell_plugin'); ?></option>
 								<option value='image'><?php _e('Image', 'pic_sell_plugin'); ?></option>
 								<option value='video'><?php _e('Video', 'pic_sell_plugin'); ?></option>
 							</select>
@@ -1213,7 +1213,7 @@ class Pic_Sell_Admin
 			$html .= "<p>" . __('End date: ', 'pic_sell_plugin') . $date_left . "</p>";
 
 			$html .= 		'<label for="espaceprive_date_sended">';
-			$html .=			__('Gallery Sent', 'pic_sell_plugin');
+			$html .=			__('Gallery sends', 'pic_sell_plugin');
 			$html .= 		'</label>';
 			$opt = "";
 			if ($sended) {

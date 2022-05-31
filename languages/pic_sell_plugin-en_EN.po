@@ -1,23 +1,22 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Pic Sell\n"
-"POT-Creation-Date: 2022-05-08 12:07+0200\n"
-"PO-Revision-Date: 2022-05-08 12:10+0200\n"
+"Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2022-05-08 12:07+0200\n"
+"PO-Revision-Date: 2022-05-08 12:10+0200\n"
+"Language: en\n"
 "X-Generator: Poedit 2.2\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: pic-sell.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
-"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: admin/class-pic-sell-admin.php:137
@@ -28,11 +27,13 @@ msgstr "Yes"
 msgid "No"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:185 admin/class-pic-sell-admin.php:186
+#: admin/class-pic-sell-admin.php:185
+#: admin/class-pic-sell-admin.php:186
 msgid "Dashboard"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:192 admin/class-pic-sell-admin.php:193
+#: admin/class-pic-sell-admin.php:192
+#: admin/class-pic-sell-admin.php:193
 msgid "Commandes"
 msgstr "Commands"
 
@@ -72,7 +73,8 @@ msgstr ""
 msgid "Transform the url to access the Paypal sandbox"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:338 admin/class-pic-sell-admin.php:340
+#: admin/class-pic-sell-admin.php:338
+#: admin/class-pic-sell-admin.php:340
 msgid "There are no orders at the moment."
 msgstr ""
 
@@ -88,18 +90,24 @@ msgstr ""
 msgid "<b>All customers</b>."
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:471 admin/class-pic-sell-admin.php:566
-#: admin/class-pic-sell-admin.php:707 admin/class-pic-sell-admin.php:820
+#: admin/class-pic-sell-admin.php:471
+#: admin/class-pic-sell-admin.php:566
+#: admin/class-pic-sell-admin.php:707
+#: admin/class-pic-sell-admin.php:820
 msgid "Select media option"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:472 admin/class-pic-sell-admin.php:567
-#: admin/class-pic-sell-admin.php:708 admin/class-pic-sell-admin.php:821
+#: admin/class-pic-sell-admin.php:472
+#: admin/class-pic-sell-admin.php:567
+#: admin/class-pic-sell-admin.php:708
+#: admin/class-pic-sell-admin.php:821
 msgid "Image"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:473 admin/class-pic-sell-admin.php:568
-#: admin/class-pic-sell-admin.php:709 admin/class-pic-sell-admin.php:822
+#: admin/class-pic-sell-admin.php:473
+#: admin/class-pic-sell-admin.php:568
+#: admin/class-pic-sell-admin.php:709
+#: admin/class-pic-sell-admin.php:822
 msgid "Video"
 msgstr ""
 
@@ -107,32 +115,43 @@ msgstr ""
 msgid "Error in type file"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:488 admin/class-pic-sell-admin.php:572
-#: admin/class-pic-sell-admin.php:716 admin/class-pic-sell-admin.php:826
+#: admin/class-pic-sell-admin.php:488
+#: admin/class-pic-sell-admin.php:572
+#: admin/class-pic-sell-admin.php:716
+#: admin/class-pic-sell-admin.php:826
 msgid "Add image"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:489 admin/class-pic-sell-admin.php:573
+#: admin/class-pic-sell-admin.php:489
+#: admin/class-pic-sell-admin.php:573
 msgid "Add video"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:490 admin/class-pic-sell-admin.php:579
-#: admin/class-pic-sell-admin.php:717 admin/class-pic-sell-admin.php:828
+#: admin/class-pic-sell-admin.php:490
+#: admin/class-pic-sell-admin.php:579
+#: admin/class-pic-sell-admin.php:717
+#: admin/class-pic-sell-admin.php:828
 msgid "Uploading progress"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:490 admin/class-pic-sell-admin.php:579
-#: admin/class-pic-sell-admin.php:717 admin/class-pic-sell-admin.php:828
+#: admin/class-pic-sell-admin.php:490
+#: admin/class-pic-sell-admin.php:579
+#: admin/class-pic-sell-admin.php:717
+#: admin/class-pic-sell-admin.php:828
 msgid "Upload finished"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:500 admin/class-pic-sell-admin.php:589
-#: admin/class-pic-sell-admin.php:734 admin/class-pic-sell-admin.php:845
+#: admin/class-pic-sell-admin.php:500
+#: admin/class-pic-sell-admin.php:589
+#: admin/class-pic-sell-admin.php:734
+#: admin/class-pic-sell-admin.php:845
 msgid "Remove line"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:501 admin/class-pic-sell-admin.php:590
-#: admin/class-pic-sell-admin.php:735 admin/class-pic-sell-admin.php:846
+#: admin/class-pic-sell-admin.php:501
+#: admin/class-pic-sell-admin.php:590
+#: admin/class-pic-sell-admin.php:735
+#: admin/class-pic-sell-admin.php:846
 msgid "Remove media"
 msgstr ""
 
@@ -140,7 +159,8 @@ msgstr ""
 msgid "Gallery"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:536 admin/class-pic-sell-admin.php:767
+#: admin/class-pic-sell-admin.php:536
+#: admin/class-pic-sell-admin.php:767
 msgid "Classement"
 msgstr "Ranking"
 
@@ -148,19 +168,23 @@ msgstr "Ranking"
 msgid "Type media"
 msgstr "Media type"
 
-#: admin/class-pic-sell-admin.php:538 admin/class-pic-sell-admin.php:772
+#: admin/class-pic-sell-admin.php:538
+#: admin/class-pic-sell-admin.php:772
 msgid "Media"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:539 admin/class-pic-sell-admin.php:768
+#: admin/class-pic-sell-admin.php:539
+#: admin/class-pic-sell-admin.php:768
 msgid "Title"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:540 admin/class-pic-sell-admin.php:773
+#: admin/class-pic-sell-admin.php:540
+#: admin/class-pic-sell-admin.php:773
 msgid "Description"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:541 admin/class-pic-sell-admin.php:775
+#: admin/class-pic-sell-admin.php:541
+#: admin/class-pic-sell-admin.php:775
 msgid "Actions"
 msgstr ""
 
@@ -188,11 +212,13 @@ msgstr ""
 msgid "Private space"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:726 admin/class-pic-sell-admin.php:837
+#: admin/class-pic-sell-admin.php:726
+#: admin/class-pic-sell-admin.php:837
 msgid "Select cat"
 msgstr ""
 
-#: admin/class-pic-sell-admin.php:730 admin/class-pic-sell-admin.php:841
+#: admin/class-pic-sell-admin.php:730
+#: admin/class-pic-sell-admin.php:841
 msgid "Create catégory before"
 msgstr ""
 
@@ -243,10 +269,6 @@ msgstr ""
 #: admin/class-pic-sell-admin.php:1116
 msgid "Send"
 msgstr ""
-
-#: admin/js/pic-sell-espaceprive.js:261
-msgid "Modal avant confirmation"
-msgstr "Confirm before publish"
 
 #. Plugin Name of the plugin/theme
 msgid "Pic Sell"

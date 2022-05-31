@@ -258,7 +258,7 @@ jQuery(function ($) {
 
     $('body, html').css({'overflow':'hidden', 'max-height':'100vh'});
     $('body').append('<div id="pic_overlay"></div>');
-    $('body').append('<div id="modal_before_publish" title="'+__('Modal avant confirmation', 'pic_sell_plugin')+'"></div>');
+    $('body').append('<div id="modal_before_publish" title="'+__('Confirm publish', 'pic_sell_plugin')+'"></div>');
 
     fd2 = new FormData();
     fd2.append("action", "pic_template_sent_gallery");
