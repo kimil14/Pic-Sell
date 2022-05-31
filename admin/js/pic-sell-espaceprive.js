@@ -273,6 +273,8 @@ jQuery(function ($) {
     });
     $("#modal_before_publish").html(ajax);
 
+    var mailsend = $(".ps_send_gallery").hasClass("resend")?true:false;
+
     $("#modal_before_publish").on("click", ".ps_send_gallery", async function(e){
 
     $("#modal_before_publish").html("<div style='display: flex;align-items: center;justify-content: center;font-size: 70px;'><i class='fas fa-circle-notch fa-spin'></i></div>");
@@ -312,7 +314,6 @@ jQuery(function ($) {
     });
 
     
-
     var popup = $("#modal_before_publish").dialog({
         autoOpen: true,
         width: 400,
@@ -327,11 +328,38 @@ jQuery(function ($) {
                 text: $("#publish").val(),
                 "class": 'ui-state-modal',
                 click: function () {
-                    $(this).dialog("close");
-                    $('#pic_overlay').remove();
-                    $('#modal_before_publish').hide();
+               //     $(this).dialog("close");
+                //    $('#pic_overlay').remove();
+                   // $('#modal_before_publish').hide();
                     $('body, html').css({'overflow':'inherit', 'max-height':'inherit'});
-                    $("#publish").unbind('click').click();    
+                    if(!mailsend){
+                        $('<div></div>').appendTo('body')
+                        .html('<div><p>'+__('Are you send a email to a client', 'pic_sell_plugin')+' ?</p></div>')
+                        .dialog({
+                          modal: true,
+                          title: __('Send email', 'pic_sell_plugin'),
+                          zIndex: 10000,
+                          autoOpen: true,
+                          width: 'auto',
+                          resizable: false,
+                          buttons: {
+                            Yes: function() {
+                              $(".ps_send_gallery").click();
+                              $(this).dialog("close");
+                            },
+                            No: function() {
+                              $("#publish").unbind('click').click();
+                              $(this).dialog("close");
+                            }
+                          },
+                          close: function(event, ui) {
+                            $(this).remove();
+                          }
+                        });
+                    }else{
+                      $("#publish").unbind('click').click();
+                    }
+                        
                 }
             }
         ]
