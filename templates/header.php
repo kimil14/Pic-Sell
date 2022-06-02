@@ -26,8 +26,8 @@ $title = !post_password_required() ? $post->post_title : "Contenu protégé par 
 $title = !is_post_type_archive() ? $title : "Merci pour votre achat";
 ?>
 <header class="espaceprive-header header-espaceprive">
-    <div class="header-background" style="background-image: url('<?php echo $header_background; ?>');"></div>
+    <div class="header-background" style="background-image: url('<?php echo sanitize_url($header_background); ?>');"></div>
     <?php  
-    echo "<h1>".$title."</h1>";
+    echo "<h1>".sanitize_text_field($title)."</h1>";
     ?> 
 </header>

@@ -164,9 +164,9 @@ class Pic_Sell_Admin
 
 		$html .= '<form method="post" action="options.php" enctype="multipart/form-data">';
 
-		$html .= "<input type='hidden' name='option_page' value='" . esc_attr($settings_fields) . "' />";
+		$html .= "<input type='hidden' name='option_page' value='" . sanitize_text_field($settings_fields) . "' />";
 		$html .= '<input type="hidden" name="action" value="update" />';
-		$html .= '<input type="hidden" name="_wp_http_referer" value="' . esc_attr(($_SERVER['REQUEST_URI'])) . '" />';
+		$html .= '<input type="hidden" name="_wp_http_referer" value="' . sanitize_url(($_SERVER['REQUEST_URI'])) . '" />';
 		$html .= wp_nonce_field("$settings_fields-options", '_wpnonce', false, false);
 
 
@@ -204,7 +204,7 @@ class Pic_Sell_Admin
 		$html .= "<div class='bloc'>";
 		$html .= 	"<h3>Paypal</h3>";
 		$html .= 	"<label for='paypal-address-mail'>Adresse Mail</label>";
-		$html .= 	"<input type='text' id='paypal-address-mail' value='{$paypal_address_mail}' name='paypal_pic[paypal][adresse]' />";
+		$html .= 	"<input type='text' id='paypal-address-mail' value='" . sanitize_email($paypal_address_mail) . "' name='paypal_pic[paypal][adresse]' />";
 		$html .= 	"<p>" . __('Paypal seller email address', 'pic_sell_plugin') . "<p/>";
 		$html .= "</div>";
 		$html .= "<div class='bloc'>";
@@ -220,7 +220,7 @@ class Pic_Sell_Admin
 		$html .= "<div class='bloc'>";
 		$html .= 	"<h3>Administrateur</h3>";
 		$html .= 	"<label for='admin-address-mail'>Adresse Mail</label>";
-		$html .= 	"<input type='text' id='admin-address-mail' value='{$admin_address_mail}' name='config_pic[config][adresse]' />";
+		$html .= 	"<input type='text' id='admin-address-mail' value='" . sanitize_email($admin_address_mail) . "' name='config_pic[config][adresse]' />";
 		$html .= "</div>";
 
 
@@ -230,7 +230,7 @@ class Pic_Sell_Admin
 		$html .= 	"<label for='admin-galery-cron'>" . __('Active cron', 'pic_sell_plugin') . "</label>";
 		$html .= 	"<input type='checkbox' id='admin-galery-cron' " . ($galery_cron ? "checked" : "") . " name='config_pic[cron][active]' />";
 		$html .= 	"<p class='desc'>" . __('Enable scheduled tasks (1 visitor must be on the site to run the script).', 'pic_sell_plugin') . "<p/>";
-		$html .= 	"<p style='width:100%;'>Last Check: " . $cron . "<p/>";
+		$html .= 	"<p style='width:100%;'>Last Check: " . sanitize_text_field($cron) . "<p/>";
 		$html .= "</div>";
 
 		$html .= "</div>";
@@ -240,12 +240,12 @@ class Pic_Sell_Admin
 		$html .= "<h2>" . $tabs[2] . "</h2>";
 		$template = get_option('template_pic');
 		$template_galery_ready_default = '<p>Bonjour,</p>
-	   <p>Retrouvez votre séance photo, {{title}}, à cette adresse :</p><br>
+	   <p>Retrouvez votre séance photo, {{title}}, à cette adresse :</p>
 	   <div style="background:#C9C9C9;padding:24px 12px;">
 		 Lien : <a style="color: #0d6efd" href="{{permalink}}?utm_source=referral&utm_medium=email&utm_campaign=galleryIsReady&utm_content=link">{{permalink}}</a><br>
 		 Votre mot de passe est : <b><i>{{password}}</i></b>
-	   </div><br>
-	   <p>Votre galerie reste accessible pendant {{dateleft}} à partir d\'aujourd\'hui.</p>
+	   </div>
+	   <p>Votre galerie reste accessible pendant {{dateleft}} à partir d\'aujourd\'hui.</p><br>
 	   <p><i>PS : Sur Safari, des problèmes d\'affichage peuvent survenir.</i></p>
 	   <p>Nous restons à votre disposition pour toutes informations complémentaires,<br><br>
 	   <i>{{site_name}}</i>
@@ -276,7 +276,7 @@ class Pic_Sell_Admin
 			)
 		);
 		//$defaults = array('textarea_name' => 'template_pic[mail][galeryready]', 'editor_class' => 'textarea_template', 'textarea_rows' => 10, 'teeny' => true);
-		wp_editor($template_galery_ready, 'admin-template-galery-ready', $settings);
+		wp_editor(wp_kses($template_galery_ready, wp_kses_allowed_html('post')), 'admin-template-galery-ready', $settings);
 		$temp = ob_get_clean();
 		$html .= 	"<label for='admin-template-galery-ready'>Template Mail</label>";
 		$html .= $temp;
@@ -326,7 +326,7 @@ class Pic_Sell_Admin
 			)
 		);
 		//$defaults = array('textarea_name' => 'template_pic[mail][galeryready]', 'editor_class' => 'textarea_template', 'textarea_rows' => 10, 'teeny' => true);
-		wp_editor($template_galery_interval, 'template_galeryinterval', $settings);
+		wp_editor(wp_kses($template_galery_interval, wp_kses_allowed_html('post')), 'template_galeryinterval', $settings);
 		$temp = ob_get_clean();
 		$html .= 	"<label for='admin-template-galery-interval'>Template Mail</label>";
 		$html .= $temp;
@@ -372,7 +372,7 @@ class Pic_Sell_Admin
 
 		$html .= '<form method="post" action="options.php" enctype="multipart/form-data">';
 
-		$html .= "<input type='hidden' name='option_page' value='" . esc_attr($settings_fields) . "' />";
+		$html .= "<input type='hidden' name='option_page' value='" . sanitize_text_field($settings_fields) . "' />";
 		$html .= '<input type="hidden" name="action" value="update" />';
 		$html .= wp_nonce_field("$settings_fields-options", '_wpnonce', true, false);
 
