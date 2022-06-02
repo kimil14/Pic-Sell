@@ -149,11 +149,11 @@ class Pic_Sell_Admin
 		$settings_fields = 'settings-pic';
 
 		$tabs = array(
-			0  => apply_filters('picsell/admin/builder/h2', __('Builder', 'pic_sell_plugin')),
-			1  => apply_filters('picsell/admin/config/h2', __('Config', 'pic_sell_plugin')),
+			0  => apply_filters('picsell/admin/menu/builder/h2', __('Builder', 'pic_sell_plugin')),
+			1  => apply_filters('picsell/admin/menu/config/h2', __('Config', 'pic_sell_plugin')),
 			2  => apply_filters('picsell/admin/menu/template_mail/h2', __('Template mail', 'pic_sell_plugin'))
 		);
-		$tabs = apply_filters('picsell/admin/menu/settings', $tabs);
+		$tabs = apply_filters('picsell/admin/menu/tabs', $tabs);
 
 		$html = '<h2 class="nav-tab-wrapper">';
 		foreach ($tabs as $tab => $name) {
@@ -339,8 +339,9 @@ class Pic_Sell_Admin
 		$html .= 	"<input type='checkbox' id='admin-galery-interval-send-mail-admin' " . ($galery_interval_send_mail_admin ? "checked" : "") . " name='config_pic[mail][galeryinterval]' />";
 		$html .= 	"<p class='desc'>" . __('Send an email to the administrator when a gallery changes status.', 'pic_sell_plugin') . "<p/>";
 		$html .= "</div>";
-		$html .= "</div>";
 
+		$html .= "</div>";
+		$html .= apply_filters("picsell/admin/menu/nav-tabs", $html);
 
 		$html .= '</div>';
 		$html .= get_submit_button();
