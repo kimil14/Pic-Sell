@@ -22,24 +22,10 @@ if (isset($_GET["validate_ipn"]) && !empty($_GET["validate_ipn"])) {
     $urlparts = parse_url(home_url());
     $domain = $urlparts['host'];
 
-
     // Check to see there are posted variables coming into the script
     if ($_SERVER['REQUEST_METHOD'] != "POST")
         die("No Post Variables");
-
-    $req = 'cmd=_notify-validate';
-
-    //$body = [];
-    foreach ($_POST as $key => $value) {
-        //$body[$key] = $value;
-        $value = urlencode(stripslashes($value));
-        $req .= "&$key=$value";
-    }  
     
-    $body = array();
-    $body['cmd'] = '_notify-validate';
-    $body += stripslashes_deep($_POST);
-
     $paypal = get_option("paypal_pic");
     $paypal_sandbox = (isset($paypal["paypal"]["sandbox"]) && $paypal["paypal"]["sandbox"]) ? true : false;
     $paypal_url = $paypal_sandbox ? "https://www.sandbox.paypal.com/cgi-bin/webscr" : "https://www.paypal.com/cgi-bin/webscr";
@@ -47,95 +33,86 @@ if (isset($_GET["validate_ipn"]) && !empty($_GET["validate_ipn"])) {
     $config = get_option('config_pic');
     $admin_address_mail = isset($config["config"]["adresse"]) ? $config["config"]["adresse"] : false;
 
-    $url = $paypal_url;
+    $body = ['cmd' =>'_notify-validate'];
+    $body += stripslashes_deep($_POST); //Who sanitize ?
 
     $args = array(
-        'body'        => $body,
-        'timeout'     => 30,
+        'body'        => $body, // <-- error if sanitize
         'method' => 'POST',
+        'sslverify' => false,
+        'timeout' => 60,
         'httpversion' => '1.1',
+        'compress' => false,
+        'decompress' => false,
+        'user-agent' => 'paypal-ipn/'
     );
 
-    $response = wp_remote_post( $url, $args );
+    $response = wp_safe_remote_post($paypal_url, $args ); //replacement for safe
 
     do_action('pic_paypal_express_ipn', $body, $response);
 
-    $req = str_replace("&", "\n", $req);
+    if (!is_wp_error($response) && $response['response']['code'] >= 200 && $response['response']['code'] < 300 && strstr($response['body'], 'VERIFIED')) {
 
-    if ('VERIFIED' == $response['body']) {
+        $body = array_map(function($input){
+                    return sanitize_text_field($input); //sanitize all input POST
+                    }, $body);
 
-        $req .= "\n\nPaypal Verified OK";
+        $payer_email = sanitize_email($body['payer_email']);//double sanitize text and email
+        $custom = $body['custom']; //sanitize text l.52
+
+        // Check 1
+        $receiver_email = sanitize_email($body['receiver_email']);//double sanitize text and email
+        $paypal_address_mail = isset($paypal["paypal"]["adresse"]) ? $paypal["paypal"]["adresse"] : "fake@mail.com"; //ne pas mettre vide
+        if ($receiver_email != $paypal_address_mail) {
+            die("Address mail receiver email is invalid");
+        }
+
+        // Check 2 
+        if ($body['payment_status'] != "Completed") {
+            $infoMail = "Le paiement est en défault, merci de recommencer.";
+            $infoAdmin = "Un paiement est parvenu en invalide.";
+            if ($admin_address_mail) {
+                wp_mail($payer_email, "Paiement invalide", $infoMail, "From: noreply@$domain");
+            }
+            die($infoMail);
+        }
+
+        // Check 3
+        $txn_id = $body['txn_id']; //sanitize text l.52
+        $custom = $body["custom"]; //sanitize text l.52
+
+        $defaultOrders = array("orders" => []);
+        $allOrders = get_option('allcommands_pic', serialize(json_encode($defaultOrders)));
+        $allOrders = json_decode(unserialize($allOrders), true);
+
+        if (array_key_exists($txn_id, $allOrders["orders"])) {
+            $infoAdmin = "Un paiement avec un ID identique à tenté de payer.";
+            if ($admin_address_mail) {
+                wp_mail($admin_address_mail, "INFO: Paypal paiement identique(txn_id)", $infoAdmin, "From: noreply@$domain");  
+            }
+            die();
+        }
+
+        // Check 4
+        if (session_id() == '') {
+            session_start();
+        }
+
+        require(PIC_SELL_PATH_INC . "app/panier.php");
+
+        $cart = new PIC_Panier();
+        $cart->emailOrder($txn_id, $custom);
+
+        exit();
+
 
     } else {
-
-        $req .= "\n\nData NOT verified from Paypal!";
-
         if ($admin_address_mail) {
-            wp_mail(sanitize_email($admin_address_mail), "IPN interaction not verified", $req, "From: noreply@$domain");
-            die($req);
+            wp_mail(sanitize_email($admin_address_mail), "IPN interaction not verified",$req, "From: noreply@$domain");
+            die("\n\nData NOT verified from Paypal!");
         }
     }
 
-
-    $payer_email = $body['payer_email'];
-    $custom = $body['custom'];
-
-    // Check 1
-    $receiver_email = $body['receiver_email'];
-    $paypal_address_mail = isset($paypal["paypal"]["adresse"]) ? $paypal["paypal"]["adresse"] : "fake@mail.com"; //ne pas mettre vide
-    if ($receiver_email != $paypal_address_mail) {
-        die("Address mail receiver email is invalid");
-    }
-
-    // Check 2 
-    if ($body['payment_status'] != "Completed") {
-        $infoMail = "Le paiement est en défault, merci de recommencer.";
-        $infoAdmin = "Un paiement est parvenu en invalide.";
-        if ($admin_address_mail) {
-            wp_mail($payer_email, "Paiement invalide", $infoMail, "From: noreply@$domain");
-        }
-        die($infoMail);
-    }
-
-    // Check 3
-    $txn_id = $body['txn_id'];
-    $custom = $body["custom"];
-
-    $defaultOrders = array("orders" => []);
-    //$defaultOrders = serialize(json_encode("[{'orders':[]}]"));
-    $allOrders = get_option('allcommands_pic', serialize(json_encode($defaultOrders)));
-    $allOrders = json_decode(unserialize($allOrders), true);
-
-    if (array_key_exists($txn_id, $allOrders["orders"])) {
-        $infoMail = "L'ID de paiement existe déjà dans notre base de donnée.";
-        $infoAdmin = "Un paiement avec un ID identique à tenté de payer.";
-        if ($admin_address_mail) {
-            wp_mail($admin_address_mail, "INFO: Paypal paiement identique(txn_id)", $infoAdmin, "From: noreply@$domain");
-            // wp_mail($payer_email, "Paiement invalide", $infoMail, "From: noreply@$domain");        
-        }
-        die($infoMail);
-    }
-
-    //check for duplicate txn_ids in the database
-
-    // Check 4
-   // $product_id_string = $_POST['custom'];
-   // $product_id_string = rtrim($product_id_string, ","); // remove last comma
-    // Explode the string, make it an array, then query all the prices out, add them up, and make sure they match the payment_gross amount
-    // END ALL SECURITY CHECKS NOW IN THE DATABASE IT GOES ------------------------------------
-    ////////////////////////////////////////////////////
-    if (session_id() == '') {
-        session_start();
-    }
-    require(PIC_SELL_PATH_INC . "app/panier.php");
-    // require("../includes/app/panier.php");
-    $cart = new PIC_Panier();
-    $cart->emailOrder($txn_id, $custom);
-    exit();
-    
-    // Place the transaction into the database
-    // Mail yourself the details
-    // mail("you@youremail.com", "NORMAL IPN RESULT YAY MONEY!", $req, "From: you@youremail.com");
 }
 
 if(isset($_GET["commande"]) && !empty($_GET["commande"])){

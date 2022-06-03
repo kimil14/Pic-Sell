@@ -341,7 +341,9 @@ class Pic_Sell_Admin
 		$html .= "</div>";
 
 		$html .= "</div>";
-		$html .= apply_filters("picsell/admin/menu/nav-tabs", $html);
+
+		$html2 = apply_filters("picsell/admin/menu/nav-tabs", null);
+		$html .= $html2; 
 
 		$html .= '</div>';
 		$html .= get_submit_button();

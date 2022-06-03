@@ -276,6 +276,11 @@ class Pic_Sell_Public
 				$values = array();
 				parse_str($_POST['form'], $values);
 
+				$values = array_map(function($input){
+    						return sanitize_text_field($input);
+						}, $values);
+				
+
 				$this->protectUserCart($values['cartId'], $values['password']);
 
 				$cartId = get_post_meta($values['cartId'], 'panier_client', true);
@@ -284,27 +289,25 @@ class Pic_Sell_Public
 				$paypal_sandbox = (isset($paypal["paypal"]["sandbox"])&&$paypal["paypal"]["sandbox"])?true:false;
 				$paypal_url = $paypal_sandbox?"https://www.sandbox.paypal.com/cgi-bin/webscr?":"https://www.paypal.com/cgi-bin/webscr?";
 		
-
 				//$pack_offers = get_post_meta(, 'produit_client', true);
-				$produit_data = get_post_meta($values['id_pack'], '_offer_data', true);
+				$produit_data = get_post_meta($values['id_pack'], '_offer_data', true); //value sanitize_text l-279
 				
 				$query = array();
-				$query['first_name'] = $values['prenom'];
-				$query['last_name'] = $values['nom'];
-				$query['email'] = $values['email'];
-				$query['telephone'] = $values['phone'];
-				$query['address1'] = $values['adresse'];
-				$query['address2'] = $values['adresse2'];
-				$query['city'] = $values['ville'];
-				$query['country'] = $values['pays'];
-				$query['state'] = $values['etat'];
-				$query['zip'] = $values['cp'];
-				$query['cartId'] = $values['cartId'];
+				$query['first_name'] = $values['prenom']; //sanitize l-279
+				$query['last_name'] = $values['nom']; //sanitize l-279
+				$query['email'] = sanitize_email($values['email']);  //sanitize_text l-279 + sanitize_email
+				$query['telephone'] = $values['phone'];//sanitize l-279
+				$query['address1'] = $values['adresse'];//sanitize l-279
+				$query['address2'] = $values['adresse2'];//sanitize l-279
+				$query['city'] = $values['ville'];//sanitize l-279
+				$query['country'] = $values['pays'];//sanitize l-279
+				$query['state'] = $values['etat'];//sanitize l-279
+				$query['zip'] = $values['cp'];//sanitize l-279
+				$query['cartId'] = $values['cartId'];//sanitize l-279
 
 				if ($query['country'] != "FR") $query['shipping_1'] = 15;
 
-				$i = 1;
-				
+				$i = 1;				
 				foreach ( $this->object_to_array(json_decode($cartId)) as $value) {
 
 					foreach($produit_data["classement"] as $key => $val){
@@ -654,7 +657,7 @@ class Pic_Sell_Public
 		$args = array(
 			'labels' => $labels,
 			'public' => true,
-			'has_archive' => false,
+			'has_archive' => true,
 			'show_ui' => true,
 			'capability_type' => 'post',
 			'hierarchical' => false,

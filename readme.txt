@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/donate/?hosted_button_id=LRE2EWCN62H4J
 Requires at least: 5.5.0
 Tested up to: 6.0.0
 Requires PHP: 7.0
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 == Changelog ==
 
+= 1.0.8 =
+* Sanitize variable IPN paypal.
+
 = 1.0.7 =
 * Sanitize variable echo's.
 
@@ -45,5 +48,5 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 == Upgrade Notice ==
 
-= 1.0.7 =
-* Correction version to sanitize variable.  Upgrade immediately.
+= 1.0.8 =
+* Correction version to sanitize variable Paypal.  Upgrade immediately.

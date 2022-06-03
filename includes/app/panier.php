@@ -184,6 +184,11 @@ class PIC_Panier{
 			update_post_meta($session['cartId'], 'panier_client', '');	
 			return true;
 		}else{
+			$config = get_option('config_pic'); 
+			$admin_address_mail = isset($config["config"]["adresse"])?$config["config"]["adresse"]:"";
+			if(!empty($admin_address_mail)){
+				mail($admin_address_mail, '[ADMIN/'.$site_name.'] Commande Invalide TXN manquant ! ', $message, $headers );
+			}
 			return false;
 		}		
 	}
@@ -238,7 +243,7 @@ class PIC_Panier{
 		}
 
 		if(!$message) $message = "<p>Votre numéro de commande est faux...</p>";
-		echo wp_kses($message, _prefix_allowed_tags_all());
+		echo wp_kses($message, _pic_allowed_tags_all());
 	}
 
 }
