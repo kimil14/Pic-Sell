@@ -5,7 +5,7 @@
  * Plugin Name:       Pic Sell
  * Plugin URI:        https://github.com/kimil14/pic-sell
  * Description:       Selling pictures easily.
- * Version:           1.0.8
+ * Version:           1.0.9
  * Author:            Benjamin CESTRE
  * Author URI:        https://portfolio.cestre.fr
  * License:           GPL-2.0+
@@ -21,7 +21,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 } 
 
-define( 'PIC_SELL_VERSION', '1.0.8' );
+define( 'PIC_SELL_VERSION', '1.0.9' );
 define( 'PIC_SELL_MAIN_FILE',  __FILE__ );
 define( 'PIC_SELL_PATH', plugin_dir_path( __FILE__ ));
 define( 'PIC_SELL_URL', plugin_dir_url( __FILE__ ));
@@ -32,6 +32,8 @@ define( 'PIC_SELL_PATH_INC', PIC_SELL_PATH . "includes/");
 define( 'PIC_SELL_SLUG', "picsell");
 
 define( 'PIC_SELL_URL_PUBLIC', PIC_SELL_URL . "public/");
+define( 'PIC_SELL_PATH_PUBLIC', PIC_SELL_PATH . "public/");
+
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-pic-sell-activator.php

@@ -243,7 +243,7 @@ class PIC_Panier{
 		}
 
 		if(!$message) $message = "<p>Votre numéro de commande est faux...</p>";
-		echo wp_kses($message, _pic_allowed_tags_all());
+		echo wp_kses($message, _pic_allowed_tags_all(), ["https", "http", "data"]);
 	}
 
 }

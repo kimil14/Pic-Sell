@@ -12,8 +12,11 @@
 }
 /* 
  RESET
- Reference: http://meyerweb.com/eric/tools/css/reset/
 */
+
+.post-type-archive-espaceprive table td{
+  border: 0;
+}
 
 #dynamic-to-top{
   display: none !important;

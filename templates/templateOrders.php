@@ -51,6 +51,15 @@ class PIC_Template_Mail
         return $myGalerie;
     }
 
+    private function get_data64_other($img){
+        $img_source = $img; // image path/name
+        $type = pathinfo($img_source, PATHINFO_EXTENSION);
+        $img_binary = fread(fopen($img_source, "r"), filesize($img_source));
+        $img_string = base64_encode($img_binary);
+       // return "data:image/$type;base64,".$img_string; 
+        return "data:image/png;base64,".$img_string; 
+    }
+
     private function get_data64($img){
         set_time_limit(0);
 
@@ -129,7 +138,7 @@ class PIC_Template_Mail
         <div style="display:none;font-size:1px;color:#333333;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
             Votre galerie privée est sur le point d\'expirer.
         </div>
-        <table cellspacing="0" style="margin:0 auto; width:100%; border-collapse:collapse; background-color:#EEEEEE; font-family:"Roboto", Arial !important">
+        <table cellspacing="0" style="margin:0 auto; width:100%; border-collapse:collapse; background-color:#EEEEEE; font-family:\'Roboto\', Arial !important">
             <tbody>
             <tr>
                 <td align="center" style="padding:20px 23px 0 23px">
@@ -163,8 +172,8 @@ class PIC_Template_Mail
                                         </td>
                                     </tr>                            
                                     <tr>
-                                        <td align="center" style="font-family:"Roboto", Arial !important">
-                                            <h2 style="margin:0; font-weight:bold; font-size:40px; color:#444; text-align:center; font-family:"Roboto", Arial !important">
+                                        <td align="center" style="font-family:\'Roboto\', Arial !important">
+                                            <h2 style="margin:0; font-weight:bold; font-size:40px; color:#444; text-align:center; font-family:\'Roboto\', Arial !important">
                                                 Plus que quelques jours avant la clôture de votre galerie.
                                             </h2>
                                         </td>
@@ -174,7 +183,7 @@ class PIC_Template_Mail
                             </td>
                         </tr>
                         <tr>            
-                            <td align="center" style="padding:0 0 15px 0; font-family:"Roboto";>
+                            <td align="center" style="padding:0 0 15px 0; font-family:\'Roboto\';>
                                 <img
                                 width="50%"
                                 src="{{img}}"
@@ -466,7 +475,7 @@ class PIC_Template_Mail
                         <table width="550" style="border-collapse:collapse; background-color:#FaFaFa; margin:0 auto; border-bottom:1px solid #E5E5E5">
                             <tbody>
                                 <tr>
-                                    <td align="left" style="padding:15px 0 15px 15px; font-family:"Roboto", Arial !important" width="300">
+                                    <td align="left" style="padding:15px 0 15px 15px; font-family:\'Roboto\', Arial !important" width="300">
                                         <p style="font-size:16px; text-transform:uppercase; color:#333333; margin:0; font-weight:900;">
                                         ' . htmlentities($value['produit']['titre']) . '</p>
                                         <img style="max-width:160px;height:auto;max-height:100px;" height="auto" alt="" src="' . $this->get_data64($value["produit"]["src"]) . '" border="0">
@@ -475,18 +484,18 @@ class PIC_Template_Mail
                                         <table style="border-collapse: collapse;">
                                             <tbody>
                                             <tr>
-                                                <td style="font-family:"Roboto", Arial !important;background-color:#128ced; text-align:center; border-radius:4px; vertical-align:middle;padding: 6px 12px;">
+                                                <td style="font-family:\'Roboto\', Arial !important;background-color:#128ced; text-align:center; border-radius:4px; vertical-align:middle;padding: 6px 12px;">
                                                     ' . htmlentities($value['produit']['limite']) . ' Photos
                                                 </td>
                                             </tr>
                                             </tbody>
                                         </table>
                                     </td>
-                                    <td width="60" align="right" style="font-family:"Roboto", Arial !important">
-                                        <p style="margin:0; font-size:14px; color:#333333;padding:0;font-family:"Roboto", Arial !important;text-align:center;">X' . htmlentities($value['qtt']) . ' </p>
+                                    <td width="60" align="right" style="font-family:\'Roboto\', Arial !important">
+                                        <p style="margin:0; font-size:14px; color:#333333;padding:0;font-family:\'Roboto\', Arial !important;text-align:center;">X' . htmlentities($value['qtt']) . ' </p>
                                     </td>
-                                    <td width="80" align="right" style="font-family:"Roboto", Arial !important;padding-right:10px;">
-                                        <p style="margin:0; font-size:14px; color:#333333;padding:0;font-family:"Roboto", Arial !important;text-align:right;">
+                                    <td width="80" align="right" style="font-family:\'Roboto\', Arial !important;padding-right:10px;">
+                                        <p style="margin:0; font-size:14px; color:#333333;padding:0;font-family:\'Roboto\', Arial !important;text-align:right;">
                                         ' . htmlentities(($value['produit']['prix'] * $value['qtt']) . '€') .'</p>
                                     </td>
                                 </tr>
@@ -495,7 +504,7 @@ class PIC_Template_Mail
                     </td>
                 </tr>
                 <tr>
-                    <td style=" font-family:"Roboto", Arial !important;padding:0;" align="center">
+                    <td style=" font-family:\'Roboto\', Arial !important;padding:0;" align="center">
 
                                 <tr>
                                     <td style="padding:24px 0 24px 10px; text-align:left;">';
@@ -513,7 +522,7 @@ class PIC_Template_Mail
                                             $orders .= '    </td>
                                                         </tr>
                                                     </td>
-                                                    <td style=" font-family:"Roboto", Arial !important;padding:0;" align="center">
+                                                    <td style=" font-family:\'Roboto\', Arial !important;padding:0;" align="center">
                                                         <tr>
                                                             <td style="padding:24px 0 24px 10px; text-align:left;">';
                                             $i = 1;
@@ -536,8 +545,8 @@ class PIC_Template_Mail
                                 <table width="550" style="border-collapse:collapse; background-color:#FaFaFa; margin:0 auto; border-bottom:1px solid #E5E5E5">
                                     <tbody>
                                         <tr>
-                                            <td align="left" style="padding:15px 0 15px 15px; font-family:"Roboto", Arial !important" width="700">
-                                            <p style="font-size:16px; text-transform:uppercase; color:#333333; margin:0; font-weight:900; font-family:"Roboto", Arial !important; ">
+                                            <td align="left" style="padding:15px 0 15px 15px; font-family:\'Roboto\', Arial !important" width="700">
+                                            <p style="font-size:16px; text-transform:uppercase; color:#333333; margin:0; font-weight:900; font-family:\'Roboto\', Arial !important; ">
                                                 ' . html_entity_decode($title) . '</p>
                                                 <img style="max-width:160px;height:auto;" alt="" src="' . $products_src[$key] . '" border="0">
                                             </td>
@@ -545,17 +554,17 @@ class PIC_Template_Mail
                                                 <table style="border-collapse: collapse;">
                                                     <tbody>
                                                         <tr>
-                                                            <td style="font-family:"Roboto", Arial !important;background-color:#128ced; text-align:center; border-radius:4px; vertical-align:middle;padding: 7px 12px;">
+                                                            <td style="font-family:\'Roboto\', Arial !important;background-color:#128ced; text-align:center; border-radius:4px; vertical-align:middle;padding: 7px 12px;">
 
                                                             </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </td>
-                                            <td width="60" align="right" style="font-family:"Roboto", Arial !important"><p style="margin:0; font-size:14px; color:#333333;padding:0;font-family:"Roboto", Arial !important;text-align:center;">
+                                            <td width="60" align="right" style="font-family:\'Roboto\', Arial !important"><p style="margin:0; font-size:14px; color:#333333;padding:0;font-family:\'Roboto\', Arial !important;text-align:center;">
                                                 QUANTIT&Eacute;</p>
                                             </td>
-                                            <td width="80" align="right" style="font-family:"Roboto", Arial !important;padding-right:10px;"><p style="margin:0; font-size:14px; color:#333333;padding:0;font-family:"Roboto", Arial !important;text-align:right;">
+                                            <td width="80" align="right" style="font-family:\'Roboto\', Arial !important;padding-right:10px;"><p style="margin:0; font-size:14px; color:#333333;padding:0;font-family:\'Roboto\', Arial !important;text-align:right;">
                                                 PRIX</p>
                                             </td>
                                         </tr>
@@ -585,25 +594,25 @@ class PIC_Template_Mail
 
                         $orders .= '
                         <tr>
-                            <td style=" font-family:"Roboto", Arial !important;padding:0;" align="center">
+                            <td style=" font-family:\'Roboto\', Arial !important;padding:0;" align="center">
                                 <table width="550" style="border-collapse:collapse;margin: 0 auto;border-bottom: 1px solid #EBEBEB">
                                     <tbody>
                                         <tr>
                                             <td width="117" align="right" style="padding:24px 0 24px 10px; text-align:left;">
                                                 <img style="max-width:100px;width:100px;height:auto;max-height:160px;" height="auto" width="100" src="' . $preview . '" border="0">
                                             </td>
-                                            <td width="270" style="vertical-align:middle; padding:0 0 0 10px; font-family:"Roboto", Arial !important;">
-                                                <p style="font-size:16px; margin:0; color:#000; line-height:20px; font-family:"Roboto", Arial !important">
+                                            <td width="270" style="vertical-align:middle; padding:0 0 0 10px; font-family:\'Roboto\', Arial !important;">
+                                                <p style="font-size:16px; margin:0; color:#000; line-height:20px; font-family:\'Roboto\', Arial !important">
                                                     ' . htmlentities($value['produit']['titre']) . '
                                                 </p>
                                             </td>
-                                            <td align="center" width="60" style="vertical-align:middle; font-family:"Roboto", Arial !important;padding:0;">
-                                                <p style="font-size:18px; color:#000; margin:0; font-family:"Roboto", Arial !important;text-align:center;">
+                                            <td align="center" width="60" style="vertical-align:middle; font-family:\'Roboto\', Arial !important;padding:0;">
+                                                <p style="font-size:18px; color:#000; margin:0; font-family:\'Roboto\', Arial !important;text-align:center;">
                                                     ' . htmlentities($value['qtt']) . '
                                                 </p>
                                             </td>
-                                            <td align="center" width="80" style="font-family:"Roboto", Arial !important;padding:0 10px 0 0;">
-                                                <p style="font-size:18px; color:#000; margin:0; font-family:"Roboto", Arial !important;text-align:center;font-weight:bold;text-align: right;">
+                                            <td align="center" width="80" style="font-family:\'Roboto\', Arial !important;padding:0 10px 0 0;">
+                                                <p style="font-size:18px; color:#000; margin:0; font-family:\'Roboto\', Arial !important;text-align:center;font-weight:bold;text-align: right;">
                                                     ' . htmlentities(($value['produit']['prix'] * $value['qtt']) . '€'). '
                                                 </p>
                                             </td>
@@ -621,10 +630,9 @@ class PIC_Template_Mail
 
         $urlparts = parse_url(home_url());
         $domain = $urlparts['host'];
-
         $message = '<html>
                         <body>
-                            <table cellspacing="0" style="margin:0 auto; width:100%; max-width:800px; border-collapse:collapse; background-color:#EEEEEE;">
+                            <table width="800" cellspacing="0" style="margin:0 auto; width:100%; max-width:800px; border-collapse:collapse; background-color:#EEEEEE;">
                                 <tbody>
                                     <tr>
                                         <td align="center" style="padding:20px 23px 0 23px">
@@ -632,29 +640,30 @@ class PIC_Template_Mail
                                                 <tbody>
                                                     <tr>
                                                         <td align="center">
-                                                            <table width="500" style="margin:0 auto">
+                                                            <table width="500" style="width:500px;max-width:500px;margin:0 auto">
                                                                 <tbody>
-                                                                    <tr>
-                                                                        <td align="center" style="padding:40px 0 35px 0"><a href="'.home_url().'" target="_blank" style="color:#128ced; text-decoration:none;outline:0;"><img style="width:500px;max-width:500px;" width="500" height="auto" alt="" src="'.esc_url( wp_get_attachment_url( get_theme_mod( 'custom_logo' ) ) ).'" border="0"></a>
+                                                                    <tr style="display: block;max-width:300px;height:auto;max-height:200px;">
+                                                                        <td align="center" style="display: block;max-width:300px;height:auto;max-height:200px;">
+                                                                            <a href="'.home_url().'" target="_blank" style="display: block;max-width:300px;height:auto;max-height:200px; color:#128ced; text-decoration:none;outline:0;">
+                                                                                <img style="max-width:300px;height:auto;max-height:200px" height="auto" alt="" src="'.$this->get_data64_other( get_attached_file( get_theme_mod( 'custom_logo' ) ) ).'" border="0">
+                                                                            </a>
                                                                         </td>
                                                                     </tr>                            
                                                                     <tr>
-                                                                        <td align="center" style="font-family:"Roboto", Arial !important">
-                                                                            <h2 style="margin:0; font-weight:bold; font-size:40px; color:#444; text-align:center; font-family:"Roboto", Arial !important">
+                                                                        <td align="center" style="font-family:\'Roboto\', Arial !important">
+                                                                            <h2 style="margin:0; font-weight:bold; font-size:40px; color:#444; text-align:center; font-family:\'Roboto\', Arial !important">
                                                                                 Merci pour votre commande !
                                                                             </h2>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td align="center" style="padding:0 0 15px 0; font-family:"Roboto", Arial !important">
-                                                                            <p style="text-align: center;">
-                                                                                <img src="'.PIC_SELL_URL_PUBLIC.'img/truck-delivery.gif" width="400" border="0">
-                                                                            </p>
+                                                                        <td align="center" style="padding:0 0 15px 0; font-family:\'Roboto\', Arial !important">
+                                                                            <img src="'.$this->get_data64_other(PIC_SELL_PATH_PUBLIC.'img/truck-delivery.gif').'"  style="max-width:320px;height:240px;max-height:240px;" width="320" height="240"  border="0">           
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td align="center" style="padding:0 0 20px 0; font-family:"Roboto", Arial !important">
-                                                                            <p style="margin:10px 0; font-size:16px; color:#000; line-height:12px; font-family:"Roboto", Arial !important">'.
+                                                                        <td align="center" style="padding:0 0 20px 0; font-family:\'Roboto\', Arial !important">
+                                                                            <p style="margin:10px 0; font-size:16px; color:#000; line-height:12px; font-family:\'Roboto\', Arial !important">'.
                                                                             htmlentities("Votre commande arrive très vite !")
                                                                             .'</p>
                                                                         </td>
@@ -673,8 +682,8 @@ class PIC_Template_Mail
                                                                         <table style="width:100%; border-collapse:collapse">
                                                                             <tbody>
                                                                             <tr>
-                                                                                <td style="vertical-align:top; padding:18px 18px 8px 23px; font-family:"Roboto", Arial !important">
-                                                                                    <p style="font-size:16px; color:#333333; text-transform:uppercase; font-weight:900; margin:0; font-family:"Roboto", Arial !important">
+                                                                                <td style="vertical-align:top; padding:18px 18px 8px 23px; font-family:\'Roboto\', Arial !important">
+                                                                                    <p style="font-size:16px; color:#333333; text-transform:uppercase; font-weight:900; margin:0; font-family:\'Roboto\', Arial !important">
                                                                                         Récapitulatif :
                                                                                     </p>
                                                                                 </td>
@@ -684,37 +693,37 @@ class PIC_Template_Mail
                                                                                     <table width="100%" style="border-collapse:collapse">
                                                                                         <tbody>
                                                                                         <tr>
-                                                                                            <td style="font-family:"Roboto", Arial !important">
-                                                                                                <p style="font-size:16px; color:#000; margin:0 0 5px 0; font-family:"Roboto", Arial !important">
+                                                                                            <td style="font-family:\'Roboto\', Arial !important">
+                                                                                                <p style="font-size:16px; color:#000; margin:0 0 5px 0; font-family:\'Roboto\', Arial !important">
                                                                                                     Commande #:
                                                                                                 </p>
                                                                                             </td>
-                                                                                            <td align="left" style="font-family:"Roboto", Arial !important">
-                                                                                                <p style="font-size:16px; color:#000; margin:0 0 5px 0; font-family:"Roboto", Arial !important">
+                                                                                            <td align="left" style="font-family:\'Roboto\', Arial !important">
+                                                                                                <p style="font-size:16px; color:#000; margin:0 0 5px 0; font-family:\'Roboto\', Arial !important">
                                                                                                 ' . htmlentities($order['order_id']) . '
                                                                                                 </p>
                                                                                             </td>
                                                                                         </tr>
                                                                                         <tr>
-                                                                                            <td style="font-family:"Roboto", Arial !important">
-                                                                                                <p style="font-size:16px; color:#000; margin:0 0 5px 0; font-family:"Roboto", Arial !important">
+                                                                                            <td style="font-family:\'Roboto\', Arial !important">
+                                                                                                <p style="font-size:16px; color:#000; margin:0 0 5px 0; font-family:\'Roboto\', Arial !important">
                                                                                                     Date de la commande :
                                                                                                 </p>
                                                                                             </td>
-                                                                                            <td align="left" style="font-family:"Roboto", Arial !important">
-                                                                                                <p style="font-size:16px; color:#000; margin:0 0 5px 0; font-family:"Roboto", Arial !important">
+                                                                                            <td align="left" style="font-family:\'Roboto\', Arial !important">
+                                                                                                <p style="font-size:16px; color:#000; margin:0 0 5px 0; font-family:\'Roboto\', Arial !important">
                                                                                                 ' . htmlentities($order['order_date']) . '
                                                                                                 </p>
                                                                                             </td>
                                                                                         </tr>
                                                                                         <tr>
-                                                                                            <td style="font-family:"Roboto", Arial !important">
-                                                                                                <p style="font-size:16px; color:#000; margin:0 0 10px 0; font-family:"Roboto", Arial !important">
+                                                                                            <td style="font-family:\'Roboto\', Arial !important">
+                                                                                                <p style="font-size:16px; color:#000; margin:0 0 10px 0; font-family:\'Roboto\', Arial !important">
                                                                                                     Total de la commande :
                                                                                                 </p>
                                                                                             </td>
-                                                                                            <td align="left" style="font-family:"Roboto", Arial !important">
-                                                                                                <p style="font-size:16px; color:#000; margin:0 0 10px 0; font-family:"Roboto", Arial !important">
+                                                                                            <td align="left" style="font-family:\'Roboto\', Arial !important">
+                                                                                                <p style="font-size:16px; color:#000; margin:0 0 10px 0; font-family:\'Roboto\', Arial !important">
                                                                                                 ' . htmlentities($totalTTC . '€') .'
                                                                                                 </p>
                                                                                             </td>
@@ -731,26 +740,26 @@ class PIC_Template_Mail
                                                                         <table width="100%" style="border-collapse:collapse">
                                                                             <tbody>
                                                                             <tr>
-                                                                                <td style="vertical-align:top; padding:18px 18px 8px 23px; font-family:"Roboto", Arial !important">
-                                                                                    <p style="font-size:16px; color:#333333; text-transform:uppercase; font-weight:900; margin:0; font-family:"Roboto", Arial !important">
+                                                                                <td style="vertical-align:top; padding:18px 18px 8px 23px; font-family:\'Roboto\', Arial !important">
+                                                                                    <p style="font-size:16px; color:#333333; text-transform:uppercase; font-weight:900; margin:0; font-family:\'Roboto\', Arial !important">
                                                                                         Adresse de livraison:
                                                                                     </p>
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td style="vertical-align:top; padding:0 18px 18px 23px; font-family:"Roboto", Arial !important">
+                                                                                <td style="vertical-align:top; padding:0 18px 18px 23px; font-family:\'Roboto\', Arial !important">
                                                                                     <table width="100%" style="border-collapse:collapse">
                                                                                         <tbody>
                                                                                         <tr>
-                                                                                            <td style="font-family:"Roboto", Arial !important">
-                                                                                                <p style="font-size:16px; color:#000; margin:0 0 5px 0; font-family:"Roboto", Arial !important">
+                                                                                            <td style="font-family:\'Roboto\', Arial !important">
+                                                                                                <p style="font-size:16px; color:#000; margin:0 0 5px 0; font-family:\'Roboto\', Arial !important">
                                                                                                 ' . htmlentities($order['user']['first_name']) . ' ' . htmlentities($order['user']['last_name']) . '
                                                                                                 </p>
                                                                                             </td>
                                                                                         </tr>
                                                                                         <tr>
-                                                                                            <td style="font-family:"Roboto", Arial !important">
-                                                                                                <p style="font-size:16px; color:#000; margin:0 0 5px 0; font-family:"Roboto", Arial !important">
+                                                                                            <td style="font-family:\'Roboto\', Arial !important">
+                                                                                                <p style="font-size:16px; color:#000; margin:0 0 5px 0; font-family:\'Roboto\', Arial !important">
                                                                                             ' . htmlentities($order['user']['address1']) . '<br>
                                                                                             ' . htmlentities($order['user']['address2']) . '
                                                                                                 </p>
@@ -758,8 +767,8 @@ class PIC_Template_Mail
                                                                                         </tr>
                                                                                     
                                                                                         <tr>
-                                                                                            <td style="font-family:"Roboto", Arial !important;">
-                                                                                                <p style="font-size:16px; color:#000; margin:0;padding:0; font-family:"Roboto", Arial !important">
+                                                                                            <td style="font-family:\'Roboto\', Arial !important;">
+                                                                                                <p style="font-size:16px; color:#000; margin:0;padding:0; font-family:\'Roboto\', Arial !important">
                                                                                                 ' . $order['user']['zip'] . ' ' . $order['user']['city'] . ' (' . $order['user']['state'] . ')' . '
                                                                                                 </p>
                                                                                             </td>
@@ -783,43 +792,43 @@ class PIC_Template_Mail
                                                                 <tbody>
                                                                 <tr>
                                                                     <tr>
-                                                                    <td align="right" width="425" style="padding-bottom:15px; font-family:"Roboto", Arial !important">
-                                                                        <p style="font-size:18px; color:#000; margin:0; font-family:"Roboto", Arial !important">
+                                                                    <td align="right" width="425" style="padding-bottom:15px; font-family:\'Roboto\', Arial !important">
+                                                                        <p style="font-size:18px; color:#000; margin:0; font-family:\'Roboto\', Arial !important">
                                                                             Total TTC :
                                                                         </p>
                                                                     </td>
-                                                                    <td align="right" style="padding-bottom:15px; font-family:"Roboto", Arial !important">
-                                                                        <p style="font-size:18px; color:#000; margin:0; font-family:"Roboto", Arial !important">
+                                                                    <td align="right" style="padding-bottom:15px; font-family:\'Roboto\', Arial !important">
+                                                                        <p style="font-size:18px; color:#000; margin:0; font-family:\'Roboto\', Arial !important">
                                                                         ' . htmlentities($total."€") . '
                                                                         </p>
                                                                     </td>
                                                                 </tr>
-                                                                    <td align="right" style="padding-bottom:15px; font-family:"Roboto", Arial !important">
-                                                                        <p style="font-size:18px; color:#000; margin:0; font-family:"Roboto", Arial !important">
+                                                                    <td align="right" style="padding-bottom:15px; font-family:\'Roboto\', Arial !important">
+                                                                        <p style="font-size:18px; color:#000; margin:0; font-family:\'Roboto\', Arial !important">
                                                                             Frais de port :
                                                                         </p>
                                                                     </td>
-                                                                    <td align="right" style="padding-bottom:15px; font-family:"Roboto", Arial !important">
-                                                                        <p style="font-size:18px; color:#000; margin:0; font-family:"Roboto", Arial !important">
+                                                                    <td align="right" style="padding-bottom:15px; font-family:\'Roboto\', Arial !important">
+                                                                        <p style="font-size:18px; color:#000; margin:0; font-family:\'Roboto\', Arial !important">
                                                                             ' .  htmlentities($fdp."€"). '</p>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td align="right" style="padding-bottom:15px; font-family:"Roboto", Arial !important">
-                                                                        <p style="font-size:18px; color:#000; font-weight:900; margin:0; font-family:"Roboto", Arial !important">
+                                                                    <td align="right" style="padding-bottom:15px; font-family:\'Roboto\', Arial !important">
+                                                                        <p style="font-size:18px; color:#000; font-weight:900; margin:0; font-family:\'Roboto\', Arial !important">
                                                                             Total de la commande :
                                                                         </p>
                                                                     </td>
-                                                                    <td align="right" style="padding-bottom:15px; font-family:"Roboto", Arial !important">
-                                                                        <p style="font-size:18px; color:#bc0101; font-weight:bold; margin:0; font-family:"Roboto", Arial !important">
+                                                                    <td align="right" style="padding-bottom:15px; font-family:\'Roboto\', Arial !important">
+                                                                        <p style="font-size:18px; color:#bc0101; font-weight:bold; margin:0; font-family:\'Roboto\', Arial !important">
                                                                         ' .  htmlentities($totalTTC."€") . '
                                                                         </p>
                                                                     </td>
                                                                 </tr>
 
                                                                 <tr>
-                                                                    <td align="center" style="width: 100%; padding-bottom:15px; font-family:"Roboto", Arial !important">
-                                                                        <p style="font-size:18px; font-style: italic; color:#000; margin:0; font-family:"Roboto", Arial !important">
+                                                                    <td align="center" style="width: 100%; padding-bottom:15px; font-family:\'Roboto\', Arial !important">
+                                                                        <p style="font-size:18px; font-style: italic; color:#000; margin:0; font-family:\'Roboto\', Arial !important">
                                                                             <br>
                                                                             TVA non applicable, art. 293B du CGI.
                                                                             <br><br>'.

@@ -157,7 +157,6 @@ class Pic_Sell_Admin
 
 		$html = '<h2 class="nav-tab-wrapper">';
 		foreach ($tabs as $tab => $name) {
-			// $class = ( $tab == $current_tab ) ? 'nav-tab-active' : '';
 			$html .= '<a class="nav-tab nav-pic-' . $tab . ' nav-tab-' . $tab . '" href="?page=' . $this->menu_slug . '_settings-pic#nav-pic-' . $tab . '">' . $name . '</a>';
 		}
 		$html .= '</h2>';
@@ -1119,18 +1118,23 @@ class Pic_Sell_Admin
 		if ($_POST['espaceprive_date_left']) {
 			// construction du tableau pour la sauvegarde des données
 			$date_left  = sanitize_text_field($_POST['espaceprive_date_left']);
+			$date_left_bdd = sanitize_text_field(get_post_meta($post_id, '_date_left', true));
 
 			if ($date_left)
 				update_post_meta($post_id, '_date_left', $date_left);
 			else
 				delete_post_meta($post_id, '_date_left');
+
+			if($date_left_bdd != $date_left){
+				update_post_meta($post_id, '_email_dateleft_sent', false); //on met le rappel par mail à false
+			}
+
 		}
 		// si rien, supprimer les options
 		else {
 			delete_post_meta($post_id, '_date_left');
 		}
 
-		update_post_meta($post_id, '_email_dateleft_sent', false); //on met le rappel par mail à false
 
 
 	}
@@ -1173,29 +1177,29 @@ class Pic_Sell_Admin
 		}
 
 		if ($action == "step_1") {
+
 			$date_left = get_post_meta($post_id, '_date_left', true);
 			if (empty($date_left)) {
 				$date_left = date('Y-m-d', strtotime('+1 month +1 days'));
-			}
-			$dates_select = [];
-			//days
-			for ($i = 1; $i <= 32; $i++) {
-				$dates_select[$i] = date('Y-m-d', strtotime('+' . $i . ' days'));
-			}
-			$i2 = 2;
-			//month
-			for ($i = 33; $i <= 34; $i++) {
-				$dates_select[$i] = date('Y-m-d', strtotime('+' . $i2 . ' month'));
-				$i2++;
 			}
 
 			//sended
 			$sended = get_post_meta($post_id, '_gallery_send', true);
 			$date_sent = get_post_meta($post_id, '_gallery_send_date', true);
-
 			if (empty($sended)) {
 				$sended = false;
+			}	
+
+			$sended_mail_dateleft = get_post_meta($post_id, '_email_dateleft_sent', true);
+			if (empty($sended_mail_dateleft)) {
+				$sended_mail_dateleft = false;
 			}
+			if(!$sended_mail_dateleft){
+				$text_sended_mail_dateleft = __('Never', 'pic_sell_plugin');
+			}else{
+				$text_sended_mail_dateleft = __('Already sent', 'pic_sell_plugin');
+			}
+
 
 			$html = "<div class='dynamic_form send-gallery'>";
 
@@ -1205,16 +1209,11 @@ class Pic_Sell_Admin
 			$html .=			__('Availability date', 'pic_sell_plugin');
 			$html .=		'</label>';
 
-
-			$html .= 		" <select name='espaceprive_date_left' id='espaceprive_date_left'>";
-			if (isset($dates_select) && !empty($dates_select)) {
-				foreach ($dates_select as $key => $date) {
-					$html .= "<option value='" . $date . "' " . (($date_left == $date) ? 'selected' : '') . ">" . $date . "</option>";
-				}
+			$html .= "<p>" . __('End date:', 'pic_sell_plugin') ." <input type='date' value='".$date_left."' name='espaceprive_date_left' id='espaceprive_date_left'></p>";
+			$html .= "<p>" . __('Reminder email sent:', 'pic_sell_plugin') ." ". $text_sended_mail_dateleft . "</p>";
+			if($sended_mail_dateleft){
+				$html .= 	"<input class='button button-primary ps_reset_sent_dateleft' type='button' value='" . __('Reset reminder emails', 'pic_sell_plugin') . "' />";
 			}
-			$html .= 		"</select>";
-			$html .= "<p>" . __('End date: ', 'pic_sell_plugin') . $date_left . "</p>";
-
 			$html .= 		'<label for="espaceprive_date_sended">';
 			$html .=			__('Gallery sends', 'pic_sell_plugin');
 			$html .= 		'</label>';
@@ -1237,7 +1236,6 @@ class Pic_Sell_Admin
 		} else if ($action = "step_2") {
 
 			$emails = sanitize_text_field($_POST["emails"]);
-			//$emails .= ", test-3qtezve9f@srv1.mail-tester.com";
 			$sent = sanitize_text_field($_POST["sent"]);
 			$date_left = sanitize_text_field($_POST["date_left"]);
 			$post_password =  sanitize_text_field($_POST['post_password']);

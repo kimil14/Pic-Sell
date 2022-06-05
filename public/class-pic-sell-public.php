@@ -67,22 +67,17 @@ class Pic_Sell_Public
 
 	public function scheduled_task(){
 
-		//$datetemp["date"] = date('Y-m-d', strtotime('+10 days'));
-		//update_option('cron_pic', $datetemp);
+		//	$cron = get_option('cron_pic'); //remove for let Wp_cron manage
+		//	$last_date_cron = isset($cron)&&!empty($cron)?$cron:date("Y-m-d", strtotime('-1 days')); //par défault si date_cron n'est pas déclarer on met la date du jour à - 1 jour. //remove for let Wp_cron manage
 
-		$cron = get_option('cron_pic'); 
-		$last_date_cron = isset($cron)&&!empty($cron)?$cron:date("Y-m-d", strtotime('-1 days')); //par défault si date_cron n'est pas déclarer on met la date du jour à - 1 jour.
+		//	$date_left_en = date_create_from_format('Y-m-d', $last_date_cron);//remove for let Wp_cron manage
+		//	$DateNow = date_create_from_format('Y-m-d', date('Y-m-d'));//remove for let Wp_cron manage
 
-
-		$date_left_en = date_create_from_format('Y-m-d', $last_date_cron);
-		$DateNow = date_create_from_format('Y-m-d', date('Y-m-d'));
-
-		$TempsRestant = $DateNow->diff($date_left_en);
-		if($TempsRestant->days >= 1){
+		//$TempsRestant = $DateNow->diff($date_left_en); //remove for let Wp_cron manage
+		//if($TempsRestant->days >= 1){ //remove for let Wp_cron manage
 			$this->checkGalleryDate();
 			update_option('cron_pic', date("Y-m-d"));
-		}
-
+		//}
 	}
 
 	 private function checkGalleryDate(){
@@ -93,8 +88,6 @@ class Pic_Sell_Public
 			'numberposts' => -1,
 	   	));
 		
-		   //print_r($show_gallery);
-
 		foreach($show_gallery as $id => $gallery){
 			
 			$DateNow = date_create_from_format('Y-m-d', date('Y-m-d'));
@@ -438,7 +431,7 @@ class Pic_Sell_Public
 	{
 		//global $post;
 		$post_type = get_queried_object();
-		if (isset($post_type->post_type) && 'espaceprive' == $post_type->post_type  && is_single()) {
+		if (isset($post_type->post_type) && 'espaceprive' == $post_type->post_type || is_post_type_archive('espaceprive')) {
 			wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/pic-sell-public.css', array(), $this->version, 'all');
 			wp_enqueue_style("font-awesome_css", plugin_dir_url(__FILE__) . 'css/font-awesome.min.css', array(), $this->version, 'all');
 		}
@@ -532,7 +525,19 @@ class Pic_Sell_Public
 
 		// register taxonomy
 		register_taxonomy('offre_category', 'offre', array('hierarchical' => true, 'label' => 'Categorie', 'query_var' => true, 'rewrite' => array('slug' => 'offre-category')));
+	
+		add_action( 'add_meta_boxes', function() {
+
+			remove_meta_box( 'wpseo_meta', 'offre', 'normal' );
+			remove_meta_box( 'wpseo_meta', 'offre_category', 'normal' );
+
+		}, 100 );
+
+		add_filter( 'manage_edit-offre_columns', [$this,'pic_remove_wp_seo_columns'], 10, 1 );
+		add_filter( 'manage_edit-offre_category_columns', [$this, 'pic_remove_wp_seo_columns'], 10, 1 );
+
 	}
+
 
 	public function pic_add_cpt_video(){
 		// register post type
@@ -672,7 +677,6 @@ class Pic_Sell_Public
 		);
 		register_post_type('espaceprive', $args);
 		
-
 		remove_post_type_support( 'espaceprive', 'comment' );
 
 		add_filter( 'comments_open', function( $open, $post_id ) {
@@ -681,10 +685,47 @@ class Pic_Sell_Public
 				return false;
 			}
 			return $open;
-			//return true;
 		}, 99 , 2 );
 		// register taxonomy
 		register_taxonomy('espaceprive_category', 'espaceprive', array('hierarchical' => true, 'label' => 'Categorie', 'query_var' => true, 'rewrite' => array('slug' => 'espaceprive-category')));
+	
+		add_action( 'add_meta_boxes', function() {
+
+			remove_meta_box( 'wpseo_meta', 'espaceprive', 'normal' );
+			remove_meta_box( 'wpseo_meta', 'espaceprive_category', 'normal' );
+
+		}, 100 );
+
+		add_filter( 'manage_edit-espaceprive_columns', [$this,'pic_remove_wp_seo_columns'], 10, 1 );
+		add_filter( 'manage_edit-espaceprive_category_columns', [$this, 'pic_remove_wp_seo_columns'], 10, 1 );
+	
+	}
+
+	// Remove Yoast analysis tools and filters
+	public function pic_remove_wp_seo_page_analysis() {
+		global $wpseo_meta_columns;
+		$current_screen = get_current_screen();
+		if ( 'edit-offre' === $current_screen->id || 'edit-offre_category' === $current_screen->id ||
+			'edit-espaceprive' === $current_screen->id || 'edit-espaceprive_category' === $current_screen->id ) {
+			// Suppression de l'analyse de lisibilité
+			add_filter( 'wpseo_use_page_analysis', '__return_false' );
+			// Suppression des filtres
+			if ( $wpseo_meta_columns  ) {
+				remove_action( 'restrict_manage_posts', array( $wpseo_meta_columns , 'posts_filter_dropdown' ) );
+				remove_action( 'restrict_manage_posts', array( $wpseo_meta_columns , 'posts_filter_dropdown_readability' ) );
+			}
+		}
+	}
+
+	public function pic_remove_wp_seo_columns( $columns ) {
+		unset( $columns['wpseo-score'] );
+		unset( $columns['wpseo-score-readability'] );
+		unset( $columns['wpseo-title'] );
+		unset( $columns['wpseo-metadesc'] );
+		unset( $columns['wpseo-focuskw'] );
+		unset( $columns['wpseo-links'] );
+		unset( $columns['wpseo-linked'] );
+		return $columns;
 	}
 
 	public function pic_add_template($single_template)

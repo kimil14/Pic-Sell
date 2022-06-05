@@ -188,6 +188,8 @@ class Pic_Sell {
 		$this->loader->add_action('init', $plugin_public, 'add_custom_type_offre');	
 		$this->loader->add_action('init', $plugin_public, 'add_custom_type_private_space');
 
+		$this->loader->add_action( 'current_screen',$plugin_public, 'pic_remove_wp_seo_page_analysis' );
+
 		$this->loader->add_action('init', $plugin_public, 'pic_add_cpt_video');	//ajoute une url pour les vidéos
 		$this->loader->add_action('init', $plugin_public, 'pic_add_cpt_image');	//ajoute une url pour les images
 
