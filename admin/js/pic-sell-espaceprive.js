@@ -7,7 +7,6 @@ function add_field_row() {
   var tbody = jQuery("#field_wrap tbody");
   var table = tbody.length ? tbody : jQuery("#field_wrap");
   table.append(contents);
-  console.log(table);
   ps_init_gallery();
   ps_init_classement();
 }
@@ -45,6 +44,17 @@ const toBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
+  function toBase64_simple(file){
+
+   return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  }
+
 jQuery(function ($) {
   /**
    * TABLEAU SORTABLE DRAG
@@ -70,6 +80,103 @@ jQuery(function ($) {
   var $parent = {};
   var $ligne = {};
   var $file = {};
+
+
+$("body").on("click", ".ps_add_multiple_media", function (e) {
+
+    if(!$('input').hasClass('pic_multiple_media')){   
+      var input = $('<input/>')
+      .attr('type', "file")
+      .attr('name', "pic_multiple_media")
+      .attr('multiple', 'multiple')
+      .attr('class', "pic_multiple_media")
+      .attr('id', "pic_multiple_media").hide();
+      $(e.target).parent().append(input);
+    }
+    $('input[name=pic_multiple_media').val('');
+    $('input[name=pic_multiple_media').click();
+    
+});
+
+
+$("body").on("change", ".pic_multiple_media", async function (e) {
+
+
+  var files = $(this)[0].files;
+
+  var post_id = PicSellVars.post.ID;
+  var post_title = PicSellVars.post.post_title;
+ 
+  for (var i = 0, f; f = files[i]; i++) {
+
+        var isImage = f.type.split("/")[0] === "image";
+        var isVideo = f.type.split("/")[0] === "video";
+
+        if(isImage || isVideo){
+
+
+          if(isImage){
+
+            var file_b64 = await toBase64_simple(f); 
+
+            $.when(file_b64).done(function(){
+          
+                add_field_row();
+                var $ligne = $("#field_wrap tbody tr:nth-child(" + $("#field_wrap tbody > tr").length + ")"); 
+
+                fd = new FormData();
+                fd.append("file", f);
+                fd.append("post_title", post_title);
+                fd.append("post_id", post_id);
+                fd.append("action", "fiu_upload_file");
+            
+                var base = $.ajax({
+                  async: false,
+                  type: "POST",
+                  url: ajaxurl,
+                  data: fd,
+                  contentType: false,
+                  processData: false,
+                  cache: false,
+                });  
+                base.done(function (result, textStatus, jqXHR) {
+                  var responseText = jqXHR.responseText;
+                  var responseTextLen = responseText.length;                    
+                    response = JSON.parse(responseText);
+                    $ligne.find(".ps_choice_image_select").val("image");
+                    $ligne.find(".ps_display_image").attr("src", file_b64).show();
+                    $ligne.find(".ps_remove_media_button").show();
+                    $ligne.find(".ps_media_dir").val(response.bdir);
+                    $ligne.find(".ps_media_title").val(f.name.split(".")[0]);
+                });
+            });
+            
+          } //isImage
+
+          if(isVideo){
+
+            add_field_row(); 
+            individual_file = f;
+            blob = {};
+            var start = 0;
+
+            var $ligne = $("#field_wrap tbody tr:nth-child(" + $("#field_wrap tbody > tr").length + ")");
+            
+            var base = await upload_file_multiple(f, start, $ligne)
+            
+            $.when(base).done(function () {
+              $ligne.find(".ps_choice_image_select").val("video");
+              $ligne.find(".ps_remove_media_button").show();
+              $ligne.find(".ps_media_title").val(f.name.split(".")[0]);
+            });
+
+          }//isVideo
+
+        } //isImage OR //isVideo        
+
+  }
+
+});
 
   $("body").on("change", ".ps_upload_image_button", async function (e) {
     e.preventDefault();
@@ -246,6 +353,92 @@ jQuery(function ($) {
     // };
   }
 
+  async function upload_ajax_file(file, start, $ligne){
+
+    var slice_size = 1024 * 1024 * 10;
+    var individual_file = file;
+    var next_slice = start + slice_size;
+    var blob = file.slice(start, next_slice);
+    var ajax;
+      
+    var file_b64 = await toBase64_simple(blob);
+
+    $.when(file_b64).done(function(){
+
+      var fd2 = new FormData();
+      fd2.append("filename", individual_file.name);
+      fd2.append("post_title", post_title);
+      fd2.append("post_id", post_id);
+      fd2.append("action", "fiu_upload_file_video");
+      fd2.append("video", file_b64);
+
+      ajax = $.ajax({
+        url: ajaxurl,
+        type: "POST",
+        contentType: false,
+        processData: false,
+        data: fd2,
+        cache: false     
+      });
+
+      return ajax;
+    });
+
+    return ajax;
+
+  }
+
+ async function upload_file_multiple(file, start, $ligne) {
+
+  //return new Promise(async (resolve, reject) => {
+    $upload_ajax = await upload_ajax_file(file, start, $ligne);
+
+    $.when($upload_ajax).done(function(result, textStatus, jqXHR){ 
+
+      var slice_size = 1024 * 1024 * 10;
+      var next_slice = start + slice_size;
+
+      var size_done = start + slice_size;
+      var percent_done = Math.floor((size_done / individual_file.size) * 100);
+        if (next_slice < file.size) {
+          $ligne.find(".ps-upload-progress").show();
+          $ligne
+            .find(".ps-upload-progress .uploading")
+            .css({ width: percent_done + "%" })
+            .show()
+            .find("span")
+            .html(percent_done + "%");
+            return upload_file_multiple(file, size_done, $ligne);
+        } else { 
+          var final_video = URL.createObjectURL(file);         
+          var responseText = result; 
+          response = JSON.parse(responseText);
+
+          $ligne.find(".ps-upload-progress .uploading").hide();
+          $ligne.find(".ps-upload-progress .finished").show();
+          $ligne.find(".ps_remove_media_button").show();
+          $ligne.find(".ps_media_dir").val(response.bdir);
+
+          $ligne
+            .find(".ps_display_video")
+            .show()
+            .find("source")
+            .attr("src", final_video);
+          $ligne.find(".ps_display_video").get(0).load();
+         // resolve(true);
+         // return true;
+        }        
+    });
+
+    return $upload_ajax;
+
+
+        
+     // });
+
+
+    // };
+  }
 
 
    $('body').on("change", '#espaceprive_date_left', function(){
@@ -364,6 +557,38 @@ jQuery(function ($) {
             }
         ]
     });
+
+    $("#modal_before_publish").on("click", ".ps_reset_sent_dateleft", function(){
+
+      e.preventDefault();
+  
+      var post_id = PicSellVars.post.ID;
+      var post_title = PicSellVars.post.post_title;
+      var nonce_ajax = PicSellVars.nonce;
+  
+      fd2 = new FormData();
+      fd2.append("action", "pic_template_sent_gallery");
+      fd2.append('nonce_ajax', nonce_ajax);
+      fd2.append('post_id', post_id);
+      fd2.append('act', 'reset_sent_dateleft');
+  
+      var ajax = $.ajax({
+        url: ajaxurl,
+        type: "POST",
+        contentType: false,
+        processData: false,
+        data: fd2,
+        success:function( data ) {
+          $("#modal_before_publish").dialog('close');
+          $("#publish").click();
+        },
+      });
+  
+  
+  
+  
+    });
+
     console.log("intercept");
     //
   });

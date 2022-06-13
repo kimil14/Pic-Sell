@@ -621,6 +621,7 @@ class Pic_Sell_Admin
 
 				</table>
 				<input class='button button-primary ps_add_tr' type='button' value='<?php _e('Add field', 'pic_sell_plugin'); ?>' onclick='add_field_row();' />
+				<input class='button button-primary ps_add_multiple_media' type='button' value='<?php _e('Add multiple media', 'pic_sell_plugin'); ?>' />
 				<!--
 			 * MODELE LIGNE TABLEAU
 			-->
@@ -1175,7 +1176,15 @@ class Pic_Sell_Admin
 		if (!$post_id) {
 			exit();
 		}
+		if($action ==  "reset_sent_dateleft"){
+			check_ajax_referer( 'pic-sell-ajax-nonce', 'nonce_ajax' );
 
+			$sended_mail_dateleft = update_post_meta($post_id, '_email_dateleft_sent', false);
+
+			wp_die();
+
+		}
+		
 		if ($action == "step_1") {
 
 			$date_left = get_post_meta($post_id, '_date_left', true);
@@ -1199,7 +1208,6 @@ class Pic_Sell_Admin
 			}else{
 				$text_sended_mail_dateleft = __('Already sent', 'pic_sell_plugin');
 			}
-
 
 			$html = "<div class='dynamic_form send-gallery'>";
 
@@ -1458,6 +1466,8 @@ class Pic_Sell_Admin
 		/**CUSTOM TYPE espaceprive only */
 		if (isset($post) && 'espaceprive' == $post->post_type) {
 			$vars = array(
+				'url'   => admin_url( 'admin-ajax.php' ),
+				'nonce' => wp_create_nonce( 'pic-sell-ajax-nonce' ),
 				'post' => $post,
 				'url_include' => PIC_SELL_URL_INC
 			);

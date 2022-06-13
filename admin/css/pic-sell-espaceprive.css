@@ -18,7 +18,7 @@
     
 }
 
-.dynamic_form .ps_add_tr {
+.dynamic_form .ps_add_tr, .dynamic_form .ps_add_multiple_media {
     margin-left: calc(100% - 6px);
     transform: translateX(-100%);
     margin-top: 6px;
