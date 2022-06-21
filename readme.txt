@@ -1,5 +1,5 @@
 === Pic Sell ===
-Tags: gallery, picture, selling, photographer
+Tags: gallery, picture, selling, photographer, media
 Donate link: https://www.paypal.com/donate/?hosted_button_id=LRE2EWCN62H4J
 Requires at least: 5.5.0
 Tested up to: 6.0.0

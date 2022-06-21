@@ -508,6 +508,7 @@ class Pic_Sell_Public
 			'public' => true,
 			'has_archive' => false,
 			'show_ui' => true,
+			'show_in_menu' => false,
 			'capability_type' => 'post',
 			'hierarchical' => false,
 			'rewrite' => array('slug' => 'offres'),
@@ -524,7 +525,21 @@ class Pic_Sell_Public
 		remove_post_type_support( 'offre', 'comment' );
 
 		// register taxonomy
-		register_taxonomy('offre_category', 'offre', array('hierarchical' => true, 'label' => 'Categorie', 'query_var' => true, 'rewrite' => array('slug' => 'offre-category')));
+		register_taxonomy('offre_category', 'offre', 
+			array(
+				'hierarchical' => true, 
+				'label' => 'Categorie', 
+				'show_in_menu' => false,
+				'show_in_rest' => false,
+				'show_in_nav_menus' => false,
+				'show_ui' => true,
+				'show_tagcloud' => false,
+				'show_in_quick_edit' => false,
+				'meta_box_cb' => false,
+				'query_var' => true, 
+				'rewrite' => array('slug' => 'offre-category')
+				)
+			);
 	
 		add_action( 'add_meta_boxes', function() {
 
@@ -643,19 +658,19 @@ class Pic_Sell_Public
 		add_theme_support( 'post-thumbnails' );
 
 		$labels = array(
-			'name' => 'Espace Privé',
-			'singular_name' => 'espaceprive',
-			'add_new' => 'Ajouter un espace privé',
-			'add_new_item' => 'Ajouter un espace privé',
-			'edit_item' => 'Modifier un espace privé',
-			'new_item' => 'Nouvel espace privé',
-			'all_items' => 'Tous les espaces privés',
-			'view_item' => 'Voir l\'espace privé',
-			'search_items' => 'Chercher les espaces privés',
-			'not_found' =>  'Pas d\'espace privé',
-			'not_found_in_trash' => 'No Space private found in Trash',
+			'name' => __("Private space", "pic_sell_plugin"),
+			'singular_name' => __("Private space", "pic_sell_plugin"),
+			'add_new' => __("Add private space", "pic_sell_plugin"),
+			'add_new_item' => __("Add private space", "pic_sell_plugin"),
+			'edit_item' => __("Edit private space", "pic_sell_plugin"),
+			'new_item' => __("New private space", "pic_sell_plugin"),
+			'all_items' => __("All private spaces", "pic_sell_plugin"),
+			'view_item' => __("View private space", "pic_sell_plugin"),
+			'search_items' => __("Search private spaces", "pic_sell_plugin"),
+			'not_found' =>  __("Not private space", "pic_sell_plugin"),
+			'not_found_in_trash' => __("No private space found in Trash", "pic_sell_plugin"),
 			'parent_item_colon' => '',
-			'menu_name' => 'Espaces privés',
+			'menu_name' => __("Private spaces", "pic_sell_plugin"),
 		);
 
 		// register post type
@@ -668,7 +683,7 @@ class Pic_Sell_Public
 			'hierarchical' => false,
 			'rewrite' => array('slug' => 'espace-prive'),
 			'query_var' => true,
-			'menu_icon' => 'dashicons-admin-post',
+			'menu_icon' => 'data:image/svg+xml;base64,' . base64_encode('<svg  xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="#AAAAAA"><path d="m387 117l-113-114c-2-2-4-3-7-3c0 0 0 0 0 0c-3 0-6 1-8 3l-114 114l-145 0l0 395l512 0l0-395z m-120-91l90 91l-182 0z m224 465l-470 0l0-352l470 0z m-22-331l-426 0l0 309l426 0z m-405 21l384 0l0 128l-53 0c-6 0-11 5-11 11l0 53l-32 0c-6 0-11 5-11 11l0 64l-37 0c-17-22-101-133-101-235c0-6-5-10-11-10c-6 0-11 4-11 10c0 101-84 213-101 235l-16 0z m320 267l-21 0l0-53l21 0z m-241-53l98 0c14 22 27 41 36 53l-170 0c9-12 22-31 36-53z m12-22c14-26 28-57 37-89c9 32 23 63 37 89z m250 75l0-117l43 0l0 117z"></path></svg>'),
 			'supports' => array(
 				'title',
 				'editor',
@@ -687,7 +702,7 @@ class Pic_Sell_Public
 			return $open;
 		}, 99 , 2 );
 		// register taxonomy
-		register_taxonomy('espaceprive_category', 'espaceprive', array('hierarchical' => true, 'label' => 'Categorie', 'query_var' => true, 'rewrite' => array('slug' => 'espaceprive-category')));
+		//register_taxonomy('espaceprive_category', 'espaceprive', array('hierarchical' => true, 'label' => 'Categorie', 'query_var' => true, 'rewrite' => array('slug' => 'espaceprive-category')));
 	
 		add_action( 'add_meta_boxes', function() {
 

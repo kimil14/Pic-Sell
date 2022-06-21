@@ -76,13 +76,13 @@ jQuery(function ($) {
   var slice_size = 1024 * 1024 * 10;
   var post_id = PicSellVars.post.ID;
   var post_title = PicSellVars.post.post_title;
+  var nonce_ajax = PicSellVars.nonce; 
   var individual_file = {};
   var $parent = {};
   var $ligne = {};
   var $file = {};
 
-
-$("body").on("click", ".ps_add_multiple_media", function (e) {
+$("body").on("click", ".ps_add_multiple_media", function (e) { /**Simule input file */
 
     if(!$('input').hasClass('pic_multiple_media')){   
       var input = $('<input/>')
@@ -101,19 +101,12 @@ $("body").on("click", ".ps_add_multiple_media", function (e) {
 
 $("body").on("change", ".pic_multiple_media", async function (e) {
 
-
   var files = $(this)[0].files;
-
-  var post_id = PicSellVars.post.ID;
-  var post_title = PicSellVars.post.post_title;
- 
   for (var i = 0, f; f = files[i]; i++) {
-
         var isImage = f.type.split("/")[0] === "image";
         var isVideo = f.type.split("/")[0] === "video";
-
+        
         if(isImage || isVideo){
-
 
           if(isImage){
 
@@ -124,7 +117,8 @@ $("body").on("change", ".pic_multiple_media", async function (e) {
                 add_field_row();
                 var $ligne = $("#field_wrap tbody tr:nth-child(" + $("#field_wrap tbody > tr").length + ")"); 
 
-                fd = new FormData();
+                fd = new FormData();       
+                fd.append('nonce_ajax', nonce_ajax);
                 fd.append("file", f);
                 fd.append("post_title", post_title);
                 fd.append("post_id", post_id);
@@ -199,6 +193,7 @@ $("body").on("change", ".pic_multiple_media", async function (e) {
       return false;
     }
 
+    fd.append('nonce_ajax', nonce_ajax);
     fd.append("file", individual_file);
     fd.append("post_title", post_title);
     fd.append("post_id", post_id);
@@ -308,6 +303,7 @@ $("body").on("change", ".pic_multiple_media", async function (e) {
     var file_b64 = await toBase64(blob);
 
     fd2 = new FormData();
+    fd2.append('nonce_ajax', nonce_ajax);
     fd2.append("filename", individual_file.name);
     fd2.append("post_title", post_title);
     fd2.append("post_id", post_id);
@@ -366,6 +362,7 @@ $("body").on("change", ".pic_multiple_media", async function (e) {
     $.when(file_b64).done(function(){
 
       var fd2 = new FormData();
+      fd2.append('nonce_ajax', nonce_ajax);
       fd2.append("filename", individual_file.name);
       fd2.append("post_title", post_title);
       fd2.append("post_id", post_id);
@@ -454,6 +451,7 @@ $("body").on("change", ".pic_multiple_media", async function (e) {
     $('body').append('<div id="modal_before_publish" title="'+__('Confirm publish', 'pic_sell_plugin')+'"></div>');
 
     fd2 = new FormData();
+    fd2.append('nonce_ajax', nonce_ajax);
     fd2.append("action", "pic_template_sent_gallery");
     fd2.append('post_id', post_id);
     fd2.append('act', 'step_1');
@@ -481,6 +479,7 @@ $("body").on("change", ".pic_multiple_media", async function (e) {
       });
 
         fd2 = new FormData();
+        fd2.append('nonce_ajax', nonce_ajax);
         fd2.append("action", "pic_template_sent_gallery");
         fd2.append('post_id', post_id);
         fd2.append('emails', email);
@@ -502,8 +501,6 @@ $("body").on("change", ".pic_multiple_media", async function (e) {
             $("#publish").unbind('click').click(); 
           }, 2000);
         });
-
-
     });
 
     

@@ -1,23 +1,168 @@
-function add_field_row_offer() {
-  var contents = jQuery("#master-row").html();
-  contents = contents.replaceAll("modele_tr", "tr");
-  contents = contents.replaceAll("modele_td", "td");
-  var tbody = jQuery("#field_wrap tbody");
-  var table = tbody.length ? tbody : jQuery("#field_wrap");
-  table.append(contents);
-  console.log(table);
-  ps_init_offre();
-  ps_init_classement();
-}
+const {__, _n, _x, sprintf} = wp.i18n;
+
+jQuery(function ($) {
+  "use strict"
+
+
+  /**
+   * FN
+   */
+   $.fn.slideUpRemove = function (d, c) {
+    var _this = this,
+        duration = typeof d === 'number' ? d : 400,
+        callback = typeof c === 'function' ? c : d;
+
+    return this.slideUp(duration).promise().done(function () {
+        _this.remove();
+        if (typeof callback === 'function') callback.call();
+    });
+};
+
+
+  var products = (function(){
+
+    var arrayProducts = [];
+    var fd = new FormData();
+    fd.append("nonce_ajax", PicSellVars.nonce);
+    fd.append("post_id", PicSellVars.post.ID);
+    fd.append("action", "pic_autocompleteOfferPack");
+
+    $.ajax({
+      async: false,
+      type: "POST",
+      dataType: 'json',
+      url: PicSellVars.url,
+      data: fd,
+      contentType: false,
+      processData: false,
+      success: function(data) {
+        arrayProducts = data;
+      }
+    });
+    return arrayProducts;
+
+  }());
+
+  $("body").on("click", ".pic_add_field_row_offer", function (e) { 
+
+    var contents = $("#master-row").html();
+    contents = contents.replaceAll("modele_tr", "tr");
+    contents = contents.replaceAll("modele_td", "td");
+    var tbody = $("#field_wrap tbody");
+    var table = tbody.length ? tbody : $("#field_wrap");
+    table.append(contents);
+    console.log(table);
+    ps_init_offre();
+    ps_init_classement();
+    
+  });
+
+  /**
+   * OPEN CARD
+   */
+  $("body").on("click", ".ps_open_card", function (e) {  
+
+      e.preventDefault();
+    
+      var $card = $(this).parent().parent();
+      if($card.hasClass("close")){
+        $(this).removeClass('dashicons-arrow-left').addClass('dashicons-arrow-down');
+        $card.removeClass("close").addClass("open");
+      }else{
+        $(this).removeClass('dashicons-arrow-down').addClass('dashicons-arrow-left');
+        $card.removeClass("open").addClass("close");
+      }
+    
+  });
 
 function ps_init_classement() {
-  var tr = jQuery("#field_wrap tr:not(.tr_head)");
-  if (tr.length) {
-    jQuery("#field_wrap tbody tr:not(.tr_head)").each(function () {
-      jQuery(this).find(".ps_classement_span").html(jQuery(this).index());
-      jQuery(this).find(".ps_classement_input").val(jQuery(this).index());
+
+  $(".container-flex .cart .param").each(function (index) {
+    $(this).find(".ps_classement_span").html(index+1);
+    $(this).find(".ps_classement_input").val(index+1);
+  });
+  EnableAutoCompletion();
+}
+
+function ps_init_offre_flex(){
+  var $container = $(".container-flex");
+  var $carts = $(".container-flex > div");
+
+  $carts.each(function(index){
+
+    var $cart = $(this);
+
+    $cart.addClass("cart close cart-"+index);
+
+    var input_title = $cart.find("input.ps_media_title_input"),
+    input_quantity = $cart.find("input.ps_quantity"),
+    input_price = $cart.find("input.ps_price"),
+    select_choice_media = $cart.find("select.ps_choice_image_select"),
+    input_media_dir = $cart.find("input.ps_media_dir"),
+    media = $cart.find("img.ps_display_image"),
+    textarea_desc = $cart.find("textarea.ps_media_desc"),
+    select_choice_cat = $cart.find("select.ps_choice_cat_select");  
+
+    var line_title = $("<h3 class='title'>"+$(input_title).val()+"</h3>");
+    var line_desc = $("<span class='desc'>"+$(textarea_desc).val()+"</span>");
+    input_title.parent().append(line_title).append(line_desc);
+
+    var line_quantity = $("<span class='label quantity'>"+ __('Quantity', 'pic_sell_plugin') + ": </span><span class='edit'>" + $(input_quantity).val() + "</span>");
+    input_quantity.parent().append(line_quantity);
+
+    var line_price = $("<span class='label price'>"+ __('Price', 'pic_sell_plugin') + ": </span><span class='edit'>" + $(input_price).val() + "</span>");
+    input_price.parent().append(line_price);
+
+    var line_choice_media = $("<span class='label choice_media'>"+ __('Type media', 'pic_sell_plugin') + ": </span><span class='edit'>" + $(select_choice_media).val() + "</span>");
+    select_choice_media.parent().append(line_choice_media);
+
+    var line_choice_cat = $("<span class='label choice_cat'>"+ __('Category product', 'pic_sell_plugin') + ": </span><span class='edit'>" + $(select_choice_cat).find("option:selected").text() + "</span>");
+    select_choice_cat.parent().append(line_choice_cat);
+
+    $(input_title).hide();
+    $(textarea_desc).hide();
+    $(input_quantity).hide();
+    $(input_price).hide();
+    $(select_choice_media).hide();
+    $(select_choice_cat).hide();
+
+  });
+
+}
+
+function ps_save_post(){
+  //$('input#publish, input#save-post').click(function(){
+    //Post to post.php
+    var postURL = PicSellVars.post_url;
+    //Collate all post form data
+    var data = $('form#post').serializeArray();
+    //Set a trigger for our save_post action
+    data.push({name: 'foo_doing_ajax', value:true});
+
+    var ajax_updated = false;
+
+    $(window).unbind('beforeunload.edit-post');
+    $(window).on( 'beforeunload.edit-post', function() {
+      var editor = typeof tinymce !== 'undefined' && tinymce.get('content');
+      if ( ( editor && !editor.isHidden() && editor.isDirty() ) ||
+              ( wp.autosave && wp.autosave.getCompareString() != ajax_updated) ) { 
+              return postL10n.saveAlert;
+      }   
+});
+    $.post(postURL, data, function(response){
+        if(response.success){
+          // Update the saved content for the beforeunload check
+          ajax_updated = wp.autosave.getCompareString();
+          var slide_message = "<div class='pic_slide_message'>"+ __('The offers are Saved', 'pic_sell_plugin') +"</div>";
+          $('body').append(slide_message);
+          $('.pic_slide_message').delay( 1000).slideUpRemove(1200);
+          console.log('Saved post successfully');
+      }else{
+        //alert('Something went wrong. ' + response);
+      }         
     });
-  }
+    return false;
+
 }
 
 function ps_init_offre() {
@@ -37,11 +182,54 @@ const toBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-jQuery(function ($) {
+  function EnableAutoCompletion(){
+
+    $( ".ps_media_title_input" ).autocomplete({
+        minLength: 0,
+        source: function (request, response) {
+          var regex = new RegExp(request.term, 'i');
+          response($.map(products, function(item) {
+            if(regex.test(item.titre)){
+              return {
+                  label: item.titre,
+                  desc: item.description,
+                  price: item.prix
+              };
+            }
+          }));
+         //});
+      },
+      /*response: function(ev, item){
+        console.log(item);
+      },*/
+        focus: function( event, ui ) {
+          $( this).val( ui.item.label );
+              return false;
+        },
+        select: function( event, ui ) {
+
+          $( this ).val( ui.item.label );
+          //$( "#project-id" ).val( ui.item.value );
+          //$( "#project-description" ).html( ui.item.desc );
+          return false;
+        },
+        create: function() {
+          $(this).data('ui-autocomplete')._renderItem = function( ul, item ) {
+              return $( "<li>" )
+              .append( "" + item.label + "<span class='price_li_autocomplete'><small>"+ item.price +"</small></span><br><small>" + item.desc + "</small>" )
+              .appendTo( ul );
+          };
+        }
+
+    });  
+  }
+
+
+
   /**
    * TABLEAU SORTABLE DRAG
    */
-  $("#field_wrap tbody").sortable({
+  /*$("#field_wrap tbody").sortable({
     update: function (event, ui) {
       $("#field_wrap tbody tr").each(function () {
         $(this).find(".ps_classement_span").html($(this).index());
@@ -50,18 +238,48 @@ jQuery(function ($) {
     },
     handle: ".ps_classement",
     cursor: "move",
+  });*/
+
+  $(".container-flex").sortable({
+    update: function (event, ui) {
+      ps_save_post();
+      $(".container-flex .cart .param").each(function (index) {
+        $(this).find(".ps_classement_span").html(index+1);
+        $(this).find(".ps_classement_input").val(index+1);
+      });
+    },
+    handle: ".param",
+    cursor: "move",
+    placeholder: "ui-state-highlight"
   });
+  $( ".container-flex" ).disableSelection();
 
-  ps_init_offre();
+  //ps_init_offre();
+  ps_init_offre_flex();
+
   ps_init_classement();
-
+  EnableAutoCompletion();
+  
   var slice_size = 1024 * 1024 * 10;
   var post_id = PicSellVars.post.ID;
   var post_title = PicSellVars.post.post_title;
+  var nonce = PicSellVars.nonce;
   var individual_file = {};
   var $parent = {};
   var $ligne = {};
   var $file = {};
+
+ /* $("body").on("keyup", "input.ps_media_title", function (e) {
+
+    e.preventDefault();
+    var $this = $(this);
+    var $parent = $this.parent();
+    var $val = $this.val();
+    var $ligne = $parent.parent();
+
+    console.log($ligne);
+
+  });*/
 
   $("body").on("change", ".ps_upload_image_button", async function (e) {
     e.preventDefault();
@@ -84,12 +302,13 @@ jQuery(function ($) {
       return false;
     }
 
+    fd.append("nonce_ajax", nonce);
     fd.append("file", individual_file);
     fd.append("post_title", post_title);
     fd.append("post_id", post_id);
     fd.append("action", "fiu_upload_file");
 
-    jQuery.ajax({
+    $.ajax({
       type: "POST",
       url: ajaxurl,
       data: fd,
