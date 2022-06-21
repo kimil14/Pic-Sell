@@ -17,7 +17,70 @@ jQuery(function ($) {
         if (typeof callback === 'function') callback.call();
     });
 };
+$.fn.extend({
+	editable: function () {
+		$(this).each(function () {
 
+      var $cart = $(this).parent().parent();
+
+			var $el = $(this),
+      $input = $el.data("input"),
+		//	$edittextbox = $('<input type="text"></input>').css('min-width', $el.width()),
+      $edittextbox = $cart.find($input),
+			submitChanges = function () {
+       console.log($edittextbox);
+				if ($edittextbox.val() !== '') {
+         // $(select_choice_cat).find("option:selected").text();
+          if($edittextbox.get(0).tagName == "SELECT"){
+            $el.html($edittextbox.find("option:selected").text());
+          }else{
+            $el.html($edittextbox.val());
+          }	
+					$el.show();
+					$el.trigger('editsubmit', [$el.html()]);
+					$(document).unbind('click', submitChanges);
+					//$edittextbox.detach();
+          $edittextbox.hide();
+				}
+			},
+			tempVal;
+
+			$edittextbox.click(function (event) {
+				event.stopPropagation();
+			});
+
+			/*$el.dblclick(function (e) {
+				tempVal = $el.html();
+				$edittextbox.val(tempVal).insertBefore(this)
+                .bind('keypress', function (e) {
+					var code = (e.keyCode ? e.keyCode : e.which);
+					if (code == 13) {
+						submitChanges();
+					}
+				}).select();
+				$el.hide();
+				$(document).click(submitChanges);
+			});*/
+
+      var $auto_dbdclick = function(){
+        $edittextbox.show();
+        tempVal = $el.html();
+				$edittextbox.val(tempVal).insertBefore($el)
+                .bind('keypress', function (e) {
+					var code = (e.keyCode ? e.keyCode : e.which);
+					if (code == 13) {
+						submitChanges();
+					}
+				}).select();
+				$el.hide();
+				$(document).click(submitChanges);
+      }
+      $auto_dbdclick();
+
+		});
+		return this;
+	}
+});
 
   var products = (function(){
 
@@ -75,8 +138,28 @@ jQuery(function ($) {
     
   });
 
-function ps_init_classement() {
+  $("body").on("dblclick", ".container-flex .cart .edit", function (e) {
+    var $cart = $(this).parent().parent();
 
+    var input_title = $cart.find("input.ps_media_title_input"),
+    input_quantity = $cart.find("input.ps_quantity"),
+    input_price = $cart.find("input.ps_price"),
+    select_choice_media = $cart.find("select.ps_choice_image_select"),
+    input_media_dir = $cart.find("input.ps_media_dir"),
+    media = $cart.find("img.ps_display_image"),
+    textarea_desc = $cart.find("textarea.ps_media_desc"),
+    select_choice_cat = $cart.find("select.ps_choice_cat_select");  
+
+    console.log($cart);
+
+    $(this).editable(e).on('editsubmit', function(event, val) {
+      ps_save_post();
+    });
+
+
+  });
+
+function ps_init_classement() {
   $(".container-flex .cart .param").each(function (index) {
     $(this).find(".ps_classement_span").html(index+1);
     $(this).find(".ps_classement_input").val(index+1);
@@ -105,18 +188,18 @@ function ps_init_offre_flex(){
 
     var line_title = $("<h3 class='title'>"+$(input_title).val()+"</h3>");
     var line_desc = $("<span class='desc'>"+$(textarea_desc).val()+"</span>");
-    input_title.parent().append(line_title).append(line_desc);
+    input_title.parent().append(line_title).append(line_desc); 
 
-    var line_quantity = $("<span class='label quantity'>"+ __('Quantity', 'pic_sell_plugin') + ": </span><span class='edit'>" + $(input_quantity).val() + "</span>");
+    var line_quantity = $("<span class='label quantity'>"+ __('Quantity', 'pic_sell_plugin') + ": </span><span data-input='input.ps_quantity' class='edit'>" + $(input_quantity).val() + "</span>");
     input_quantity.parent().append(line_quantity);
 
-    var line_price = $("<span class='label price'>"+ __('Price', 'pic_sell_plugin') + ": </span><span class='edit'>" + $(input_price).val() + "</span>");
+    var line_price = $("<span class='label price'>"+ __('Price', 'pic_sell_plugin') + ": </span><span data-input='input.ps_price' class='edit'>" + $(input_price).val() + "</span>");
     input_price.parent().append(line_price);
 
-    var line_choice_media = $("<span class='label choice_media'>"+ __('Type media', 'pic_sell_plugin') + ": </span><span class='edit'>" + $(select_choice_media).val() + "</span>");
+    var line_choice_media = $("<span class='label choice_media'>"+ __('Type media', 'pic_sell_plugin') + ": </span><span data-input='select.ps_choice_image_select' class='edit'>" + $(select_choice_media).val() + "</span>");
     select_choice_media.parent().append(line_choice_media);
 
-    var line_choice_cat = $("<span class='label choice_cat'>"+ __('Category product', 'pic_sell_plugin') + ": </span><span class='edit'>" + $(select_choice_cat).find("option:selected").text() + "</span>");
+    var line_choice_cat = $("<span class='label choice_cat'>"+ __('Category product', 'pic_sell_plugin') + ": </span><span data-input='select.ps_choice_cat_select' class='edit'>" + $(select_choice_cat).find("option:selected").text() + "</span>");
     select_choice_cat.parent().append(line_choice_cat);
 
     $(input_title).hide();
@@ -227,26 +310,16 @@ const toBase64 = (file) =>
 
 
   /**
-   * TABLEAU SORTABLE DRAG
+   * CARD SORTABLE DRAG
    */
-  /*$("#field_wrap tbody").sortable({
-    update: function (event, ui) {
-      $("#field_wrap tbody tr").each(function () {
-        $(this).find(".ps_classement_span").html($(this).index());
-        $(this).find(".ps_classement_input").val($(this).index());
-      });
-    },
-    handle: ".ps_classement",
-    cursor: "move",
-  });*/
-
   $(".container-flex").sortable({
     update: function (event, ui) {
-      ps_save_post();
+      
       $(".container-flex .cart .param").each(function (index) {
         $(this).find(".ps_classement_span").html(index+1);
         $(this).find(".ps_classement_input").val(index+1);
       });
+      ps_save_post();
     },
     handle: ".param",
     cursor: "move",
