@@ -54,6 +54,8 @@ class Pic_Sell_Admin
 		add_action('wp_ajax_nopriv_pic_autocompleteOfferPack', array($this, 'pic_autocomplete_offer_pack'));
 		add_action('wp_ajax_pic_autocompleteOfferPack', array($this, 'pic_autocomplete_offer_pack'));
 
+		add_action('wp_ajax_nopriv_pic_savepostOfferPack', array($this, 'pic_savepost_offer_pack'));
+		add_action('wp_ajax_pic_savepostOfferPack', array($this, 'pic_savepost_offer_pack'));
 
 		add_filter('default_content', array($this, 'set_default_values'), 10, 2); //password auto sur post espaceprive
 
@@ -957,7 +959,7 @@ class Pic_Sell_Admin
 			?>
 			<div id='dynamic_form'>
 				<label for="offers"><?php _e('Offers', 'pic_sell_plugin'); ?></label>
-<!--
+			<!--
 				<div>
 					<table id='field_wrap'>
 
@@ -996,7 +998,7 @@ class Pic_Sell_Admin
 						-->
 
 				<!-- TEST -->
-				<div class="container-flex">
+				<div class="container-cards container-flex">
 
 					<?php
 					if (isset($offer_price['classement'])) {
@@ -1004,14 +1006,72 @@ class Pic_Sell_Admin
 							$offer_price_field_flex($i, $offer_price);
 						}
 					}
+					
 					?>				
-
+				<div class="addcard pic_add_card_offer"><?php  _e('Add offer', 'pic_sell_plugin'); ?></div>
 				</div>
 
 				<?php $category = $this->get_cat_by_type_post("offre", "offre_category"); ?>
 				<!--
  			* MODELE LIGNE TABLEAU
 			-->
+				<div id='template_cart' style='display:none'>
+					<div>
+						<div class='param'>					
+							<span class='ps_classement_span'></span>
+							<input type='hidden' class='ps_classement_input' name='offer[classement][]' value='' />
+							<a href='#' class='ps_remove_line_button dashicons dashicons-trash' style='display:inline-block;' title='<?php _e('Remove card', 'pic_sell_plugin'); ?>'></a>
+							<a href='#' class='ps_open_card dashicons dashicons-arrow-left' style='display:inline-block;' title='<?php _e('Expand card', 'pic_sell_plugin'); ?>'></a>
+						</div>
+
+						<div class='ps_media_title'>
+							<input type='text' class='ps_media_title_input' name='offer[title][]' value='' placeholder="<?php  _e('Title', 'pic_sell_plugin'); ?>" />
+							<textarea class='ps_media_desc' name='offer[desc][]'></textarea>
+						</div>
+
+						<div class='ps_media'>
+							<img src='' class='ps_display_image' style='max-width:100%;display:none;' />
+							<input type='file' class='ps_upload_image_button button' style='display:block;' value='<?php _e('Add image', 'pic_sell_plugin'); ?>' />
+							<input type='hidden' class='ps_media_dir' name='offer[media][]' value='' />
+						</div>
+
+						<div class='ps_quantity'>
+							<input type='number' class='ps_quantity' name='offer[quantity][]' step='1' value='' />
+						</div>
+
+						<div class='ps_price'>
+							<input type='number' class='ps_price' name='offer[price][]' step='.01' value='' />
+						</div>
+
+						<div class='ps_choice'>
+							<select class='ps_choice_image_select' name='offer[choice_media][]'>
+								<option value='select'><?php _e('Select media type', 'pic_sell_plugin'); ?></option>
+								<option value='image'><?php _e('Image', 'pic_sell_plugin'); ?></option>
+								<option value='video'><?php _e('Video', 'pic_sell_plugin'); ?></option>
+							</select>
+						</div>
+
+
+						<div class='ps_choice_cat'>
+							<select class='ps_choice_cat_select' name='offer[cat][]'>
+								<option value='select'><?php _e('Select cat', 'pic_sell_plugin') ?></option>
+								<?php
+								if (isset($category) && !empty($category)) {
+									foreach ($category as $cat) {
+										$term_id = $cat->term_id;
+										$term_name = $cat->name;		
+								?>
+										<option value='<?php echo esc_html($term_id); ?>'><?php echo esc_html($term_name); ?></option>
+								<?php
+									}
+								} else {
+									_e('Create catégory before', 'pic_sell_plugin');
+								} ?>
+							</select>
+						</div>
+					</div>
+				</div>
+				
 				<div id='master-row' style='display:none;'>
 					<modele_tr>
 						<modele_td class='ps_classement'>
@@ -1603,6 +1663,20 @@ class Pic_Sell_Admin
 		}
 		echo json_encode($suggestions);
 		die();
+	}
+
+	/**
+	 * Simulate save_post_offre for Offer pack
+	 */
+	public function pic_savepost_offer_pack() {
+		// echo result
+		check_ajax_referer( 'pic-sell-ajax-nonce', 'nonce_ajax' );
+
+		if($_POST["offer"]){
+			$_POST["action"] = "";
+			do_action("save_post", $_POST["post_id"], $_POST["post"], true);
+		}
+		
 	}
 
 	/***********************************************

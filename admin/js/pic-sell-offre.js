@@ -25,10 +25,9 @@ $.fn.extend({
 
 			var $el = $(this),
       $input = $el.data("input"),
-		//	$edittextbox = $('<input type="text"></input>').css('min-width', $el.width()),
+    //  $edittextbox = {},
       $edittextbox = $cart.find($input),
 			submitChanges = function () {
-       console.log($edittextbox);
 				if ($edittextbox.val() !== '') {
          // $(select_choice_cat).find("option:selected").text();
           if($edittextbox.get(0).tagName == "SELECT"){
@@ -39,7 +38,6 @@ $.fn.extend({
 					$el.show();
 					$el.trigger('editsubmit', [$el.html()]);
 					$(document).unbind('click', submitChanges);
-					//$edittextbox.detach();
           $edittextbox.hide();
 				}
 			},
@@ -49,27 +47,25 @@ $.fn.extend({
 				event.stopPropagation();
 			});
 
-			/*$el.dblclick(function (e) {
-				tempVal = $el.html();
-				$edittextbox.val(tempVal).insertBefore(this)
-                .bind('keypress', function (e) {
-					var code = (e.keyCode ? e.keyCode : e.which);
-					if (code == 13) {
-						submitChanges();
-					}
-				}).select();
-				$el.hide();
-				$(document).click(submitChanges);
-			});*/
-
       var $auto_dbdclick = function(){
         $edittextbox.show();
         tempVal = $el.html();
-				$edittextbox.val(tempVal).insertBefore($el)
-                .bind('keypress', function (e) {
+
+        console.log($el);
+        if($edittextbox.get(0).tagName == "TEXTAREA"){
+          $edittextbox.height("auto").height($edittextbox[0].scrollHeight);
+        }
+        if($edittextbox.get(0).tagName == "SELECT"){
+          tempVal =  $edittextbox.find("option:selected").val()
+        }
+        if($edittextbox.get(0).tagName == "INPUT"){
+          $edittextbox.width("auto").width($el.width());
+        }
+				$edittextbox.val(tempVal).insertBefore($el).bind('keypress', function (e) {
 					var code = (e.keyCode ? e.keyCode : e.which);
 					if (code == 13) {
 						submitChanges();
+            e.preventDefault();
 					}
 				}).select();
 				$el.hide();
@@ -106,18 +102,17 @@ $.fn.extend({
 
   }());
 
-  $("body").on("click", ".pic_add_field_row_offer", function (e) { 
+  $("body").on("click", ".pic_add_card_offer", function (e) { 
 
-    var contents = $("#master-row").html();
-    contents = contents.replaceAll("modele_tr", "tr");
-    contents = contents.replaceAll("modele_td", "td");
-    var tbody = $("#field_wrap tbody");
-    var table = tbody.length ? tbody : $("#field_wrap");
-    table.append(contents);
-    console.log(table);
-    ps_init_offre();
+    var contents = $("#template_cart").html();
+    var table =  $(".container-cards");
+    var $contents = $(contents);
+    table.append($contents);
+    ps_init_offre_flex();  
     ps_init_classement();
-    
+    console.log($contents);
+    $contents.find(".edit").trigger("dblclick");
+
   });
 
   /**
@@ -138,25 +133,21 @@ $.fn.extend({
     
   });
 
+  /**EDIT CARD */
   $("body").on("dblclick", ".container-flex .cart .edit", function (e) {
-    var $cart = $(this).parent().parent();
-
-    var input_title = $cart.find("input.ps_media_title_input"),
-    input_quantity = $cart.find("input.ps_quantity"),
-    input_price = $cart.find("input.ps_price"),
-    select_choice_media = $cart.find("select.ps_choice_image_select"),
-    input_media_dir = $cart.find("input.ps_media_dir"),
-    media = $cart.find("img.ps_display_image"),
-    textarea_desc = $cart.find("textarea.ps_media_desc"),
-    select_choice_cat = $cart.find("select.ps_choice_cat_select");  
-
-    console.log($cart);
-
-    $(this).editable(e).on('editsubmit', function(event, val) {
+    var $card = $(this).parent().parent();
+    if($card.hasClass("close")){
+      $card.find(".ps_open_card").trigger("click");
+    }
+    $(this).editable().on('editsubmit', function(event, val) {
+      console.log("save the post");
       ps_save_post();
     });
-
-
+  });
+  $("body").on("dblclick", ".container-flex .cart .editL", function (e) {
+    $(this).siblings( ".edit" ).editable().on('editsubmit', function(event, val) {
+      ps_save_post();
+    });
   });
 
 function ps_init_classement() {
@@ -169,45 +160,49 @@ function ps_init_classement() {
 
 function ps_init_offre_flex(){
   var $container = $(".container-flex");
-  var $carts = $(".container-flex > div");
+  var $carts = $(".container-flex > div").not(".addcard");
 
   $carts.each(function(index){
 
     var $cart = $(this);
 
-    $cart.addClass("cart close cart-"+index);
+    if(!$cart.hasClass('cart')){
+      $cart.addClass("cart close cart-"+index);
 
-    var input_title = $cart.find("input.ps_media_title_input"),
-    input_quantity = $cart.find("input.ps_quantity"),
-    input_price = $cart.find("input.ps_price"),
-    select_choice_media = $cart.find("select.ps_choice_image_select"),
-    input_media_dir = $cart.find("input.ps_media_dir"),
-    media = $cart.find("img.ps_display_image"),
-    textarea_desc = $cart.find("textarea.ps_media_desc"),
-    select_choice_cat = $cart.find("select.ps_choice_cat_select");  
+      var input_title = $cart.find("input.ps_media_title_input"),
+      input_quantity = $cart.find("input.ps_quantity"),
+      input_price = $cart.find("input.ps_price"),
+      select_choice_media = $cart.find("select.ps_choice_image_select"),
+      input_media_dir = $cart.find("input.ps_media_dir"),
+      media = $cart.find("img.ps_display_image"),
+      textarea_desc = $cart.find("textarea.ps_media_desc"),
+      select_choice_cat = $cart.find("select.ps_choice_cat_select");
 
-    var line_title = $("<h3 class='title'>"+$(input_title).val()+"</h3>");
-    var line_desc = $("<span class='desc'>"+$(textarea_desc).val()+"</span>");
-    input_title.parent().append(line_title).append(line_desc); 
+      var line_title = $("<span class='title edit' data-input='input.ps_media_title_input'>" + $(input_title).val() + "</span>");
+      var line_desc = $("<span class='desc edit' data-input='textarea.ps_media_desc'>" + $(textarea_desc).val() + "</span>");
+      input_title.parent().append(line_title).append(line_desc); 
 
-    var line_quantity = $("<span class='label quantity'>"+ __('Quantity', 'pic_sell_plugin') + ": </span><span data-input='input.ps_quantity' class='edit'>" + $(input_quantity).val() + "</span>");
-    input_quantity.parent().append(line_quantity);
+      var line_quantity = $("<span class='label editL quantity'>"+ __('Quantity', 'pic_sell_plugin') + ": </span><span data-input='input.ps_quantity' class='edit'>" + $(input_quantity).val() + "</span>");
+      input_quantity.parent().append(line_quantity);
 
-    var line_price = $("<span class='label price'>"+ __('Price', 'pic_sell_plugin') + ": </span><span data-input='input.ps_price' class='edit'>" + $(input_price).val() + "</span>");
-    input_price.parent().append(line_price);
+      var line_price = $("<span class='label editL price'>"+ __('Price', 'pic_sell_plugin') + ": </span><span data-input='input.ps_price' class='edit'>" + $(input_price).val() + "</span>");
+      input_price.parent().append(line_price);
 
-    var line_choice_media = $("<span class='label choice_media'>"+ __('Type media', 'pic_sell_plugin') + ": </span><span data-input='select.ps_choice_image_select' class='edit'>" + $(select_choice_media).val() + "</span>");
-    select_choice_media.parent().append(line_choice_media);
+      var line_choice_media = $("<span class='label editL choice_media'>"+ __('Type media', 'pic_sell_plugin') + ": </span><span data-input='select.ps_choice_image_select' class='edit'>" + $(select_choice_media).val() + "</span>");
+      select_choice_media.parent().append(line_choice_media);
 
-    var line_choice_cat = $("<span class='label choice_cat'>"+ __('Category product', 'pic_sell_plugin') + ": </span><span data-input='select.ps_choice_cat_select' class='edit'>" + $(select_choice_cat).find("option:selected").text() + "</span>");
-    select_choice_cat.parent().append(line_choice_cat);
+      var line_choice_cat = $("<span class='label editL choice_cat'>"+ __('Category product', 'pic_sell_plugin') + ": </span><span data-input='select.ps_choice_cat_select' class='edit'>" + $(select_choice_cat).find("option:selected").text() + "</span>");
+      select_choice_cat.parent().append(line_choice_cat);
 
-    $(input_title).hide();
-    $(textarea_desc).hide();
-    $(input_quantity).hide();
-    $(input_price).hide();
-    $(select_choice_media).hide();
-    $(select_choice_cat).hide();
+      $(input_title).hide();
+      $(textarea_desc).hide();
+      $(input_quantity).hide();
+      $(input_price).hide();
+      $(select_choice_media).hide();
+      $(select_choice_cat).hide();  
+
+    }
+
 
   });
 
@@ -216,11 +211,15 @@ function ps_init_offre_flex(){
 function ps_save_post(){
   //$('input#publish, input#save-post').click(function(){
     //Post to post.php
-    var postURL = PicSellVars.post_url;
+    var postURL = PicSellVars.url;
     //Collate all post form data
     var data = $('form#post').serializeArray();
     //Set a trigger for our save_post action
-    data.push({name: 'foo_doing_ajax', value:true});
+    data.push({name: 'foo_doing_ajax', value: true});
+    data.push({name: 'nonce_ajax', value: PicSellVars.nonce});
+    data.push({name: 'post', value: PicSellVars.post});
+    data.push({name: 'post_id', value: PicSellVars.post.ID});
+    data.push({name: 'action', value: 'pic_savepostOfferPack'});
 
     var ajax_updated = false;
 
@@ -231,14 +230,14 @@ function ps_save_post(){
               ( wp.autosave && wp.autosave.getCompareString() != ajax_updated) ) { 
               return postL10n.saveAlert;
       }   
-});
-    $.post(postURL, data, function(response){
+    });
+    $.post(PicSellVars.url, data, function(response){
         if(response.success){
           // Update the saved content for the beforeunload check
           ajax_updated = wp.autosave.getCompareString();
           var slide_message = "<div class='pic_slide_message'>"+ __('The offers are Saved', 'pic_sell_plugin') +"</div>";
           $('body').append(slide_message);
-          $('.pic_slide_message').delay( 1000).slideUpRemove(1200);
+          $('.pic_slide_message').delay(1200).slideUpRemove(800);
           console.log('Saved post successfully');
       }else{
         //alert('Something went wrong. ' + response);
@@ -331,7 +330,7 @@ const toBase64 = (file) =>
   ps_init_offre_flex();
 
   ps_init_classement();
-  EnableAutoCompletion();
+  //EnableAutoCompletion();
   
   var slice_size = 1024 * 1024 * 10;
   var post_id = PicSellVars.post.ID;
@@ -409,8 +408,9 @@ const toBase64 = (file) =>
 
   $("body").on("click", ".ps_remove_line_button", function () {
     $(this).parent().parent().remove();
-    ps_init_offre();
+    ps_init_offre_flex();
     ps_init_classement();
+    ps_save_post();
     return false;
   });
 

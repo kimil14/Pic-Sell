@@ -516,8 +516,6 @@ class Pic_Sell_Public
 			'menu_icon' => 'dashicons-admin-post',
 			'supports' => array(
 				'title',
-				'editor',
-				'thumbnail',
 			)
 		);
 		register_post_type('offre', $args);
