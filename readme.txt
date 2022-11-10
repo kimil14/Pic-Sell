@@ -2,9 +2,9 @@
 Tags: gallery, picture, selling, photographer, media
 Donate link: https://www.paypal.com/donate/?hosted_button_id=LRE2EWCN62H4J
 Requires at least: 5.5.0
-Tested up to: 6.0.0
-Requires PHP: 7.0
-Stable tag: 1.0.10
+Tested up to: 6.1
+Requires PHP: 7.3
+Stable tag: 1.0.11
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 
 == Changelog ==
+
+= 1.0.11 =
+* Update interface backend for offers.
 
 = 1.0.10 =
 * change security ajax multifile.

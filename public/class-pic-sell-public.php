@@ -537,7 +537,7 @@ class Pic_Sell_Public
 				'query_var' => true, 
 				'rewrite' => array('slug' => 'offre-category')
 				)
-			);
+		);
 	
 		add_action( 'add_meta_boxes', function() {
 
