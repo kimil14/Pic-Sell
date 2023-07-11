@@ -73,14 +73,14 @@ class Pic_Sell_Admin
 		return $arg1;
 	}
 
-	public function ps_edit_column($columns)
+	function ps_edit_column($columns)
 	{
 		$columns['pack_default'] = __("Default", "pic_sell_plugin");
 		$columns['title'] = __("Title pack", "pic_sell_plugin");
 		return $columns;
 	}
 
-	public function ps_change_row_title($column, $post_id)
+	function ps_change_row_title($column, $post_id)
 	{
 		switch ($column) {
 			case 'pack_default':
@@ -141,31 +141,34 @@ class Pic_Sell_Admin
 		register_setting("commands-pic", "allcommands_pic");
 	}
 
-	public function pic_admin_menu()
+	function pic_admin_menu()
 	{
 		$this->pic_create_main_menu($this->menu_slug, __("Pic Sell", "pic_sell_plugin"), "manage_options", 4, array($this, 'picsell_menu_dashboard'));
 		$this->pic_create_sub_menu($this->menu_slug, __("Dashboard", "pic_sell_plugin"), "manage_options", 1, array($this, 'picsell_menu_dashboard'));
 		$this->pic_create_sub_menu($this->menu_slug, __("Settings", "pic_sell_plugin"), "manage_options", 2, array($this, 'picsell_page_settings'), "settings-pic");
 		$this->pic_create_sub_menu($this->menu_slug, __("Orders", "pic_sell_plugin"), "manage_options", 3, array($this, 'picsell_page_commande'), "page_commandes");
 
-		add_filter('parent_file', function ($parent_file) {
+		add_filter( 'parent_file', function( $parent_file ){ 
 
-			global $plugin_page, $post_type, $taxonomy, $submenu_file;
+			global $plugin_page, $post_type, $taxonomy, $submenu_file; 
 
-			if ('offre' == $post_type && empty($taxonomy)) {
+			if ('offre' == $post_type && empty($taxonomy)) { 
 
 				$plugin_page = 'edit.php?post_type=offre';
-			} else if ('offre' == $post_type && 'offre_category' == $taxonomy) {
+
+			}else if('offre' == $post_type && 'offre_category' == $taxonomy){
 
 				$plugin_page = 'edit-tags.php?taxonomy=offre_category&post_type=offre';
 				$submenu_file = 'edit-tags.php?taxonomy=offre_category&post_type=offre';
-			}
 
-			return $parent_file;
-		});
+			} 
 
+			return $parent_file; 
+		}); 
+				
 		add_submenu_page('edit.php?post_type=espaceprive', __("Offer packs", "pic_sell_plugin"),  __("Offer packs", "pic_sell_plugin"), 'manage_options', 'edit.php?post_type=offre');
 		add_submenu_page('edit.php?post_type=espaceprive', __("Category offer", "pic_sell_plugin"), __("Category offer", "pic_sell_plugin"), 'manage_options', 'edit-tags.php?taxonomy=offre_category&post_type=offre');
+
 	}
 
 
@@ -256,24 +259,6 @@ class Pic_Sell_Admin
 		$html .= 	"<p class='desc'>" . __('Enable scheduled tasks (1 visitor must be on the site to run the script).', 'pic_sell_plugin') . "<p/>";
 		$html .= 	"<p style='width:100%;'>Last Check: " . sanitize_text_field($cron) . "<p/>";
 		$html .= "</div>";
-
-
-		$statut_premium_plugin = (defined('PIC_SELL_PREMIUM_MAIN_FILE')) ? true:false;
-
-		$html .= "<div class='bloc'>";
-		$html .= 	"<label for='admin-premium-statut'>" . __('Statut premium', 'pic_sell_plugin') . "</label>";
-		if ($statut_premium_plugin) {
-			$html .= '<p style="color: green;">' . __('Active premium plugin', 'pic_sell_plugin') . '</p>';
-		} else {
-			$html .=  '<p style="color: red;">' . __('Inactive premium plugin', 'pic_sell_plugin') . '</p>';
-		}
-		$serial_premium = isset($config["premium"]["serial"]) ? $config["premium"]["serial"] : "";
-		$html .= "<p style='width:100%;'></p>";
-		$html .= "<label for='admin-galery-cron'>" . __('Serial Number', 'pic_sell_plugin') . "</label>";
-		$html .= "<input type='text' id='admin-galery-cron' placeholder='Serial Number PIC-123456' value='".sanitize_text_field($serial_premium)."' name='config_pic[premium][serial]' />";
-		
-		$html .= "</div>";		
-		
 
 		$html .= "</div>";
 
@@ -385,7 +370,7 @@ class Pic_Sell_Admin
 		$html .= "</div>";
 
 		$html2 = apply_filters("picsell/admin/menu/nav-tabs", null);
-		$html .= $html2;
+		$html .= $html2; 
 
 		$html .= '</div>';
 		$html .= get_submit_button();
@@ -574,7 +559,7 @@ class Pic_Sell_Admin
 
 			$params = ["name_vid" => $explode[count($explode) - 1], "dir_vid" => $post->ID];
 			$params_img = ["name_img" => $explode[count($explode) - 1], "dir_img" => $post->ID];
-?>
+			?>
 			<tr>
 				<td class='ps_classement'>
 					<span class='ps_classement_span'></span>
@@ -632,7 +617,7 @@ class Pic_Sell_Admin
 			$panier_client = get_post_meta($post->ID, 'panier_client', true);
 			$produit = get_post_meta($post->ID, 'produit_client', true);
 			$date_left = get_post_meta($post->ID, '_date_left', true);
-		?>
+			?>
 			<div class='dynamic_form'>
 
 				<label for="field_wrap">
@@ -804,7 +789,7 @@ class Pic_Sell_Admin
 			if (!$price) {
 				$price = 10;
 			}
-		?>
+			?>
 			<tr>
 				<td class='ps_classement'>
 					<span class='ps_classement_span'></span>
@@ -903,9 +888,9 @@ class Pic_Sell_Admin
 			if (!$price) {
 				$price = 10;
 			}
-		?>
+			?>
 			<div>
-				<div class='param'>
+				<div class='param'>					
 					<span class='ps_classement_span'></span>
 					<input type='hidden' class='ps_classement_input' name='offer[classement][]' value='<?php echo esc_html($classement); ?>' />
 					<a href='#' class='ps_remove_line_button dashicons dashicons-trash' style='display:inline-block;' title='<?php _e('Remove card', 'pic_sell_plugin'); ?>'></a>
@@ -967,14 +952,14 @@ class Pic_Sell_Admin
 			</div>
 		<?php
 		};
-
+		
 		$callback_offer = function ($post) use ($offer_price_field, $offer_price_field_flex) {
 			wp_nonce_field('offer_save_meta_box_data', 'offer_meta_box_nonce');
 			$offer_price = get_post_meta($post->ID, '_offer_data', true);
-		?>
+			?>
 			<div id='dynamic_form'>
 				<label for="offers"><?php _e('Offers', 'pic_sell_plugin'); ?></label>
-				<!--
+			<!--
 				<div>
 					<table id='field_wrap'>
 
@@ -989,24 +974,15 @@ class Pic_Sell_Admin
 						<col width=10% />
 
 						<tr class='tr_head'>
-							<th scope='col'><?php // _e('Ranking', 'pic_sell_plugin'); 
-											?></th>
-							<th scope='col'><?php // _e('Title', 'pic_sell_plugin'); 
-											?></th>
-							<th scope='col'><?php // _e('Quantity', 'pic_sell_plugin'); 
-											?></th>
-							<th scope='col'><?php // _e('Price', 'pic_sell_plugin'); 
-											?></th>
-							<th scope='col'><?php // _e('offer Type', 'pic_sell_plugin'); 
-											?></th>
-							<th scope='col'><?php // _e('Media', 'pic_sell_plugin'); 
-											?></th>
-							<th scope='col'><?php // _e('Description', 'pic_sell_plugin'); 
-											?></th>
-							<th scope='col'><?php // _e('Category', 'pic_sell_plugin'); 
-											?></th>
-							<th scope='col'><?php // _e('Actions', 'pic_sell_plugin'); 
-											?></th>
+							<th scope='col'><?php // _e('Ranking', 'pic_sell_plugin'); ?></th>
+							<th scope='col'><?php // _e('Title', 'pic_sell_plugin'); ?></th>
+							<th scope='col'><?php // _e('Quantity', 'pic_sell_plugin'); ?></th>
+							<th scope='col'><?php // _e('Price', 'pic_sell_plugin'); ?></th>
+							<th scope='col'><?php // _e('offer Type', 'pic_sell_plugin'); ?></th>
+							<th scope='col'><?php // _e('Media', 'pic_sell_plugin'); ?></th>
+							<th scope='col'><?php // _e('Description', 'pic_sell_plugin'); ?></th>
+							<th scope='col'><?php // _e('Category', 'pic_sell_plugin'); ?></th>
+							<th scope='col'><?php // _e('Actions', 'pic_sell_plugin'); ?></th>
 						</tr>
 
 						<?php
@@ -1017,7 +993,7 @@ class Pic_Sell_Admin
 						//}
 						?>
 					</table>
-					<input class='button button-primary ps_add_tr pic_add_field_row_offer' type='button' value='<?php // _e('Add offer', 'pic_sell_plugin'); ?>' />
+					<input class='button button-primary ps_add_tr pic_add_field_row_offer' type='button' value='<?php _e('Add offer', 'pic_sell_plugin'); ?>' />
 				</div>
 						-->
 
@@ -1030,9 +1006,9 @@ class Pic_Sell_Admin
 							$offer_price_field_flex($i, $offer_price);
 						}
 					}
-
-					?>
-					<div class="addcard pic_add_card_offer"><?php _e('Add offer', 'pic_sell_plugin'); ?></div>
+					
+					?>				
+				<div class="addcard pic_add_card_offer"><?php  _e('Add offer', 'pic_sell_plugin'); ?></div>
 				</div>
 
 				<?php $category = $this->get_cat_by_type_post("offre", "offre_category"); ?>
@@ -1041,7 +1017,7 @@ class Pic_Sell_Admin
 			-->
 				<div id='template_cart' style='display:none'>
 					<div>
-						<div class='param'>
+						<div class='param'>					
 							<span class='ps_classement_span'></span>
 							<input type='hidden' class='ps_classement_input' name='offer[classement][]' value='' />
 							<a href='#' class='ps_remove_line_button dashicons dashicons-trash' style='display:inline-block;' title='<?php _e('Remove card', 'pic_sell_plugin'); ?>'></a>
@@ -1049,7 +1025,7 @@ class Pic_Sell_Admin
 						</div>
 
 						<div class='ps_media_title'>
-							<input type='text' class='ps_media_title_input' name='offer[title][]' value='' placeholder="<?php _e('Title', 'pic_sell_plugin'); ?>" />
+							<input type='text' class='ps_media_title_input' name='offer[title][]' value='' placeholder="<?php  _e('Title', 'pic_sell_plugin'); ?>" />
 							<textarea class='ps_media_desc' name='offer[desc][]'></textarea>
 						</div>
 
@@ -1083,7 +1059,7 @@ class Pic_Sell_Admin
 								if (isset($category) && !empty($category)) {
 									foreach ($category as $cat) {
 										$term_id = $cat->term_id;
-										$term_name = $cat->name;
+										$term_name = $cat->name;		
 								?>
 										<option value='<?php echo esc_html($term_id); ?>'><?php echo esc_html($term_name); ?></option>
 								<?php
@@ -1095,7 +1071,7 @@ class Pic_Sell_Admin
 						</div>
 					</div>
 				</div>
-
+				
 				<div id='master-row' style='display:none;'>
 					<modele_tr>
 						<modele_td class='ps_classement'>
@@ -1161,12 +1137,12 @@ class Pic_Sell_Admin
 
 		$callback_offer_default = function ($post) {
 			$pack_offer_default = get_post_meta($post->ID, '_pack_offer_default', true);
-		?>
+			?>
 			<div id='wrap-pack-offer-default'>
 				<label for="pack_offer_default"><?php _e('Default:', 'pic_sell_plugin'); ?> </label>
 				<input type="checkbox" name="pack_offer_default" id="pack_offer_default" <?php echo ($pack_offer_default ? "checked" : ""); ?> />
 			</div>
-<?php
+		<?php
 		};
 		new Pic_Sell_Custom_Fields("offre", "section_offre_default", __('Default pack', 'pic_sell_plugin'), $callback_offer_default);
 	}
@@ -1250,7 +1226,7 @@ class Pic_Sell_Admin
 		}
 
 		#We conditionally exit so we don't return the full wp-admin load if foo_doing_ajax is true
-		if (isset($_POST['foo_doing_ajax']) && $_POST['foo_doing_ajax'] == true) {
+		if(isset($_POST['foo_doing_ajax']) && $_POST['foo_doing_ajax'] == true){
 			header('Content-type: application/json');
 			echo json_encode(array('success' => true));
 			exit;
@@ -1354,14 +1330,18 @@ class Pic_Sell_Admin
 			else
 				delete_post_meta($post_id, '_date_left');
 
-			if ($date_left_bdd != $date_left) {
+			if($date_left_bdd != $date_left){
 				update_post_meta($post_id, '_email_dateleft_sent', false); //on met le rappel par mail à false
 			}
+
 		}
 		// si rien, supprimer les options
 		else {
 			delete_post_meta($post_id, '_date_left');
 		}
+
+
+
 	}
 
 	public function decode_chunk($data)
@@ -1392,7 +1372,7 @@ class Pic_Sell_Admin
 	 */
 	public function pic_template_sent_gallery()
 	{
-		check_ajax_referer('pic-sell-ajax-nonce', 'nonce_ajax');
+		check_ajax_referer( 'pic-sell-ajax-nonce', 'nonce_ajax' );
 		//global $post;
 
 		$action = sanitize_text_field($_POST['act']);
@@ -1401,13 +1381,14 @@ class Pic_Sell_Admin
 		if (!$post_id) {
 			exit();
 		}
-		if ($action ==  "reset_sent_dateleft") {
+		if($action ==  "reset_sent_dateleft"){
 
 			$sended_mail_dateleft = update_post_meta($post_id, '_email_dateleft_sent', false);
 
 			wp_die();
-		}
 
+		}
+		
 		if ($action == "step_1") {
 
 			$date_left = get_post_meta($post_id, '_date_left', true);
@@ -1420,15 +1401,15 @@ class Pic_Sell_Admin
 			$date_sent = get_post_meta($post_id, '_gallery_send_date', true);
 			if (empty($sended)) {
 				$sended = false;
-			}
+			}	
 
 			$sended_mail_dateleft = get_post_meta($post_id, '_email_dateleft_sent', true);
 			if (empty($sended_mail_dateleft)) {
 				$sended_mail_dateleft = false;
 			}
-			if (!$sended_mail_dateleft) {
+			if(!$sended_mail_dateleft){
 				$text_sended_mail_dateleft = __('Never', 'pic_sell_plugin');
-			} else {
+			}else{
 				$text_sended_mail_dateleft = __('Already sent', 'pic_sell_plugin');
 			}
 
@@ -1440,9 +1421,9 @@ class Pic_Sell_Admin
 			$html .=			__('Availability date', 'pic_sell_plugin');
 			$html .=		'</label>';
 
-			$html .= "<p>" . __('End date:', 'pic_sell_plugin') . " <input type='date' value='" . $date_left . "' name='espaceprive_date_left' id='espaceprive_date_left'></p>";
-			$html .= "<p>" . __('Reminder email sent:', 'pic_sell_plugin') . " " . $text_sended_mail_dateleft . "</p>";
-			if ($sended_mail_dateleft) {
+			$html .= "<p>" . __('End date:', 'pic_sell_plugin') ." <input type='date' value='".$date_left."' name='espaceprive_date_left' id='espaceprive_date_left'></p>";
+			$html .= "<p>" . __('Reminder email sent:', 'pic_sell_plugin') ." ". $text_sended_mail_dateleft . "</p>";
+			if($sended_mail_dateleft){
 				$html .= 	"<input class='button button-primary ps_reset_sent_dateleft' type='button' value='" . __('Reset reminder emails', 'pic_sell_plugin') . "' />";
 			}
 			$html .= 		'<label for="espaceprive_date_sended">';
@@ -1534,7 +1515,7 @@ class Pic_Sell_Admin
 	 */
 	public function fiu_upload_file_video()
 	{
-		check_ajax_referer('pic-sell-ajax-nonce', 'nonce_ajax');
+		check_ajax_referer( 'pic-sell-ajax-nonce', 'nonce_ajax' );
 
 		$post_id = intval($_POST['post_id']);
 		$filename = sanitize_text_field($_POST['filename']);
@@ -1591,7 +1572,7 @@ class Pic_Sell_Admin
 	public function fiu_upload_file()
 	{
 
-		check_ajax_referer('pic-sell-ajax-nonce', 'nonce_ajax');
+		check_ajax_referer( 'pic-sell-ajax-nonce', 'nonce_ajax' );
 
 		if (isset($_FILES['file']['name'])) {
 
@@ -1642,10 +1623,9 @@ class Pic_Sell_Admin
 	/**
 	 * Autocomplete for Offer pack
 	 */
-	public function pic_autocomplete_offer_pack()
-	{
+	public function pic_autocomplete_offer_pack() {
 		// echo result
-		check_ajax_referer('pic-sell-ajax-nonce', 'nonce_ajax');
+		check_ajax_referer( 'pic-sell-ajax-nonce', 'nonce_ajax' );
 
 		$suggestions = [];
 
@@ -1653,23 +1633,23 @@ class Pic_Sell_Admin
 			'post_type'      => 'offre',
 			'post_status'    => 'publish',
 			//'exclude'	     => [$_POST['post_id']],	
-		);
-		$products = get_posts($args);
+		  );
+		$products = get_posts( $args );
 
-		if ($products) {
-			foreach ($products as $post) {
+		if ( $products ) {
+			foreach ( $products as $post ) {
 
 				$produit_data = get_post_meta($post->ID, '_offer_data', true);
 				$count_produit = count($produit_data["classement"]);
 				if ($count_produit > 0) {
 					for ($i = 0; $i < $count_produit; $i++) {
-						$cat = get_the_category_by_ID($produit_data['cat'][$i]);
-						$line = [];
+						$cat = get_the_category_by_ID( $produit_data['cat'][$i] );
+						$line=[];
 						$line['product_id'] = $post->ID;
 						$line['id'] = $produit_data['classement'][$i];
 						$line['titre'] = $produit_data['title'][$i];
 						$line['cat'] = $cat;
-						$line['prix'] = $produit_data['price'][$i];
+						$line['prix'] = $produit_data['price'][$i]; 
 						$line['description'] =  $produit_data['desc'][$i];
 						$line['type'] = $produit_data['choice_media'][$i];
 						$line['src'] = $produit_data['media'][$i];
@@ -1688,15 +1668,15 @@ class Pic_Sell_Admin
 	/**
 	 * Simulate save_post_offre for Offer pack
 	 */
-	public function pic_savepost_offer_pack()
-	{
+	public function pic_savepost_offer_pack() {
 		// echo result
-		check_ajax_referer('pic-sell-ajax-nonce', 'nonce_ajax');
+		check_ajax_referer( 'pic-sell-ajax-nonce', 'nonce_ajax' );
 
-		if ($_POST["offer"]) {
+		if($_POST["offer"]){
 			$_POST["action"] = "";
 			do_action("save_post", $_POST["post_id"], $_POST["post"], true);
 		}
+		
 	}
 
 	/***********************************************
@@ -1754,11 +1734,11 @@ class Pic_Sell_Admin
 		/**CUSTOM TYPE espaceprive only */
 		if (isset($post) && 'espaceprive' == $post->post_type) {
 			$vars = array(
-				'url'   => admin_url('admin-ajax.php'),
-				'nonce' => wp_create_nonce('pic-sell-ajax-nonce'),
+				'url'   => admin_url( 'admin-ajax.php' ),
+				'nonce' => wp_create_nonce( 'pic-sell-ajax-nonce' ),
 				'post' => $post,
 				'url_include' => PIC_SELL_URL_INC,
-
+				
 			);
 			wp_enqueue_script('psvars', plugin_dir_url(__FILE__) . 'js/pic-sell-espaceprive.js', array('jquery', 'wp-i18n'), false, true);
 			wp_localize_script('psvars', 'PicSellVars', $vars);
@@ -1768,9 +1748,9 @@ class Pic_Sell_Admin
 		/**CUSTOM TYPE offre only */
 		if (isset($post) && 'offre' == $post->post_type) {
 			$vars = array(
-				'url'   => admin_url('admin-ajax.php'),
+				'url'   => admin_url( 'admin-ajax.php' ),
 				'post' => $post,
-				'nonce' => wp_create_nonce('pic-sell-ajax-nonce'),
+				'nonce' => wp_create_nonce( 'pic-sell-ajax-nonce' ),
 				'url_include' => PIC_SELL_URL_INC,
 				'post_url' => admin_url('post.php')
 			);

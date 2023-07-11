@@ -2,7 +2,6 @@
 # Pic Sell
 ![Alt text](https://i.ibb.co/5YKtNYR/couverture.jpg)
 
-
 ## FR
 
 Avec Pic Sell, créez vos galleries privées avec mot de passe et proposez à vos clients, amis, familles la possibilité d'acheter des médias (images, vidéos) selon des packs d'offres préalablement configurés.
@@ -12,11 +11,13 @@ Spécialement pensée pour les photographes où les artistes vendant des galleri
 ## EN
 
 With Pic Sell, create your private galleries with a password and offer your customers, friends, families the possibility of buying media (images, videos) according to previously configured offer packs. Specially designed for photographers or artists selling art galleries. This extension embeds the payment by Paypal easily configurable with an intuitive interface.
+
 ### Installation
 
 FR: Téléchargez l'extension sur le dépot officiel de WordPress, le téléverser sur votre installation de WP et activer le comme toute les autres extensions.
 
 EN: Download the extension from the official WordPress repository, upload it to your WP installation and activate it like all other extensions.   
+
 ### Screenshots
 
 ![Alt text](https://i.ibb.co/4WkHstC/2022-05-17-15-26-51-Window.png "Optional title")
